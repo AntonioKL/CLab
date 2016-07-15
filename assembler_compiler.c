@@ -17,21 +17,31 @@ Main File
 #include <stdlib.h>
 #include <string.h>
 
-/*The main complier function that will run on providd files*/
+/*The main complier function that will run on provided files and parse them*/
+
+void parseFile(char* temp)
+{
+	printf("sss%s\n", temp);
+}
 
 int main(int argc, char* argv[])
 {
-	int termination_flag = 0	
+	int termination_flag = 0;
+	int i;	
 	FILE* proccessed_file;
 	
-	if (argc == 1)
+	if (argc < 2)
 	{
 		/*ERROR - No Files*/
-		termination_flag = 1
+		printf("Error: No file names, please provide the script with a file to run on.\n");
+		termination_flag = 1;
 	}
 	else
 	{
-
+		for (i=1; i < argc; i++)
+		{
+			parseFile(argv[i]);
+		}
 	}
 
 	/* Initialize operation list 
@@ -41,7 +51,7 @@ int main(int argc, char* argv[])
 		exit(0);
 	}*/
 
-	return 0;
+	return termination_flag;
 }
 
 
