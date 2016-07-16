@@ -12,22 +12,31 @@ Main headers file
 ---------------------------*/
 
 /*C libraries include*/
-#include "used_c_lib.h"
+#include <stdio.h>
+#include <string.h>
 
-/*Includes for other headers*/
+
+/* Modules Includes */
 
 #include "file_proccess.h"
+
 
 /*------------------------------
 --- Declaration of Constants ---
 --------------------------------*/
 
-#include "constants.h"
+
+/*Minimun number of argumnets that should be passed to the ass. compiler*/
+#define		MIN_ARGS			2
+
+/*Maximum file name length, without extension allowed*/
+#define		MAX_FILENAME_LEN		100
+
+/*Maximum file extension length allowed*/
+#define		MAX_FILE_EXTENSION_LEN		5
 
 
-/*------------------------------
---- Declaration of Functions ---
---------------------------------*/
+
 
 
 

@@ -7,22 +7,42 @@ File proccessing - Headers file
 =====================================================================================================================
 */
 
-/*C libraries include*/
-#include "used_c_lib.h"
 
-/*------------------------------
---- Declaration of Constants ---
---------------------------------*/
+/*-----------------
+--- Local const ---
+-------------------*/
+#define 	INPUT_FILE_EXTENSION		".as"
+#define		MODE_READ_ONLY			"r"
 
-/*Import Global constansts*/
-#include "constants.h"
 
-/*Local const*/
-#define INPUT_FILE_EXTENSION		".as"
+/*----------------------------
+--- Declaration of Structs ---
+------------------------------*/
+
+typedef struct{
+	int dc;
+	int lc;
+} RunStatus;
 
 /*------------------------------
 --- Declaration of Functions ---
 --------------------------------*/
 
 void parseFile(char* fileName);
-FILE* openInputFile(char *fileName, char *extension, const char *openMode)
+FILE* openInputFile(const char *fileName, const char *extension, const char *openMode);
+void fileReadProccessManager(FILE *file, char *fileName);
+void initializeRunStatus(RunStatus *runStatus);
+void resetRunParams(RunStatus *runStatus);
+void releaseRunStatusStruct(RunStatus *runStatus);
+/*Not here*/
+int firstReadManager(RunStatus *runStatus, FILE *file);
+int SecondReadManager(RunStatus *runStatus, FILE *file);
+void fileOutputmanager(RunStatus *runStatus, char *fileName);
+
+
+
+
+
+
+
+
