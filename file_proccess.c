@@ -67,7 +67,9 @@ void fileReadProccessManager(FILE *file, char *fileName)
 
 void initializeRunStatus(RunStatus *runStatus)
 {
-	return ;
+	runStatus -> lc = 0;
+	runStatus -> line = NULL;
+	runStatus -> errNum = 0;
 }
 
 void resetRunParams(RunStatus *runStatus)
@@ -81,10 +83,8 @@ void releaseRunStatusStruct(RunStatus *runStatus)
 }
 
 /*Not here*/
-int firstReadManager(RunStatus *runStatus, FILE *file)
-{
-	return 2;
-}
+
+
 int SecondReadManager(RunStatus *runStatus, FILE *file)
 {
 	return 0;

@@ -20,8 +20,11 @@ File proccessing - Headers file
 ------------------------------*/
 
 typedef struct{
-	int dc;
 	int lc;
+	char *line;
+	int errNum;
+	
+
 } RunStatus;
 
 /*------------------------------
@@ -35,7 +38,6 @@ void initializeRunStatus(RunStatus *runStatus);
 void resetRunParams(RunStatus *runStatus);
 void releaseRunStatusStruct(RunStatus *runStatus);
 /*Not here*/
-int firstReadManager(RunStatus *runStatus, FILE *file);
 int SecondReadManager(RunStatus *runStatus, FILE *file);
 void fileOutputmanager(RunStatus *runStatus, char *fileName);
 
