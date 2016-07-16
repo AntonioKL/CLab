@@ -20,7 +20,7 @@ File proccessing - Headers file
 ------------------------------*/
 
 typedef struct{
-	int lc;
+	int lineCount;
 	char *line;
 	int errNum;
 	

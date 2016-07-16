@@ -18,5 +18,7 @@ Global Functions - Headers file
 
 
 int isLineEmpty(RunStatus *runStatus);
+int isLineComment(RunStatus *runStatus);
 char *getCharAfterSpace(char *p);
 void skipSpaces();
+int isLineWithTag(RunStatus *runStatus);

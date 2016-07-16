@@ -25,7 +25,7 @@ Main headers file
 #define		MAX_TAG_LEN			30
 
 /*Maximum numbers of the file lines allowed*/
-#define		MAX_FILE_LINES			5000
+#define		MAX_FILE_LINES			10000
 
 /*-------------------------
 --- Include declaration ---

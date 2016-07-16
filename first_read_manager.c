@@ -10,22 +10,20 @@ FirstReadManager
 
 int firstReadManager(RunStatus *runStatus, FILE *file)
 {
-	int linesFound = 0;
 	/*We are taking more than nessacry - 100 instead, since we were told we can assume the input is valid with length of each line*/
 	char lineString[MAX_LINE_LENGTH];
 	while (fgets(lineString, MAX_LINE_LENGTH, file))
 	{
-		if (linesFound >= MAX_FILE_LINES)
+		if (runStatus -> lineCount >= MAX_FILE_LINES)
 		{
-			printf("ERROR: File is too long, Maximum allowed line numbers is %d", MAX_FILE_LINES);
+			printf("ERROR: File is too long, Maximum allowed line numbers is %d\n", MAX_FILE_LINES);
 			runStatus -> errNum++; 
 			return runStatus -> errNum;
 		}
 
 		runStatus -> line = lineString;
-		runStatus -> lc++;
+		runStatus -> lineCount++;
 		lineProccessor(runStatus, file);
-		linesFound++;
 	}
 	
 	return runStatus -> errNum;
@@ -33,8 +31,22 @@ int firstReadManager(RunStatus *runStatus, FILE *file)
 
 void lineProccessor(RunStatus *runStatus, FILE *file)
 {
-	int flag_label = 0;
-	printf("eeeee%d\n", flag_label);
+
+	if (!( isLineEmpty(runStatus) || isLineComment(runStatus) ))
+	{
+		if(isLineWithTag(runStatus))
+		{
+			printf("szzzzzz\n");
+		}
+	}
+	
+	/*
+		Find TAG, Exclude it from line 
+		Check IF Directive
+		Parse it
+		Parse Command
+
+*/
 }
 
 

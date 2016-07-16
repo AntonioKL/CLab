@@ -67,7 +67,7 @@ void fileReadProccessManager(FILE *file, char *fileName)
 
 void initializeRunStatus(RunStatus *runStatus)
 {
-	runStatus -> lc = 0;
+	runStatus -> lineCount = 0;
 	runStatus -> line = NULL;
 	runStatus -> errNum = 0;
 }

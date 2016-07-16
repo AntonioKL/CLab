@@ -18,6 +18,16 @@ int isLineEmpty(RunStatus *runStatus)
  	return 0;
 }
 
+int isLineComment(RunStatus *runStatus)
+{
+	if (*(runStatus -> line) == ';')
+	{
+		return 1;
+	}
+	return 0;
+		
+}
+
 char *getCharAfterSpace(char *p)
 {
 	while(isspace(*p))
@@ -36,3 +46,14 @@ void skipSpaces(RunStatus *runStatus)
 {
 	runStatus -> line = getCharAfterSpace(runStatus -> line);
 }
+
+
+int isLineWithTag(RunStatus *runStatus)
+{
+	return 1; /*****************FIX IT !!!!****************/
+}
+
+
+
+
+
