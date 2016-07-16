@@ -1,7 +1,7 @@
 
 /*
 =====================================================================================================================
-C lib - Headers file
+C libraries - Headers file
 	Author: Anton Kuligin 
 	Description: Headers declaration for the whole project
 =====================================================================================================================
@@ -9,6 +9,7 @@ C lib - Headers file
 
 
 #include <stdio.h>
+#include <string.h>
+
 /*
 #include <stdlib.h>*/
-#include <string.h>

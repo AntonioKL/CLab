@@ -26,7 +26,7 @@ Output:
 		- .ent: memory address of the labels
 */
 
-int main(int argc, char* argv[])
+int main(int argc, char *argv[])
 {
 	int i;	
 	

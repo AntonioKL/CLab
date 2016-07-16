@@ -1,6 +1,7 @@
 *.o
-*.ko
+*.as
 *.ob
-*.elf
+*.ext
+*.ent
 *~
 Compiler

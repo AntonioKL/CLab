@@ -22,12 +22,7 @@ Main headers file
 --- Declaration of Constants ---
 --------------------------------*/
 
-
-/*Minimun number of argumnets that should be passed to the compiler*/
-#define MIN_ARGS 2
-/*Maximum file name length allowed*/
-#define MAX_FILENAME_LEN 100
-
+#include "constants.h"
 
 
 /*------------------------------
