@@ -2,7 +2,8 @@
 /*
 =====================================================================================================================
 Main headers file
-	Author: Anton Kuligin 
+	Author: Anton Kuligin
+	Git Project: https://github.com/AntonioKL/CLab 
 	Description: Headers declaration for the whole project
 =====================================================================================================================
 */
@@ -48,25 +49,31 @@ Main headers file
 #define		TRUE				1
 #define		FALSE				0
 
+/*Maximum number of registrers*/
+#define 	MAX_REGISTERS			7
+
 /*------------------------
 --- Struct declaration ---
 --------------------------*/
 
 typedef struct{
 	char name[MAX_TAG_LEN];
-	int address;
+	int mem_address;
 	/*int ext_flag;
 	int cmd;*/
 } Label;
 
 typedef struct{
 	int lineCount;
+
 	char *line;
 	char *originalLine;
 	int errNum;
 	int ic;
-
+	
+	
 	Label *labelArray;
+	int labelCount;
 		
 
 } RunStatus;

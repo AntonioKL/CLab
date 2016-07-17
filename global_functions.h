@@ -2,6 +2,7 @@
 =====================================================================================================================
 Global Functions - Headers file
 	Author: Anton Kuligin 
+	Git Project: https://github.com/AntonioKL/CLab
 	Description: Headers for Global Functions
 =====================================================================================================================
 */
@@ -23,6 +24,6 @@ char *getCharAfterSpace(char *p);
 void skipSpaces();
 int isLineWithTag(RunStatus *runStatus);
 void getLabel(RunStatus *runStatus, char *label);
-
+int isRegister(char *str);
 
 

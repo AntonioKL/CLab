@@ -2,6 +2,7 @@
 =====================================================================================================================
 Main File
 	Author: Anton Kuligin 
+	Git Project: https://github.com/AntonioKL/CLab
 	Description: Simulation of an assembler with an output in unique 8 base encoding.
 	Input : File names to convert without .as extensions
 	Output :  1) Syntax Errors and Warnings

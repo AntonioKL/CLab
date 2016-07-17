@@ -3,6 +3,7 @@
 =====================================================================================================================
 FirstReadManager - Headers file
 	Author: Anton Kuligin 
+	Git Project: https://github.com/AntonioKL/CLab
 	Description: Headers for first read of the file
 =====================================================================================================================
 */
@@ -27,8 +28,11 @@ FirstReadManager - Headers file
 
 int firstReadManager(RunStatus *runStatus, FILE *file);
 int readLine(FILE *file, char *buffer, int max_len);
-void lineProccessor(RunStatus *runStatus, FILE *file);
+void lineProccessor(RunStatus *runStatus);
+void firstParseCmd(RunStatus *runStatus, char *label);
 
+/**/
+void directiveManager();
 
 
 

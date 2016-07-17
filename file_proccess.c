@@ -2,6 +2,7 @@
 =====================================================================================================================
 File processing file
 	Author: Anton Kuligin 
+	Git Project: https://github.com/AntonioKL/CLab
 	Description: Handles the reading of the input files
 =====================================================================================================================
 */
@@ -72,6 +73,7 @@ void initializeRunStatus(RunStatus *runStatus)
 	runStatus -> errNum = 0;
 	runStatus -> ic = 0;
 	runStatus -> labelArray = NULL;
+	runStatus -> labelCount = 0;
 }
 
 void resetRunParams(RunStatus *runStatus)

@@ -2,6 +2,7 @@
 =====================================================================================================================
 global_functions
 	Author: Anton Kuligin 
+	Git Project: https://github.com/AntonioKL/CLab
 	Description: Stores functions that used in many modules
 =====================================================================================================================
 */
@@ -62,6 +63,7 @@ void getLabel(RunStatus *runStatus, char *label)
 	if (!isalpha(*c))
 	{
 		printf("ERROR: Line #%d, Invalid Label Name - Label should start with Letter at the first collumn\n", runStatus -> lineCount);
+		runStatus -> errNum ++;
 		return ;
 	}
 	
@@ -70,6 +72,7 @@ void getLabel(RunStatus *runStatus, char *label)
 		if (! isalnum(*c))
 		{
 			printf("ERROR: Line #%d, Invalid Label Name - Label should contain only Letters and Numbers\n", runStatus -> lineCount);
+			runStatus -> errNum ++;
 			return ;
 		}
 		i++;
@@ -79,20 +82,40 @@ void getLabel(RunStatus *runStatus, char *label)
 	if (isspace(*c) || *c == '\n')
 	{
 		printf("ERROR: Line #%d, Invalid Label Name - Label should contain only one word, without spaces\n", runStatus -> lineCount);
+		runStatus -> errNum ++;
 		return ;
 	}
 	if (*c == ':')
 	{
-		strncpy(temp_label, runStatus -> originalLine,i); /*We don't want to copy the : itself*/
+		if (i >= MAX_TAG_LEN)
+		{
+			printf("ERROR: Line #%d, Invalid Label Name - Label should contain no more than %d chars\n", runStatus -> lineCount, MAX_TAG_LEN);
+			runStatus -> errNum ++;
+			return ;
+		}
+		strncpy(temp_label, runStatus -> originalLine,i); /*We don't want to copy the ":" itself*/
+		if(isRegister(temp_label))
+		{
+			printf("ERROR: Line #%d, Invalid Label Name - Illegal Name , You cannot use Register Name\n", runStatus -> lineCount);
+			runStatus -> errNum ++;
+			return ;
+		}
 		i++;
         	runStatus -> line += i;
 		strcpy(label, temp_label);
-		printf("%s", runStatus -> line);
 	}
 
 
 }
 
+int isRegister(char *str)
+{
+	if (str[0] == 'r'  && str[1] >= '0' && str[1] - '0' <= MAX_REGISTERS && str[2] == '\0') 
+	{
+		return TRUE;
+	}
+	return FALSE;
+}
 
 
 
