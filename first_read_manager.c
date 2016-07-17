@@ -9,6 +9,17 @@ FirstReadManager
 
 #include "main_header.h"
 
+
+const Directive globalDirective[] = 
+/* Name 	| 	Parse Function */
+{	
+	{ ".data", parseDataDirective } ,
+	{ ".string", parseStringDirective } ,
+	{ ".entry", parseEntryDirective },
+	{ ".extern", parseExternDirective },
+	{ NULL } /*Null will be used as an end of the array*/
+};
+
 int firstReadManager(RunStatus *runStatus, FILE *file)
 {
 	/*We are taking more than nessacry - 100 instead, since we were told we can assume the input is valid with length of each line*/
@@ -61,7 +72,7 @@ void lineProccessor(RunStatus *runStatus)
 
 		if ( *(runStatus->line) == '.')
 		{
-			directiveManager(runStatus);
+			scanDirective(runStatus, labelContent);
 		}
 		firstParseCmd(runStatus, labelContent);
 	}
@@ -73,7 +84,49 @@ void firstParseCmd(RunStatus *runStatus, char *label)
 	return ;
 }
 
-void directiveManager(RunStatus *runStatus)
+void scanDirective(RunStatus *runStatus, char *label)
+{
+	char directive[MAX_LINE_LENGTH];
+	char *c = runStatus -> line;
+	int i = 0;
+	
+	while (!isspace(*c) && *c != '\n')
+	{
+		directive[i] = *c;
+		i++;
+		c++;
+	}
+	directive[i] = '\0';
+	runStatus-> line = runStatus-> line + strlen(directive);
+	skipSpaces(runStatus);
+	
+	i = 0;
+	while ( globalDirective[i].name )
+	{
+		if (!strcmp(directive, globalDirective[i].name))
+		{
+			globalDirective[i].parsingFunc(runStatus, label);
+			return;
+		}
+		i++;
+	}
+	printf("ERROR: Line #%d, Invalid Directive Name - Directive %s is not defined\n", runStatus -> lineCount, directive);
+	
+}
+
+void parseDataDirective(RunStatus *runStatus, char *label)
+{
+	return ;
+}
+void parseStringDirective(RunStatus *runStatus, char *label)
+{
+	return ;
+}
+void parseExternDirective(RunStatus *runStatus, char *label)
+{
+	return ;
+}
+void parseEntryDirective(RunStatus *runStatus, char *label)
 {
 	return ;
 }

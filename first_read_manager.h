@@ -30,11 +30,18 @@ int firstReadManager(RunStatus *runStatus, FILE *file);
 int readLine(FILE *file, char *buffer, int max_len);
 void lineProccessor(RunStatus *runStatus);
 void firstParseCmd(RunStatus *runStatus, char *label);
-
-/**/
-void directiveManager();
+void scanDirective(RunStatus *runStatus, char *label);
 
 
+
+/*-----------------------------------------
+--- Include parse functions declaration ---
+-------------------------------------------*/
+
+void parseDataDirective(RunStatus *runStatus, char *label);
+void parseStringDirective(RunStatus *runStatus, char *label);
+void parseExternDirective(RunStatus *runStatus, char *label);
+void parseEntryDirective(RunStatus *runStatus, char *label);
 
 
 

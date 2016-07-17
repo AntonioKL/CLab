@@ -9,6 +9,9 @@ global_functions
 
 #include "main_header.h"
 
+
+
+
 int isLineEmpty(RunStatus *runStatus)
 {
 	skipSpaces(runStatus);

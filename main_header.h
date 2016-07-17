@@ -78,6 +78,12 @@ typedef struct{
 
 } RunStatus;
 
+typedef struct{
+	char *name;
+	void (*parsingFunc)();
+} Directive;
+
+
 
 /*-------------------------------
 --- Include module declaration ---
