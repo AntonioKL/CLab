@@ -47,6 +47,8 @@ int main(int argc, char *argv[])
 		}
 		
 		parseFile(argv[i]);
+		/*Printing Divider between Files*/
+		printf("--- Done Parsing: \"%s%s\" ---\n\n", argv[i], INPUT_FILE_EXTENSION);
 	}
 
 	return 0;

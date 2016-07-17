@@ -22,6 +22,7 @@ int firstReadManager(RunStatus *runStatus, FILE *file)
 		}
 
 		runStatus -> line = lineString;
+		runStatus -> originalLine = lineString;
 		runStatus -> lineCount++;
 		lineProccessor(runStatus, file);
 	}
@@ -31,22 +32,28 @@ int firstReadManager(RunStatus *runStatus, FILE *file)
 
 void lineProccessor(RunStatus *runStatus, FILE *file)
 {
+	char labelContent[MAX_TAG_LEN] = "\0";
 
 	if (!( isLineEmpty(runStatus) || isLineComment(runStatus) ))
 	{
-		if(isLineWithTag(runStatus))
+		
+		getLabel(runStatus, labelContent);
+		
+		if(*labelContent)
 		{
-			printf("szzzzzz\n");
+			printf("szzzzzz%s777\n", labelContent);
 		}
 	}
 	
-	/*
-		Find TAG, Exclude it from line 
+/*
 		Check IF Directive
 		Parse it
 		Parse Command
 
-*/
+
+
+*/	
+
 }
 
 

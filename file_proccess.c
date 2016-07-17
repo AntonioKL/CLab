@@ -41,7 +41,7 @@ void fileReadProccessManager(FILE *file, char *fileName)
 	int errNum = 0;
 	
 	initializeRunStatus(&runStatus);
-	
+
 	errNum = firstReadManager(&runStatus, file);
 	if (errNum > 0)
 	{
@@ -70,6 +70,8 @@ void initializeRunStatus(RunStatus *runStatus)
 	runStatus -> lineCount = 0;
 	runStatus -> line = NULL;
 	runStatus -> errNum = 0;
+	runStatus -> ic = 0;
+	runStatus -> labelArray = NULL;
 }
 
 void resetRunParams(RunStatus *runStatus)
@@ -80,6 +82,7 @@ void releaseRunStatusStruct(RunStatus *runStatus)
 {
 	/* free the data in struct that was allocated by malloc*/
 	/*free(pointer_to_malloc);*/
+	free(runStatus -> labelArray);
 }
 
 /*Not here*/
@@ -87,7 +90,7 @@ void releaseRunStatusStruct(RunStatus *runStatus)
 
 int SecondReadManager(RunStatus *runStatus, FILE *file)
 {
-	return 0;
+	return FALSE;
 }
 void fileOutputmanager(RunStatus *runStatus, char *fileName)
 {

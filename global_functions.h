@@ -22,3 +22,7 @@ int isLineComment(RunStatus *runStatus);
 char *getCharAfterSpace(char *p);
 void skipSpaces();
 int isLineWithTag(RunStatus *runStatus);
+void getLabel(RunStatus *runStatus, char *label);
+
+
+

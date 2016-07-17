@@ -7,10 +7,24 @@ Main headers file
 =====================================================================================================================
 */
 
+
+/*-------------------------------
+--- Include C lib declaration ---
+---------------------------------*/
+
+/*C libraries include*/
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <ctype.h>
+
+
 /*--------------------------------------
 --- Declaration of Global Constants  ---
 ----------------------------------------*/
 
+/*We were told that we are starting to run from a specific memory location*/
+#define 	FIRST_MEM_ADDR			100
 
 /*Minimun number of argumnets that should be passed to the ass. compiler*/
 #define		MIN_ARGS			2
@@ -27,17 +41,40 @@ Main headers file
 /*Maximum numbers of the file lines allowed*/
 #define		MAX_FILE_LINES			10000
 
-/*-------------------------
---- Include declaration ---
----------------------------*/
+/*Input Files Extension*/
+#define 	INPUT_FILE_EXTENSION		".as"
 
-/*C libraries include*/
-#include <stdio.h>
-#include <string.h>
-#include <ctype.h>
+/*TRUE/False definitions*/
+#define		TRUE				1
+#define		FALSE				0
+
+/*------------------------
+--- Struct declaration ---
+--------------------------*/
+
+typedef struct{
+	char name[MAX_TAG_LEN];
+	int address;
+	/*int ext_flag;
+	int cmd;*/
+} Label;
+
+typedef struct{
+	int lineCount;
+	char *line;
+	char *originalLine;
+	int errNum;
+	int ic;
+
+	Label *labelArray;
+		
+
+} RunStatus;
 
 
-/* Modules Includes */
+/*-------------------------------
+--- Include module declaration ---
+---------------------------------*/
 
 
 #include "file_proccess.h"

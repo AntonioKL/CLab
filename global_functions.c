@@ -13,18 +13,18 @@ int isLineEmpty(RunStatus *runStatus)
 	skipSpaces(runStatus);
 	if(*(runStatus->line)==EOF || *(runStatus->line)=='\n')
 	{
-        	return 1;
+        	return TRUE;
    	}
- 	return 0;
+ 	return FALSE;
 }
 
 int isLineComment(RunStatus *runStatus)
 {
-	if (*(runStatus -> line) == ';')
+	if (*(runStatus -> originalLine) == ';')
 	{
-		return 1;
+		return TRUE;
 	}
-	return 0;
+	return FALSE;
 		
 }
 
@@ -48,11 +48,50 @@ void skipSpaces(RunStatus *runStatus)
 }
 
 
-int isLineWithTag(RunStatus *runStatus)
+void getLabel(RunStatus *runStatus, char *label)
 {
-	return 1; /*****************FIX IT !!!!****************/
-}
+	char temp_label[MAX_TAG_LEN]="\0";
 
+	int i = 0; /*Counter for the label Chars*/
+	char *c = runStatus-> originalLine;
+
+	
+	if (! strchr(runStatus-> originalLine, ':') )
+		return ; /*It is not a label*/
+
+	if (!isalpha(*c))
+	{
+		printf("ERROR: Line #%d, Invalid Label Name - Label should start with Letter at the first collumn\n", runStatus -> lineCount);
+		return ;
+	}
+	
+	while (!isspace(*c) && *c != '\n' && *c != ':')
+	{
+		if (! isalnum(*c))
+		{
+			printf("ERROR: Line #%d, Invalid Label Name - Label should contain only Letters and Numbers\n", runStatus -> lineCount);
+			return ;
+		}
+		i++;
+		c++;
+	}
+
+	if (isspace(*c) || *c == '\n')
+	{
+		printf("ERROR: Line #%d, Invalid Label Name - Label should contain only one word, without spaces\n", runStatus -> lineCount);
+		return ;
+	}
+	if (*c == ':')
+	{
+		strncpy(temp_label, runStatus -> originalLine,i); /*We don't want to copy the : itself*/
+		i++;
+        	runStatus -> line += i;
+		strcpy(label, temp_label);
+		printf("%s", runStatus -> line);
+	}
+
+
+}
 
 
 

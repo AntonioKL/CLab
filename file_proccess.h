@@ -11,21 +11,10 @@ File proccessing - Headers file
 /*-----------------
 --- Local const ---
 -------------------*/
-#define 	INPUT_FILE_EXTENSION		".as"
+
 #define		MODE_READ_ONLY			"r"
 
 
-/*----------------------------
---- Declaration of Structs ---
-------------------------------*/
-
-typedef struct{
-	int lineCount;
-	char *line;
-	int errNum;
-	
-
-} RunStatus;
 
 /*------------------------------
 --- Declaration of Functions ---
