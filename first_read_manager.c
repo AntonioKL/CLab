@@ -111,6 +111,7 @@ void scanDirective(RunStatus *runStatus, char *label)
 		i++;
 	}
 	printf("ERROR: Line #%d, Invalid Directive Name - Directive %s is not defined\n", runStatus -> lineCount, directive);
+	runStatus -> errNum ++;
 	
 }
 
