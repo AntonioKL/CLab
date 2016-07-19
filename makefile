@@ -15,7 +15,7 @@ global_functions.o: global_functions.c
 	gcc -Wall -ansi -pedantic -c global_functions.c
 
 clean:
-	rm *.o
+	rm *~
 
 git:
 	git status
