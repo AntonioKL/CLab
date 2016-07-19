@@ -149,7 +149,7 @@ void parseDataDirective(RunStatus *runStatus, char *label)
 
 			if (!cmdStatus)
 			{
-				printf("ERROR: Line #%d, Invalid Directive Data - Not valid data, should be a number (positive/negative).\n", runStatus -> lineCount);
+				printf("ERROR: Line #%d, Invalid Directive Data - Not valid data, should be a set of numbers (positive/negative) separated by commas.\n", runStatus -> lineCount);
 				runStatus -> errNum ++;
 				return ;
 			}
@@ -172,7 +172,7 @@ void parseDataDirective(RunStatus *runStatus, char *label)
 			skipSpaces(runStatus);
 			if (! ( *(runStatus -> line) == EOF || *(runStatus -> line) == '\n' || *(runStatus -> line) == ','))
 			{
-				printf("ERROR: Line #%d, Invalid Directive Data - Not valid data, should be a set of numbers (positive/negative) separated by commas .\n", runStatus -> lineCount);
+				printf("ERROR: Line #%d, Invalid Directive Data - Not valid data, should be a set of numbers (positive/negative) separated by commas.\n", runStatus -> lineCount);
 				runStatus -> errNum ++;
 				return ;
 			}
