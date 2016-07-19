@@ -61,7 +61,7 @@ void lineProccessor(RunStatus *runStatus)
 
 				if (! strcmp (arr_labelName, labelContent) )
 				{
-					printf("ERROR: Line #%d, Invalid Label Name - Label %s is in use already\n", runStatus -> lineCount, labelContent);
+					printf("ERROR: Line #%d, Invalid Label Name - Label Name \"%s\" is in use already\n", runStatus -> lineCount, labelContent);
 					runStatus -> errNum ++;
 					return ;
 				}
@@ -195,7 +195,7 @@ void parseDataDirective(RunStatus *runStatus, char *label)
 	}
 	while(i<dataCounter)
 	{
-		addDirective(runStatus, arrNum[i]);
+		addDirData(runStatus, arrNum[i]);
 		i++;
 	}
 }

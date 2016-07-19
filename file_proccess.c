@@ -70,24 +70,26 @@ void initializeRunStatus(RunStatus *runStatus)
 {
 	runStatus -> lineCount = 0;
 	runStatus -> line = NULL;
+	runStatus -> originalLine = NULL;
 	runStatus -> errNum = 0;
-	runStatus -> ic = 0;
+
 	runStatus -> labelArray = NULL;
 	runStatus -> labelCount = 0;
+	runStatus -> dataArray = NULL;
+	runStatus -> dataCount = 0;
 }
 
-void resetRunParams(RunStatus *runStatus)
+void resetRunParams(RunStatus *runStatus) /**/
 {
 	return ;
 }
 void releaseRunStatusStruct(RunStatus *runStatus)
 {
 	/* free the data in struct that was allocated by malloc*/
-	/*free(pointer_to_malloc);*/
-	free(runStatus -> labelArray);
-}
 
-/*Not here*/
+	free(runStatus -> labelArray);
+	free (runStatus -> dataArray);
+}
 
 
 int SecondReadManager(RunStatus *runStatus, FILE *file)

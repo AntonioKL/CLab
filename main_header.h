@@ -64,16 +64,19 @@ typedef struct{
 } Label;
 
 typedef struct{
-	int lineCount;
 
 	char *line;
 	char *originalLine;
+	int lineCount;
+
 	int errNum;
-	int ic;
-	
+
 	
 	Label *labelArray;
 	int labelCount;
+
+	int * dataArray; /*We can strore chars as integer array*/
+	int dataCount;
 		
 
 } RunStatus;

@@ -122,11 +122,26 @@ int isRegister(char *str)
 
 void addLabel(RunStatus *runStatus, char *label)
 {
-	printf("1%s1\n", label);
+	runStatus -> labelArray = realloc(runStatus -> labelArray, (runStatus -> labelCount + 1) * sizeof(Label));
+	if (! (runStatus -> labelArray) )
+	{
+		printf("Fatal ERROR: Fail to reallocate space for Label Array");
+		exit(1);
+	}
+	strcpy (runStatus -> labelArray[runStatus -> labelCount].name , label);
+	runStatus -> labelArray[runStatus -> labelCount].mem_address = runStatus -> dataCount;
+	runStatus -> labelCount ++;
 }
-void addDirective(RunStatus *runStatus, int num)
+void addDirData(RunStatus *runStatus, int num)
 {
-	return ;
+	runStatus -> dataArray = realloc(runStatus -> dataArray, (runStatus -> dataCount + 1) * sizeof(int));
+	if (! (runStatus -> dataArray) )
+	{
+		printf("Fatal ERROR:Fail to reallocate space for Label Array Data Array");
+		exit(1);
+	}
+	runStatus -> dataArray[runStatus -> dataCount] = num;
+	runStatus -> dataCount ++;
 }
 
 
