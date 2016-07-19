@@ -1,5 +1,5 @@
-Compiler: assembler_compiler.o file_proccess.o first_read_manager.o global_functions.o 
-	gcc -Wall -ansi -pedantic assembler_compiler.o file_proccess.o first_read_manager.o global_functions.o -o Compiler
+assembler: assembler_compiler.o file_proccess.o first_read_manager.o global_functions.o 
+	gcc -Wall -ansi -pedantic assembler_compiler.o file_proccess.o first_read_manager.o global_functions.o -o assembler
 	rm *.o
 
 assembler_compiler.o: assembler_compiler.c

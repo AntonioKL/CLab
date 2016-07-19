@@ -25,5 +25,6 @@ void skipSpaces();
 int isLineWithTag(RunStatus *runStatus);
 void getLabel(RunStatus *runStatus, char *label);
 int isRegister(char *str);
-
+void addLabel(RunStatus *runStatus, char *label);
+void addDirective(RunStatus *runStatus, int num);
 

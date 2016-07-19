@@ -65,7 +65,7 @@ void getLabel(RunStatus *runStatus, char *label)
 
 	if (!isalpha(*c))
 	{
-		printf("ERROR: Line #%d, Invalid Label Name - Label should start with Letter at the first collumn\n", runStatus -> lineCount);
+		printf("ERROR: Line #%d, Invalid Label Name - Label should start with Letter at the first collumn.\n", runStatus -> lineCount);
 		runStatus -> errNum ++;
 		return ;
 	}
@@ -74,7 +74,7 @@ void getLabel(RunStatus *runStatus, char *label)
 	{
 		if (! isalnum(*c))
 		{
-			printf("ERROR: Line #%d, Invalid Label Name - Label should contain only Letters and Numbers\n", runStatus -> lineCount);
+			printf("ERROR: Line #%d, Invalid Label Name - Label should contain only Letters and Numbers.\n", runStatus -> lineCount);
 			runStatus -> errNum ++;
 			return ;
 		}
@@ -84,7 +84,7 @@ void getLabel(RunStatus *runStatus, char *label)
 
 	if (isspace(*c) || *c == '\n')
 	{
-		printf("ERROR: Line #%d, Invalid Label Name - Label should contain only one word, without spaces\n", runStatus -> lineCount);
+		printf("ERROR: Line #%d, Invalid Label Name - Label should contain only one word, without spaces.\n", runStatus -> lineCount);
 		runStatus -> errNum ++;
 		return ;
 	}
@@ -92,14 +92,14 @@ void getLabel(RunStatus *runStatus, char *label)
 	{
 		if (i >= MAX_TAG_LEN)
 		{
-			printf("ERROR: Line #%d, Invalid Label Name - Label should contain no more than %d chars\n", runStatus -> lineCount, MAX_TAG_LEN);
+			printf("ERROR: Line #%d, Invalid Label Name - Label should contain no more than %d chars.\n", runStatus -> lineCount, MAX_TAG_LEN);
 			runStatus -> errNum ++;
 			return ;
 		}
 		strncpy(temp_label, runStatus -> originalLine,i); /*We don't want to copy the ":" itself*/
 		if(isRegister(temp_label))
 		{
-			printf("ERROR: Line #%d, Invalid Label Name - Illegal Name , You cannot use Register Name\n", runStatus -> lineCount);
+			printf("ERROR: Line #%d, Invalid Label Name - Illegal Name , You cannot use Register Name.\n", runStatus -> lineCount);
 			runStatus -> errNum ++;
 			return ;
 		}
@@ -120,5 +120,13 @@ int isRegister(char *str)
 	return FALSE;
 }
 
+void addLabel(RunStatus *runStatus, char *label)
+{
+	printf("1%s1\n", label);
+}
+void addDirective(RunStatus *runStatus, int num)
+{
+	return ;
+}
 
 

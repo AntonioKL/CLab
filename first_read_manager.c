@@ -74,7 +74,10 @@ void lineProccessor(RunStatus *runStatus)
 		{
 			scanDirective(runStatus, labelContent);
 		}
-		firstParseCmd(runStatus, labelContent);
+		else
+		{
+			firstParseCmd(runStatus, labelContent);
+		}
 	}
 }
 
@@ -110,15 +113,94 @@ void scanDirective(RunStatus *runStatus, char *label)
 		}
 		i++;
 	}
-	printf("ERROR: Line #%d, Invalid Directive Name - Directive %s is not defined\n", runStatus -> lineCount, directive);
+	printf("ERROR: Line #%d, Invalid Directive Name - Directive %s is not defined.\n", runStatus -> lineCount, directive);
 	runStatus -> errNum ++;
 	
 }
 
 void parseDataDirective(RunStatus *runStatus, char *label)
 {
-	return ;
+	int arrNum[MAX_LINE_LENGTH];
+	int number;	
+
+	int runningStateFlag = TRUE;
+	int numberStateFlag = TRUE;
+	int commaStateFlag = FALSE; 
+	int cmdStatus = FALSE;
+
+	int i = 0;
+	int dataCounter = 0;
+	char *directive = ".data";
+
+
+	if (*(runStatus -> line) == EOF || *(runStatus -> line) == '\n')
+	{
+		printf("ERROR: Line #%d, Invalid Directive Definition - Directive %s is empty.\n", runStatus -> lineCount, directive);
+		runStatus -> errNum ++;
+		return ;
+	}
+	while (runningStateFlag)
+	{
+		skipSpaces(runStatus);
+
+		if (numberStateFlag)
+		{
+			cmdStatus = sscanf(runStatus -> line, "%d", &number);
+
+			if (!cmdStatus)
+			{
+				printf("ERROR: Line #%d, Invalid Directive Data - Not valid data, should be a number (positive/negative).\n", runStatus -> lineCount);
+				runStatus -> errNum ++;
+				return ;
+			}
+			arrNum[dataCounter++] = number;
+
+			if (*(runStatus -> line) == '+' || *(runStatus -> line) == '-')
+			{
+				runStatus -> line ++;
+			}
+			while (isdigit(*(runStatus -> line)))
+			{
+				runStatus -> line ++;
+			}
+			numberStateFlag = FALSE;
+			commaStateFlag = TRUE; 
+
+		}
+		if (commaStateFlag)
+		{
+			skipSpaces(runStatus);
+			if (! ( *(runStatus -> line) == EOF || *(runStatus -> line) == '\n' || *(runStatus -> line) == ','))
+			{
+				printf("ERROR: Line #%d, Invalid Directive Data - Not valid data, should be a set of numbers (positive/negative) separated by commas .\n", runStatus -> lineCount);
+				runStatus -> errNum ++;
+				return ;
+			}
+			if (*(runStatus -> line) == EOF || *(runStatus -> line) == '\n')
+			{
+				runningStateFlag = FALSE;
+			}
+			else
+			{
+				runStatus -> line ++;
+				numberStateFlag = TRUE;
+				commaStateFlag = FALSE; 
+			}
+		}
+	
+	}
+	if (*label && label)
+	{
+		addLabel(runStatus, label);
+	}
+	while(i<dataCounter)
+	{
+		addDirective(runStatus, arrNum[i]);
+		i++;
+	}
 }
+
+
 void parseStringDirective(RunStatus *runStatus, char *label)
 {
 	return ;
