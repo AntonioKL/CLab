@@ -19,5 +19,6 @@ clean:
 git:
 	git status
 	git add -A
-	git commit 
+	git commit
+	git push origin master
 
