@@ -84,7 +84,7 @@ void lineProccessor(RunStatus *runStatus)
 
 void firstParseCmd(RunStatus *runStatus, char *label)
 {
-	return ;
+	printf("Parse\n");
 }
 
 void scanDirective(RunStatus *runStatus, char *label)
@@ -278,7 +278,58 @@ void parseStringDirective(RunStatus *runStatus, char *label)
 
 void parseExternDirective(RunStatus *runStatus, char *label)
 {
-	return ;
+	char labelContent[MAX_TAG_LEN] = "\0";
+	int i = 0;
+
+	char *directive = ".extern";
+
+	skipSpaces(runStatus);
+	if (*label && label)
+	{
+		printf("ERROR: Line #%d, Invalid Directive Definition - Directive %s cannot have a label .\n", runStatus -> lineCount, directive);
+			runStatus -> errNum ++;
+			return ;
+	}
+
+	if (*(runStatus -> line) == EOF || *(runStatus -> line) == '\n' )
+	{
+		printf("ERROR: Line #%d, Invalid Directive Definition - Directive %s is empty.\n", runStatus -> lineCount, directive);
+		runStatus -> errNum ++;
+		return ;
+	}
+	
+	getLabelReference(runStatus, labelContent);
+
+	if(! ( *labelContent ))
+	{
+		printf("ERROR: Line #%d, Invalid Directive Definition - Directive %s wrong Label Reference.\n", runStatus -> lineCount, directive);
+		runStatus -> errNum ++;
+		return ;
+	}
+	
+	while (i <= runStatus -> entryCount)
+	{
+		if (runStatus -> entryArray && ! strcmp (runStatus -> entryArray[i].name, labelContent))
+		{
+			printf("ERROR: Line #%d, Invalid Directive Definition - Directive %s label defined  as .entry already.\n", runStatus -> lineCount, directive);
+			runStatus -> errNum ++;
+			return ;
+		}
+		i++;
+	}
+	i = 0;
+	while (i <= runStatus -> externCount)
+	{
+		if (runStatus -> externArray && ! strcmp (runStatus -> externArray[i].name, labelContent))
+		{
+			printf("ERROR: Line #%d, Invalid Directive Definition - Directive %s label defined  as .extern already.\n", runStatus -> lineCount, directive);
+			runStatus -> errNum ++;
+			return ;
+		}
+		i++;
+	}
+	
+	addExternDir(runStatus, labelContent);
 }
 
 
@@ -315,15 +366,20 @@ void parseEntryDirective(RunStatus *runStatus, char *label)
 	
 	while (i <= runStatus -> entryCount)
 	{
-		if (runStatus -> entryArray && strcmp (runStatus -> entryArray[runStatus -> entryCount].name, labelContent))
+		if (runStatus -> entryArray && ! strcmp (runStatus -> entryArray[i].name, labelContent))
 		{
-			printf("ERROR: Line #%d, Invalid Directive Definition - Directive %s name exists.\n", runStatus -> lineCount, directive);
+			printf("ERROR: Line #%d, Invalid Directive Definition - Directive %s label defined  as .entry already.\n", runStatus -> lineCount, directive);
 			runStatus -> errNum ++;
 			return ;
 		}
-		if (runStatus -> externArray && strcmp (runStatus -> externArray[runStatus -> externCount].name, labelContent))
+		i++;
+	}
+	i = 0;
+	while (i <= runStatus -> externCount)
+	{
+		if (runStatus -> externArray && ! strcmp (runStatus -> externArray[i].name, labelContent))
 		{
-			printf("ERROR: Line #%d, Invalid Directive Definition - Directive %s label defined  as .extern.\n", runStatus -> lineCount, directive);
+			printf("ERROR: Line #%d, Invalid Directive Definition - Directive %s label defined  as .extern already.\n", runStatus -> lineCount, directive);
 			runStatus -> errNum ++;
 			return ;
 		}

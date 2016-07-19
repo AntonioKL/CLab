@@ -30,3 +30,6 @@ void addLabel(RunStatus *runStatus, char *label);
 void addDirData(RunStatus *runStatus, int num);
 void getLabelReference(RunStatus *runStatus, char *label);
 void addEntryDir(RunStatus *runStatus, char *label);
+void addExternDir(RunStatus *runStatus, char *label);
+
+
