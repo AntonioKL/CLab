@@ -70,7 +70,7 @@ void getLabel(RunStatus *runStatus, char *label)
 		return ;
 	}
 	
-	while (!isspace(*c) && *c != '\n' && *c != ':')
+	while (!isspace(*c) && *c != '\n' && *c != EOF && *c != ':')
 	{
 		if (! isalnum(*c))
 		{
@@ -82,7 +82,7 @@ void getLabel(RunStatus *runStatus, char *label)
 		c++;
 	}
 
-	if (isspace(*c) || *c == '\n')
+	if (isspace(*c) || *c == '\n' || *c == EOF )
 	{
 		printf("ERROR: Line #%d, Invalid Label Name - Label should contain only one word, without spaces.\n", runStatus -> lineCount);
 		runStatus -> errNum ++;
@@ -144,4 +144,68 @@ void addDirData(RunStatus *runStatus, int num)
 	runStatus -> dataCount ++;
 }
 
+void getLabelReference(RunStatus *runStatus, char *label)
+{
+	int i = 0;
+	char temp_label[MAX_TAG_LEN]="\0";
+	
+	if (!isalpha(*(runStatus -> line)))
+	{
+		printf("ERROR: Line #%d, Invalid Label Reference - Label should start with Letter at the first collumn.\n", runStatus -> lineCount);
+		runStatus -> errNum ++;
+		return ;
+	}
+	
+	while (! (isspace(*(runStatus -> line)) || *(runStatus -> line) == EOF || *(runStatus -> line) == '\n' ))
+	{
+		if (! isalnum(*(runStatus -> line)))
+		{	
+			printf("ERROR: Line #%d, Invalid Label Reference - Label should contain only Letters and Numbers.\n", runStatus -> lineCount);
+			runStatus -> errNum ++;
+			return ;
+		}
+		i++;
+		runStatus -> line ++;
+	}
+	skipSpaces(runStatus);
+
+	if (! (*(runStatus -> line) == EOF || *(runStatus -> line) == '\n' ))
+	{
+		printf("ERROR: Line #%d, Invalid Label Reference - Directive doesn't hold a valid Label refernce, there is a space in the name.\n", runStatus -> lineCount);
+		runStatus -> errNum ++;
+		return ;
+	}
+
+	if (i >= MAX_TAG_LEN)
+	{
+		printf("ERROR: Line #%d, Invalid Label Reference Name - Label should contain no more than %d chars.\n", runStatus -> lineCount, MAX_TAG_LEN);
+		runStatus -> errNum ++;
+		return ;
+	}
+	strncpy(temp_label, runStatus -> line,i);
+
+	if(isRegister(temp_label))
+	{
+		printf("ERROR: Line #%d, Invalid Label Name - Illegal Name , You cannot use Register Name.\n", runStatus -> lineCount);
+		runStatus -> errNum ++;
+		return ;
+	}
+
+	strcpy(label, temp_label);
+	
+}
+
+
+
+void addEntryDir(RunStatus *runStatus, char *label)
+{
+	runStatus -> entryArray = realloc(runStatus -> entryArray, (runStatus -> entryCount + 1) * sizeof(Entry));
+	if (! (runStatus -> entryArray) )
+	{
+		printf("Fatal ERROR:Fail to reallocate space for Label Array Entry Array");
+		EXIT_ERROR;
+	}
+	strcpy(runStatus -> entryArray[runStatus -> entryCount].name, label);
+	runStatus -> entryCount ++;
+}
 

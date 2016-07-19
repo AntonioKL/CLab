@@ -64,6 +64,14 @@ typedef struct{
 } Label;
 
 typedef struct{
+    char name[MAX_TAG_LEN];
+} Entry;
+
+typedef struct{
+    char name[MAX_TAG_LEN];
+} Extern;
+
+typedef struct{
 
 	char *line;
 	char *originalLine;
@@ -74,6 +82,12 @@ typedef struct{
 	
 	Label *labelArray;
 	int labelCount;
+
+	Entry *entryArray;
+	int entryCount;
+
+	Extern *externArray;
+	int externCount;
 
 	int * dataArray; /*We can strore chars as integer array*/
 	int dataCount;

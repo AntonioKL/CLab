@@ -52,7 +52,7 @@ void lineProccessor(RunStatus *runStatus)
 	{
 		
 		getLabel(runStatus, labelContent);
-		
+
 		if(*labelContent)
 		{
 			for (i = 0; (runStatus -> labelCount) > i; i++) /*Chekcing for duplicating tag names*/
@@ -203,13 +203,144 @@ void parseDataDirective(RunStatus *runStatus, char *label)
 
 void parseStringDirective(RunStatus *runStatus, char *label)
 {
-	return ;
+	char arrChar[MAX_LINE_LENGTH];
+	int dataCounter = 0;
+	int i = 0;
+	
+	char *directive = ".string";
+
+	skipSpaces(runStatus);
+
+	if (*(runStatus -> line) == EOF || *(runStatus -> line) == '\n' )
+	{
+		printf("ERROR: Line #%d, Invalid Directive Definition - Directive %s is empty.\n", runStatus -> lineCount, directive);
+		runStatus -> errNum ++;
+		return ;
+	}
+	if ( *(runStatus -> line) == '"' )
+	{
+		runStatus -> line ++;
+
+		while (! (*(runStatus -> line) == '"' || *(runStatus -> line) == EOF || *(runStatus -> line) == '\n' ))
+		{
+			arrChar[dataCounter++] = *(runStatus -> line);
+			runStatus -> line ++;
+			if ( *(runStatus -> line) == '\\' )
+			{
+				arrChar[dataCounter++] = *(runStatus -> line);
+				runStatus -> line ++;
+				if ( *(runStatus -> line) == '"' )
+				{
+					arrChar[dataCounter++] = *(runStatus -> line);
+					runStatus -> line ++;
+				}
+			}
+		}
+
+		if ( *(runStatus -> line) != '"' )
+		{
+			printf("ERROR: Line #%d, Invalid Directive Data - Not valid data, should hold a string, between the \" chars\n", runStatus -> lineCount);
+				runStatus -> errNum ++;
+				return ;
+		}
+		runStatus -> line ++;
+		skipSpaces(runStatus);
+
+		if (! (*(runStatus -> line) == EOF || *(runStatus -> line) == '\n' ))
+		{
+			printf("ERROR: Line #%d, Invalid Directive Definition - Directive %s doesn't hold a valid string.\n", runStatus -> lineCount, directive);
+			runStatus -> errNum ++;
+			return ;
+		}
+		
+	}
+	else
+	{
+		printf("ERROR: Line #%d, Invalid Directive Definition - Directive %s doesn't hold a valid string, string should start with \" .\n", runStatus -> lineCount, directive);
+			runStatus -> errNum ++;
+			return ;
+	}
+
+	if (*label && label)
+	{
+		addLabel(runStatus, label);
+	}
+	while(i<dataCounter)
+	{
+		addDirData(runStatus, arrChar[i]);
+		i++;
+	}
+	
+	addDirData(runStatus, '\0');
+
 }
+
+
 void parseExternDirective(RunStatus *runStatus, char *label)
 {
 	return ;
 }
+
+
 void parseEntryDirective(RunStatus *runStatus, char *label)
 {
-	return ;
+	char labelContent[MAX_TAG_LEN] = "\0";
+	int i = 0;
+
+	char *directive = ".entry";
+
+	skipSpaces(runStatus);
+
+	if (*label && label)
+	{
+		printf("ERROR: Line #%d, Invalid Directive Definition - Directive %s cannot have a label .\n", runStatus -> lineCount, directive);
+			runStatus -> errNum ++;
+			return ;
+	}
+
+	if (*(runStatus -> line) == EOF || *(runStatus -> line) == '\n' )
+	{
+		printf("ERROR: Line #%d, Invalid Directive Definition - Directive %s is empty.\n", runStatus -> lineCount, directive);
+		runStatus -> errNum ++;
+		return ;
+	}
+
+	getLabelReference(runStatus, labelContent);
+	if(! ( *labelContent ))
+	{
+		printf("ERROR: Line #%d, Invalid Directive Definition - Directive %s wrong Label Reference.\n", runStatus -> lineCount, directive);
+		runStatus -> errNum ++;
+		return ;
+	}
+	
+	while (i <= runStatus -> entryCount)
+	{
+		if (runStatus -> entryArray && strcmp (runStatus -> entryArray[runStatus -> entryCount].name, labelContent))
+		{
+			printf("ERROR: Line #%d, Invalid Directive Definition - Directive %s name exists.\n", runStatus -> lineCount, directive);
+			runStatus -> errNum ++;
+			return ;
+		}
+		if (runStatus -> externArray && strcmp (runStatus -> externArray[runStatus -> externCount].name, labelContent))
+		{
+			printf("ERROR: Line #%d, Invalid Directive Definition - Directive %s label defined  as .extern.\n", runStatus -> lineCount, directive);
+			runStatus -> errNum ++;
+			return ;
+		}
+		i++;
+	}
+
+	addEntryDir(runStatus, labelContent);
 }
+
+
+
+
+
+
+
+
+
+
+
+

@@ -77,8 +77,15 @@ void initializeRunStatus(RunStatus *runStatus)
 
 	runStatus -> labelArray = NULL;
 	runStatus -> labelCount = 0;
+
 	runStatus -> dataArray = NULL;
 	runStatus -> dataCount = 0;
+	
+	runStatus -> entryArray = NULL;
+	runStatus -> entryCount = 0;
+
+	runStatus -> externArray = NULL;
+	runStatus -> externCount = 0;
 }
 
 void resetRunParams(RunStatus *runStatus) /**/
@@ -91,6 +98,8 @@ void releaseRunStatusStruct(RunStatus *runStatus)
 
 	free(runStatus -> labelArray);
 	free (runStatus -> dataArray);
+	free (runStatus -> entryArray);
+	free (runStatus -> externArray);
 }
 
 
