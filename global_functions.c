@@ -126,7 +126,7 @@ void addLabel(RunStatus *runStatus, char *label)
 	if (! (runStatus -> labelArray) )
 	{
 		printf("Fatal ERROR: Fail to reallocate space for Label Array");
-		exit(1);
+		EXIT_ERROR;
 	}
 	strcpy (runStatus -> labelArray[runStatus -> labelCount].name , label);
 	runStatus -> labelArray[runStatus -> labelCount].mem_address = runStatus -> dataCount;
@@ -138,7 +138,7 @@ void addDirData(RunStatus *runStatus, int num)
 	if (! (runStatus -> dataArray) )
 	{
 		printf("Fatal ERROR:Fail to reallocate space for Label Array Data Array");
-		exit(1);
+		EXIT_ERROR;
 	}
 	runStatus -> dataArray[runStatus -> dataCount] = num;
 	runStatus -> dataCount ++;

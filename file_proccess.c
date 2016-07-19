@@ -18,7 +18,6 @@ void parseFile(char *fileName)
 		printf("ERROR: Cannot open the file: %s"INPUT_FILE_EXTENSION"\n", fileName);
 		return;
 	}
-	
 	fileReadProccessManager(file, fileName);
 	fclose(file);
 }
@@ -44,8 +43,10 @@ void fileReadProccessManager(FILE *file, char *fileName)
 	initializeRunStatus(&runStatus);
 
 	errNum = firstReadManager(&runStatus, file);
+
 	if (errNum > 0)
 	{
+		releaseRunStatusStruct(&runStatus);
 		return ;
 	}
 	
@@ -55,15 +56,16 @@ void fileReadProccessManager(FILE *file, char *fileName)
 	resetRunParams(&runStatus);
 
 	errNum = SecondReadManager(&runStatus, file);
+
 	if (errNum > 0)
 	{
+		releaseRunStatusStruct(&runStatus);
 		return ;
 	}
 
 	fileOutputmanager(&runStatus, fileName);
 	releaseRunStatusStruct(&runStatus);
-	
-	
+
 }
 
 void initializeRunStatus(RunStatus *runStatus)

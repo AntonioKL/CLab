@@ -12,6 +12,7 @@ Global Functions - Headers file
 --- Local const ---
 -------------------*/
 
+#define		EXIT_ERROR		exit(0)
 
 /*------------------------------
 --- Declaration of Functions ---
