@@ -37,7 +37,7 @@ Main headers file
 #define		MAX_FILE_EXTENSION_LEN		5
 
 /*Maximum length of the tag allowed*/
-#define		MAX_TAG_LEN			30
+#define		MAX_LABEL_LEN			30
 
 /*Maximum numbers of the file lines allowed*/
 #define		MAX_FILE_LINES			10000
@@ -57,18 +57,18 @@ Main headers file
 --------------------------*/
 
 typedef struct{
-	char name[MAX_TAG_LEN];
+	char name[MAX_LABEL_LEN];
 	int mem_address;
 	/*int ext_flag;
 	int cmd;*/
 } Label;
 
 typedef struct{
-    char name[MAX_TAG_LEN];
+    char name[MAX_LABEL_LEN];
 } Entry;
 
 typedef struct{
-    char name[MAX_TAG_LEN];
+    char name[MAX_LABEL_LEN];
 } Extern;
 
 typedef struct{
@@ -76,10 +76,11 @@ typedef struct{
 	char *line;
 	char *originalLine;
 	int lineCount;
-
 	int errNum;
 
-	
+	int ic;
+	int wordCount;
+
 	Label *labelArray;
 	int labelCount;
 
@@ -100,7 +101,11 @@ typedef struct{
 	void (*parsingFunc)();
 } Directive;
 
-
+typedef struct{
+	char *name;
+	unsigned int paramNum;
+	unsigned int opCode;
+} Command;
 
 /*-------------------------------
 --- Include module declaration ---

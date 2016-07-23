@@ -16,6 +16,7 @@ global_functions.o: global_functions.c
 
 clean:
 	rm *~
+	rm *.o
 
 git:
 	git status

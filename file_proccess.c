@@ -75,6 +75,8 @@ void initializeRunStatus(RunStatus *runStatus)
 	runStatus -> originalLine = NULL;
 	runStatus -> errNum = 0;
 
+	runStatus -> ic = 0;
+	
 	runStatus -> labelArray = NULL;
 	runStatus -> labelCount = 0;
 

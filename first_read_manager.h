@@ -29,8 +29,9 @@ FirstReadManager - Headers file
 int firstReadManager(RunStatus *runStatus, FILE *file);
 int readLine(FILE *file, char *buffer, int max_len);
 void lineProccessor(RunStatus *runStatus);
-void firstParseCmd(RunStatus *runStatus, char *label);
 void scanDirective(RunStatus *runStatus, char *label);
+void firstParseCmd(RunStatus *runStatus, char *label);
+void parseCmdOperands(RunStatus *runStatus, char *label, int cmdId);
 
 
 

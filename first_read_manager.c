@@ -9,16 +9,10 @@ FirstReadManager
 
 #include "main_header.h"
 
-
-const Directive globalDirective[] = 
-/* Name 	| 	Parse Function */
-{	
-	{ ".data", parseDataDirective } ,
-	{ ".string", parseStringDirective } ,
-	{ ".entry", parseEntryDirective },
-	{ ".extern", parseExternDirective },
-	{ NULL } /*Null will be used as an end of the array*/
-};
+/*Command List*/
+extern const Command globalCommands[];
+/*Directive List*/
+extern const Directive globalDirective[];
 
 int firstReadManager(RunStatus *runStatus, FILE *file)
 {
@@ -44,7 +38,7 @@ int firstReadManager(RunStatus *runStatus, FILE *file)
 
 void lineProccessor(RunStatus *runStatus)
 {
-	char labelContent[MAX_TAG_LEN] = "\0";
+	char labelContent[MAX_LABEL_LEN] = "\0";
 	int i = 0;
 	char *arr_labelName;
 
@@ -81,11 +75,6 @@ void lineProccessor(RunStatus *runStatus)
 	}
 }
 
-
-void firstParseCmd(RunStatus *runStatus, char *label)
-{
-	printf("Parse\n");
-}
 
 void scanDirective(RunStatus *runStatus, char *label)
 {
@@ -278,7 +267,7 @@ void parseStringDirective(RunStatus *runStatus, char *label)
 
 void parseExternDirective(RunStatus *runStatus, char *label)
 {
-	char labelContent[MAX_TAG_LEN] = "\0";
+	char labelContent[MAX_LABEL_LEN] = "\0";
 	int i = 0;
 
 	char *directive = ".extern";
@@ -335,7 +324,7 @@ void parseExternDirective(RunStatus *runStatus, char *label)
 
 void parseEntryDirective(RunStatus *runStatus, char *label)
 {
-	char labelContent[MAX_TAG_LEN] = "\0";
+	char labelContent[MAX_LABEL_LEN] = "\0";
 	int i = 0;
 
 	char *directive = ".entry";
@@ -388,6 +377,73 @@ void parseEntryDirective(RunStatus *runStatus, char *label)
 
 	addEntryDir(runStatus, labelContent);
 }
+
+void firstParseCmd(RunStatus *runStatus, char *label)
+{
+	int cmdId;
+
+	skipSpaces(runStatus);
+	cmdId = getCommandId(runStatus);
+	
+	if (cmdId == -2)
+	{
+		printf("ERROR: Line #%d, Invalid Label Definition - Label is empty , cannot assign label to an empty line.\n", runStatus -> lineCount);
+		runStatus -> errNum ++;
+		return ;
+	}
+
+	if (cmdId == -1)
+	{
+		printf("ERROR: Line #%d, Invalid Command Definition - Unknown command.\n", runStatus -> lineCount);
+		runStatus -> errNum ++;
+		return ;
+	}
+
+	skipSpaces(runStatus);
+	
+	parseCmdOperands(runStatus, label, cmdId);
+
+}
+
+void parseCmdOperands(RunStatus *runStatus, char *label, int cmdId)
+{
+	int numOp = globalCommands[cmdId].paramNum;
+	char *cmdName = globalCommands[cmdId].name;
+
+	char op1;
+	char op2;
+
+	if (numOp == 0)
+	{
+		if (*(runStatus -> line) == EOF || *(runStatus -> line) == '\n' )
+		{
+			if (*label && label)
+			{
+				addLabel(runStatus, label);
+			}
+			runStatus -> ic ++;
+			return ;
+		}
+		else
+		{
+			printf("ERROR: Line #%d, Invalid Arguments - Command \"%s\" should have %d Arguments.\n", runStatus -> lineCount, cmdName, numOp);
+			runStatus -> errNum ++;
+			return ;
+		}
+	}
+	else if (numOp == 1)
+	{
+
+	}
+	else if (numOp == 2)
+	{
+		return ;
+	}
+}
+
+
+
+
 
 
 

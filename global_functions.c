@@ -10,6 +10,38 @@ global_functions
 #include "main_header.h"
 
 
+/*Command list*/
+const Command globalCommands[] = 
+/*	Name | Number of Parametrs Required | Opcode */
+{
+	{ "mov" , 2, 0  },
+	{ "cmp" , 2, 1  },
+	{ "add" , 2, 2  },
+	{ "sub" , 2, 3  },
+	{ "not" , 1, 4  },
+	{ "clr" , 1, 5  },
+	{ "lea" , 2, 6  },
+	{ "inc" , 1, 7  },
+	{ "dec" , 1, 8  },
+	{ "jmp" , 1, 9  },
+	{ "bne" , 1, 10 },
+	{ "red" , 1, 11 },
+	{ "prn" , 1, 12 },
+	{ "jsr" , 1, 13 },
+	{ "rst" , 0, 14 },
+	{ "stop", 0, 15 },
+	{NULL} /*Null will be used as an end of the array*/
+};
+
+const Directive globalDirective[] = 
+/* Name 	| 	Parse Function */
+{	
+	{ ".data", parseDataDirective } ,
+	{ ".string", parseStringDirective } ,
+	{ ".entry", parseEntryDirective },
+	{ ".extern", parseExternDirective },
+	{ NULL } /*Null will be used as an end of the array*/
+};
 
 
 int isLineEmpty(RunStatus *runStatus)
@@ -54,7 +86,7 @@ void skipSpaces(RunStatus *runStatus)
 
 void getLabel(RunStatus *runStatus, char *label)
 {
-	char temp_label[MAX_TAG_LEN]="\0";
+	char temp_label[MAX_LABEL_LEN]="\0";
 
 	int i = 0; /*Counter for the label Chars*/
 	char *c = runStatus-> originalLine;
@@ -90,9 +122,9 @@ void getLabel(RunStatus *runStatus, char *label)
 	}
 	if (*c == ':')
 	{
-		if (i >= MAX_TAG_LEN)
+		if (i >= MAX_LABEL_LEN)
 		{
-			printf("ERROR: Line #%d, Invalid Label Name - Label should contain no more than %d chars.\n", runStatus -> lineCount, MAX_TAG_LEN);
+			printf("ERROR: Line #%d, Invalid Label Name - Label should contain no more than %d chars.\n", runStatus -> lineCount, MAX_LABEL_LEN);
 			runStatus -> errNum ++;
 			return ;
 		}
@@ -147,7 +179,7 @@ void addDirData(RunStatus *runStatus, int num)
 void getLabelReference(RunStatus *runStatus, char *label)
 {
 	int i = 0;
-	char temp_label[MAX_TAG_LEN]="\0";
+	char temp_label[MAX_LABEL_LEN]="\0";
 	char *label_start = runStatus -> line;
 	
 	if (!isalpha(*(runStatus -> line)))
@@ -177,9 +209,9 @@ void getLabelReference(RunStatus *runStatus, char *label)
 		return ;
 	}
 
-	if (i >= MAX_TAG_LEN)
+	if (i >= MAX_LABEL_LEN)
 	{
-		printf("ERROR: Line #%d, Invalid Label Reference Name - Label should contain no more than %d chars.\n", runStatus -> lineCount, MAX_TAG_LEN);
+		printf("ERROR: Line #%d, Invalid Label Reference Name - Label should contain no more than %d chars.\n", runStatus -> lineCount, MAX_LABEL_LEN);
 		runStatus -> errNum ++;
 		return ;
 	}
@@ -222,4 +254,41 @@ void addExternDir(RunStatus *runStatus, char *label)
 	strcpy(runStatus -> externArray[runStatus -> externCount].name, label);
 	runStatus -> externCount ++;
 }
+
+int getCommandId(RunStatus *runStatus)
+{
+	int i = 0;
+	int count = 0;
+	char cmd[MAX_LINE_LENGTH]="\0";
+
+	while (!isspace(*(runStatus->line)))
+	{
+		cmd[count]=*(runStatus->line);
+		runStatus->line++;
+		count++;
+	}
+	
+	if (!count)
+	{
+		i = -2;
+		return -2;
+	}
+
+	while (globalCommands[i].name)
+	{
+		if (! (strcmp(globalCommands[i].name, cmd)))
+		{
+			return i;
+		}
+		i++;
+	}
+	
+	i=-1; /*We didn't found the opCode for the operation*/
+	return i;
+	
+}
+
+
+
+
 

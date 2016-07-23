@@ -14,6 +14,7 @@ Global Functions - Headers file
 
 #define		EXIT_ERROR		exit(1)
 
+
 /*------------------------------
 --- Declaration of Functions ---
 --------------------------------*/
@@ -31,5 +32,10 @@ void addDirData(RunStatus *runStatus, int num);
 void getLabelReference(RunStatus *runStatus, char *label);
 void addEntryDir(RunStatus *runStatus, char *label);
 void addExternDir(RunStatus *runStatus, char *label);
+int getCommandId(RunStatus *runStatus);
+
+
+
+
 
 
