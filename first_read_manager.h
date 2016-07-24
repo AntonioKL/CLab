@@ -32,7 +32,7 @@ void lineProccessor(RunStatus *runStatus);
 void scanDirective(RunStatus *runStatus, char *label);
 void firstParseCmd(RunStatus *runStatus, char *label);
 void parseCmdOperands(RunStatus *runStatus, char *label, int cmdId);
-
+void opProccessing(RunStatus *runStatus, char *label, int cmdId ,char *op1, char *op2, int numOp);
 
 
 /*-----------------------------------------

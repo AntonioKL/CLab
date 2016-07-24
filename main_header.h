@@ -27,6 +27,9 @@ Main headers file
 /*We were told that we are starting to run from a specific memory location*/
 #define 	FIRST_MEM_ADDR			100
 
+/*Given maximum data size*/
+#define		MAX_DATA_SIZE			1000
+
 /*Minimun number of argumnets that should be passed to the ass. compiler*/
 #define		MIN_ARGS			2
 
@@ -59,8 +62,6 @@ Main headers file
 typedef struct{
 	char name[MAX_LABEL_LEN];
 	int mem_address;
-	/*int ext_flag;
-	int cmd;*/
 } Label;
 
 typedef struct{
@@ -71,15 +72,39 @@ typedef struct{
     char name[MAX_LABEL_LEN];
 } Extern;
 
+typedef enum { INVAL = -1, NUMBER = 0, DIRECT = 1,  DYNAMIC = 2,  REGISTER = 3 } operandType;
+
+typedef struct
+{
+	int value;				/* Value */
+	char *str;				/* String */
+	operandType type;			/* Type */
+	int isDynamic;				/* 2nd addressing method flag */
+	int address;				/* The adress of the operand in the memory */
+	char *label;				/* The label in case of dynamic addresing */
+	int upperRange;				/* The low end of the range for dynamic addressing */
+	int lowerRange;				/* The high end of the range for dynamic addressing */
+} Operand;
+
+typedef struct{
+	int address;
+	int addressSize;
+	int cmd;
+	int numOperands;
+	Operand op1;
+	Operand op2;
+} Lines;
+
 typedef struct{
 
 	char *line;
 	char *originalLine;
-	int lineCount;
-	int errNum;
 
+	int errNum;
 	int ic;
-	int wordCount;
+	
+	Lines *lineArray;
+	int lineCount;
 
 	Label *labelArray;
 	int labelCount;
@@ -90,9 +115,9 @@ typedef struct{
 	Extern *externArray;
 	int externCount;
 
-	int * dataArray; /*We can strore chars as integer array*/
+	int * dataArray; /*We can store chars as integer array*/
 	int dataCount;
-		
+	
 
 } RunStatus;
 

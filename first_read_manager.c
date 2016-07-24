@@ -30,6 +30,16 @@ int firstReadManager(RunStatus *runStatus, FILE *file)
 		runStatus -> line = lineString;
 		runStatus -> originalLine = lineString;
 		runStatus -> lineCount++;
+
+		runStatus -> lineArray = realloc(runStatus -> lineArray, (runStatus -> lineCount) * sizeof(Lines));
+		if (! (runStatus -> lineArray) )
+		{
+			printf("Fatal ERROR: Fail to reallocate space for Line Array");
+			EXIT_ERROR;
+		}
+		runStatus -> lineArray[runStatus -> lineCount -1 ].op1.type = INVAL;
+		runStatus -> lineArray[runStatus -> lineCount -1 ].op2.type = INVAL;
+
 		lineProccessor(runStatus);
 	}
 	
@@ -61,16 +71,19 @@ void lineProccessor(RunStatus *runStatus)
 				}
 			}	
 		}
-
-		skipSpaces(runStatus);
-
-		if ( *(runStatus->line) == '.')
+		
+		if (!(runStatus -> errNum > 0))
 		{
-			scanDirective(runStatus, labelContent);
-		}
-		else
-		{
-			firstParseCmd(runStatus, labelContent);
+			skipSpaces(runStatus);
+
+			if ( *(runStatus->line) == '.')
+			{
+				scanDirective(runStatus, labelContent);
+			}
+			else
+			{
+				firstParseCmd(runStatus, labelContent);
+			}
 		}
 	}
 }
@@ -180,7 +193,7 @@ void parseDataDirective(RunStatus *runStatus, char *label)
 	}
 	if (*label && label)
 	{
-		addLabel(runStatus, label);
+		addLabel(runStatus, label, runStatus -> dataCount);
 	}
 	while(i<dataCounter)
 	{
@@ -252,7 +265,7 @@ void parseStringDirective(RunStatus *runStatus, char *label)
 
 	if (*label && label)
 	{
-		addLabel(runStatus, label);
+		addLabel(runStatus, label, runStatus -> dataCount);
 	}
 	while(i<dataCounter)
 	{
@@ -273,12 +286,6 @@ void parseExternDirective(RunStatus *runStatus, char *label)
 	char *directive = ".extern";
 
 	skipSpaces(runStatus);
-	if (*label && label)
-	{
-		printf("ERROR: Line #%d, Invalid Directive Definition - Directive %s cannot have a label .\n", runStatus -> lineCount, directive);
-			runStatus -> errNum ++;
-			return ;
-	}
 
 	if (*(runStatus -> line) == EOF || *(runStatus -> line) == '\n' )
 	{
@@ -410,8 +417,8 @@ void parseCmdOperands(RunStatus *runStatus, char *label, int cmdId)
 	int numOp = globalCommands[cmdId].paramNum;
 	char *cmdName = globalCommands[cmdId].name;
 
-	char op1;
-	char op2;
+	char op1[MAX_LABEL_LEN]="\0";
+	char op2[MAX_LABEL_LEN]="\0";
 
 	if (numOp == 0)
 	{
@@ -419,29 +426,104 @@ void parseCmdOperands(RunStatus *runStatus, char *label, int cmdId)
 		{
 			if (*label && label)
 			{
-				addLabel(runStatus, label);
+				addLabel(runStatus, label, runStatus -> ic);
 			}
 			runStatus -> ic ++;
 			return ;
 		}
 		else
 		{
-			printf("ERROR: Line #%d, Invalid Arguments - Command \"%s\" should have %d Arguments.\n", runStatus -> lineCount, cmdName, numOp);
+			printf("ERROR: Line #%d, Invalid Arguments - Command \"%s\" should have %d arguments.\n", runStatus -> lineCount, cmdName, numOp);
 			runStatus -> errNum ++;
 			return ;
 		}
 	}
 	else if (numOp == 1)
 	{
+		getOperand(runStatus, op1);
+		
+		if (! *op1 )
+		{
+			printf("ERROR: Line #%d, Invalid Arguments - Command \"%s\" should have %d arguments.\n", runStatus -> lineCount, cmdName, numOp);
+			runStatus -> errNum ++;
+			return ;
+		}
+		skipSpaces(runStatus);
+
+		if (! (*(runStatus -> line) == EOF || *(runStatus -> line) == '\n' ))
+		{
+			printf("ERROR: Line #%d, Invalid Arguments - Command \"%s\" should have only %d arguments, not more.\n", runStatus -> lineCount, cmdName, numOp);
+			runStatus -> errNum ++;
+			return ;
+		}
+		
+		if (*label && label)
+		{
+			addLabel(runStatus, label, runStatus -> ic);
+		}
 
 	}
 	else if (numOp == 2)
 	{
+		getOperand(runStatus, op1);
+		
+		if (! *op1 )
+		{
+			printf("ERROR: Line #%d, Invalid Arguments - Command \"%s\" should have %d arguments.\n", runStatus -> lineCount, cmdName, numOp);
+			runStatus -> errNum ++;
+			return ;
+		}
+		
+		skipSpaces(runStatus);
+		if (*(runStatus->line)!=',')
+		{
+			printf("ERROR: Line #%d, Invalid Operands - No comma between the operands.\n", runStatus -> lineCount);
+			runStatus -> errNum ++;
+			return ;
+		}
+		else
+		{
+			runStatus->line++;
+		}
+		skipSpaces(runStatus);
+
+		getOperand(runStatus, op2);
+		
+		if (! *op2 )
+		{
+			printf("ERROR: Line #%d, Invalid Arguments - Command \"%s\" should have %d arguments, no second operand.\n", runStatus -> lineCount, cmdName, numOp);
+			runStatus -> errNum ++;
+			return ;
+		}
+		skipSpaces(runStatus);
+
+		if (! (*(runStatus -> line) == EOF || *(runStatus -> line) == '\n' ))
+		{
+			printf("ERROR: Line #%d, Invalid Line - There is an extra chars after the second operator.\n", runStatus -> lineCount);
+			runStatus -> errNum ++;
+			return ;
+		}
+
+		if (*label && label)
+		{
+			addLabel(runStatus, label, runStatus -> ic);
+		}
+	}
+	else
+	{
+		printf("ERROR: Line #%d, Not supported Command \"%s\" with %d arguments .\n", runStatus -> lineCount, cmdName, numOp);
+		runStatus -> errNum ++;
 		return ;
 	}
+
+	opProccessing(runStatus, label, cmdId , op1, op2, numOp);
 }
 
-
+void opProccessing(RunStatus *runStatus, char *label, int cmdId ,char *op1, char *op2, int numOp)
+{
+	
+	return ;
+}
 
 
 

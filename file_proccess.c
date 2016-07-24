@@ -70,13 +70,15 @@ void fileReadProccessManager(FILE *file, char *fileName)
 
 void initializeRunStatus(RunStatus *runStatus)
 {
-	runStatus -> lineCount = 0;
 	runStatus -> line = NULL;
 	runStatus -> originalLine = NULL;
 	runStatus -> errNum = 0;
 
 	runStatus -> ic = 0;
 	
+	runStatus -> lineArray = NULL;
+	runStatus -> lineCount = 0;
+
 	runStatus -> labelArray = NULL;
 	runStatus -> labelCount = 0;
 
@@ -98,7 +100,8 @@ void releaseRunStatusStruct(RunStatus *runStatus)
 {
 	/* free the data in struct that was allocated by malloc*/
 
-	free(runStatus -> labelArray);
+	free (runStatus -> lineArray);
+	free (runStatus -> labelArray);
 	free (runStatus -> dataArray);
 	free (runStatus -> entryArray);
 	free (runStatus -> externArray);

@@ -152,7 +152,7 @@ int isRegister(char *str)
 	return FALSE;
 }
 
-void addLabel(RunStatus *runStatus, char *label)
+void addLabel(RunStatus *runStatus, char *label, int counter)
 {
 	runStatus -> labelArray = realloc(runStatus -> labelArray, (runStatus -> labelCount + 1) * sizeof(Label));
 	if (! (runStatus -> labelArray) )
@@ -161,7 +161,7 @@ void addLabel(RunStatus *runStatus, char *label)
 		EXIT_ERROR;
 	}
 	strcpy (runStatus -> labelArray[runStatus -> labelCount].name , label);
-	runStatus -> labelArray[runStatus -> labelCount].mem_address = runStatus -> dataCount;
+	runStatus -> labelArray[runStatus -> labelCount].mem_address = counter;
 	runStatus -> labelCount ++;
 }
 void addDirData(RunStatus *runStatus, int num)
@@ -287,6 +287,23 @@ int getCommandId(RunStatus *runStatus)
 	return i;
 	
 }
+
+void getOperand(RunStatus *runStatus, char *op)
+{
+	int count = 0;
+	char temp_op[MAX_LABEL_LEN]="\0";
+
+	while (!isspace(*(runStatus->line)) && (*(runStatus->line)!=','))
+	{
+		temp_op[count]=*(runStatus->line);
+		runStatus->line++;
+		count++;
+	}
+
+	strcpy(op, temp_op);
+}
+
+
 
 
 
