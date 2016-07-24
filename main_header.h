@@ -33,13 +33,17 @@ Main headers file
 /*Minimun number of argumnets that should be passed to the ass. compiler*/
 #define		MIN_ARGS			2
 
+/* Word size in the proccesor */
+
+#define		MEM_WORD_SIZE			15
+
 /*Maximum file name length, without extension, allowed*/
 #define		MAX_FILENAME_LEN		100
 
 /*Maximum file extension length allowed*/
 #define		MAX_FILE_EXTENSION_LEN		5
 
-/*Maximum length of the tag allowed*/
+/*Maximum length of the label allowed*/
 #define		MAX_LABEL_LEN			30
 
 /*Maximum numbers of the file lines allowed*/
@@ -76,14 +80,15 @@ typedef enum { INVAL = -1, NUMBER = 0, DIRECT = 1,  DYNAMIC = 2,  REGISTER = 3 }
 
 typedef struct
 {
-	int value;				/* Value */
-	char *str;				/* String */
-	operandType type;			/* Type */
-	int isDynamic;				/* 2nd addressing method flag */
-	int address;				/* The adress of the operand in the memory */
-	char *label;				/* The label in case of dynamic addresing */
-	int upperRange;				/* The low end of the range for dynamic addressing */
-	int lowerRange;				/* The high end of the range for dynamic addressing */
+	operandType type;		/* Type */
+	int mem_address;		/* The adress of the operand inside memory */
+	int value;			/* Value */
+	char str[MAX_LABEL_LEN];			/* operandString */
+
+	char label[MAX_LABEL_LEN];			/* The label in case of dynamic addresing */
+	int up;				/* The low end of the range for dynamic addressing */
+	int down;			/* The high end of the range for dynamic addressing */
+
 } Operand;
 
 typedef struct{
@@ -91,8 +96,8 @@ typedef struct{
 	int addressSize;
 	int cmd;
 	int numOperands;
-	Operand op1;
-	Operand op2;
+	Operand *op1;
+	Operand *op2;
 } Lines;
 
 typedef struct{

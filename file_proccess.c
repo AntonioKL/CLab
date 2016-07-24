@@ -10,7 +10,7 @@ File processing file
 #include "main_header.h"
 
 void parseFile(char *fileName)
-{
+{	
 	FILE *file = openInputFile(fileName, INPUT_FILE_EXTENSION, MODE_READ_ONLY);
 
 	if (file == NULL)
@@ -25,10 +25,12 @@ void parseFile(char *fileName)
 
 FILE* openInputFile(const char *fileName, const char *extension, const char *openMode)
 {
+	
 	char fullFileName[MAX_FILENAME_LEN + MAX_FILE_EXTENSION_LEN];
 	FILE *file;
 	strcpy(fullFileName, fileName);
 	strcat(fullFileName, extension);
+	
 	
 	file = fopen(fullFileName, openMode);
 
@@ -41,7 +43,8 @@ void fileReadProccessManager(FILE *file, char *fileName)
 	int errNum = 0;
 	
 	initializeRunStatus(&runStatus);
-
+	
+	
 	errNum = firstReadManager(&runStatus, file);
 
 	if (errNum > 0)
@@ -102,7 +105,12 @@ void resetRunParams(RunStatus *runStatus) /**/
 void releaseRunStatusStruct(RunStatus *runStatus)
 {
 	/* free the data in struct that was allocated by malloc*/
-	
+	int i=0;
+	for (i=0; i < runStatus -> lineCount; i++)
+	{
+		free(runStatus -> lineArray[i].op1);
+		free(runStatus -> lineArray[i].op2);
+	}
 	free (runStatus -> lineArray);
 	free (runStatus -> finalLabelArray);
 	free (runStatus -> labelArray);

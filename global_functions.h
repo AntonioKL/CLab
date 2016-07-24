@@ -37,6 +37,12 @@ int getCommandId(RunStatus *runStatus);
 void getOperand(RunStatus *runStatus, char *op);
 int isValidOperand(RunStatus *runStatus, char *op);
 int getOpAddressMethod(RunStatus *runStatus, char *op);
+void parseOp(RunStatus *runStatus, char *opStr, Operand *op);
+int isDynamicParam(Operand *op);
+int checkDynamicRange(int up, int down);
+int isValidLabel(char *label);
+
+
 
 
 

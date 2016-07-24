@@ -37,8 +37,12 @@ int firstReadManager(RunStatus *runStatus, FILE *file)
 			printf("Fatal ERROR: Fail to reallocate space for Line Array");
 			EXIT_ERROR;
 		}
-		runStatus -> lineArray[runStatus -> lineCount -1 ].op1.type = INVAL;
-		runStatus -> lineArray[runStatus -> lineCount -1 ].op2.type = INVAL;
+		
+		runStatus -> lineArray[runStatus -> lineCount -1 ].op1 = realloc(runStatus -> lineArray[runStatus -> lineCount -1 ].op1, sizeof(Operand));
+		runStatus -> lineArray[runStatus -> lineCount -1 ].op1 -> type = INVAL;
+		runStatus -> lineArray[runStatus -> lineCount -1 ].op2 = realloc(runStatus -> lineArray[runStatus -> lineCount -1 ].op2, sizeof(Operand));
+		runStatus -> lineArray[runStatus -> lineCount -1 ].op2 -> type = INVAL;
+
 
 		lineProccessor(runStatus);
 	}
@@ -536,10 +540,43 @@ void parseCmdOperands(RunStatus *runStatus, char *label, int cmdId)
 
 void opProccessing(RunStatus *runStatus, char *label, int cmdId ,char *op1, char *op2, int numOp)
 {
-	
-	return ;
+	if(*op1)
+	{
+		parseOp(runStatus, op1, runStatus->lineArray[runStatus -> lineCount -1 ].op1);
+	}
+	if(*op2)
+	{
+		parseOp(runStatus, op2, runStatus -> lineArray[runStatus -> lineCount -1 ].op2);
+	}
+
+
+	if (!isLegalOperands(runStatus, cmdId))
+	{
+		printf("ERROR: Line #%d, ###################3 .\n", runStatus -> lineCount);
+		runStatus -> errNum ++;
+		return ;
+	}
+
+	/*if (!(line->op1.type == REGISTER && line->op2.type == REGISTER))
+	{
+
+		if (*IC + *DC < MAX_DATA_NUM)
+		{
+			++*IC;
+		}
+		else
+		{
+			line->isError = TRUE;
+			return;
+		}
+	}*/
+
 }
 
+int isLegalOperands(RunStatus *runStatus, int cmdId) 
+{
+	return TRUE;
+}
 
 
 
