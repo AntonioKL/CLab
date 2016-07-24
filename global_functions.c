@@ -152,7 +152,7 @@ int isRegister(char *str)
 	return FALSE;
 }
 
-void addLabel(RunStatus *runStatus, char *label, int counter)
+void addLabelData(RunStatus *runStatus, char *label)
 {
 	runStatus -> labelArray = realloc(runStatus -> labelArray, (runStatus -> labelCount + 1) * sizeof(Label));
 	if (! (runStatus -> labelArray) )
@@ -161,9 +161,23 @@ void addLabel(RunStatus *runStatus, char *label, int counter)
 		EXIT_ERROR;
 	}
 	strcpy (runStatus -> labelArray[runStatus -> labelCount].name , label);
-	runStatus -> labelArray[runStatus -> labelCount].mem_address = counter;
+	runStatus -> labelArray[runStatus -> labelCount].mem_address = runStatus -> dataCount;
 	runStatus -> labelCount ++;
 }
+
+void addLabelFinal(RunStatus *runStatus, char *label, int mem)
+{
+	runStatus -> finalLabelArray = realloc(runStatus -> finalLabelArray, (runStatus -> finalLabelCount + 1) * sizeof(Label));
+	if (! (runStatus -> finalLabelArray) )
+	{
+		printf("Fatal ERROR: Fail to reallocate space for Final Label Array");
+		EXIT_ERROR;
+	}
+	strcpy (runStatus -> finalLabelArray[runStatus -> finalLabelCount].name , label);
+	runStatus -> finalLabelArray[runStatus -> finalLabelCount].mem_address = mem;
+	runStatus -> finalLabelCount ++;
+}
+
 void addDirData(RunStatus *runStatus, int num)
 {
 	runStatus -> dataArray = realloc(runStatus -> dataArray, (runStatus -> dataCount + 1) * sizeof(int));

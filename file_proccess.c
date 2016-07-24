@@ -50,11 +50,12 @@ void fileReadProccessManager(FILE *file, char *fileName)
 		return ;
 	}
 	
+	buildFinalLabes(&runStatus);
+
 	/*Setting pointer to the start*/
 	fseek(file, 0, SEEK_SET);
 	
 	resetRunParams(&runStatus);
-
 	errNum = SecondReadManager(&runStatus, file);
 
 	if (errNum > 0)
@@ -65,7 +66,6 @@ void fileReadProccessManager(FILE *file, char *fileName)
 
 	fileOutputmanager(&runStatus, fileName);
 	releaseRunStatusStruct(&runStatus);
-
 }
 
 void initializeRunStatus(RunStatus *runStatus)
@@ -78,6 +78,9 @@ void initializeRunStatus(RunStatus *runStatus)
 	
 	runStatus -> lineArray = NULL;
 	runStatus -> lineCount = 0;
+
+	runStatus -> finalLabelArray = NULL;
+	runStatus -> finalLabelCount = 0;
 
 	runStatus -> labelArray = NULL;
 	runStatus -> labelCount = 0;
@@ -99,14 +102,28 @@ void resetRunParams(RunStatus *runStatus) /**/
 void releaseRunStatusStruct(RunStatus *runStatus)
 {
 	/* free the data in struct that was allocated by malloc*/
-
+	
 	free (runStatus -> lineArray);
+	free (runStatus -> finalLabelArray);
 	free (runStatus -> labelArray);
 	free (runStatus -> dataArray);
 	free (runStatus -> entryArray);
 	free (runStatus -> externArray);
+	
 }
 
+void buildFinalLabes(RunStatus *runStatus)
+{
+	int i=0;
+			
+	for (i = 0; (runStatus -> labelCount) > i; i++)
+	{
+		
+		addLabelFinal(runStatus, runStatus -> labelArray[i].name, runStatus -> labelArray[i].mem_address + runStatus -> ic);
+		
+	}
+
+}
 
 int SecondReadManager(RunStatus *runStatus, FILE *file)
 {

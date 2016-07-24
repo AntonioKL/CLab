@@ -27,6 +27,7 @@ void fileReadProccessManager(FILE *file, char *fileName);
 void initializeRunStatus(RunStatus *runStatus);
 void resetRunParams(RunStatus *runStatus);
 void releaseRunStatusStruct(RunStatus *runStatus);
+void buildFinalLabes(RunStatus *runStatus);
 /*Not here*/
 int SecondReadManager(RunStatus *runStatus, FILE *file);
 void fileOutputmanager(RunStatus *runStatus, char *fileName);

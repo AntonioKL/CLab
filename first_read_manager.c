@@ -59,9 +59,10 @@ void lineProccessor(RunStatus *runStatus)
 
 		if(*labelContent)
 		{
-			for (i = 0; (runStatus -> labelCount) > i; i++) /*Chekcing for duplicating tag names*/
+			for (i = 0; (runStatus -> labelCount) > i; i++) /*Chekcing for duplicating label names*/
 			{
 				arr_labelName = runStatus -> labelArray[i].name;
+				
 
 				if (! strcmp (arr_labelName, labelContent) )
 				{
@@ -69,7 +70,20 @@ void lineProccessor(RunStatus *runStatus)
 					runStatus -> errNum ++;
 					return ;
 				}
-			}	
+			}
+
+			for (i = 0; (runStatus -> finalLabelCount) > i; i++) /*Chekcing for duplicating label names*/
+			{
+				arr_labelName = runStatus -> finalLabelArray[i].name;
+				
+
+				if (! strcmp (arr_labelName, labelContent) )
+				{
+					printf("ERROR: Line #%d, Invalid Label Name - Label Name \"%s\" is in use already\n", runStatus -> lineCount, labelContent);
+					runStatus -> errNum ++;
+					return ;
+				}
+			}
 		}
 		
 		if (!(runStatus -> errNum > 0))
@@ -193,7 +207,7 @@ void parseDataDirective(RunStatus *runStatus, char *label)
 	}
 	if (*label && label)
 	{
-		addLabel(runStatus, label, runStatus -> dataCount);
+		addLabelData(runStatus, label);
 	}
 	while(i<dataCounter)
 	{
@@ -265,7 +279,7 @@ void parseStringDirective(RunStatus *runStatus, char *label)
 
 	if (*label && label)
 	{
-		addLabel(runStatus, label, runStatus -> dataCount);
+		addLabelData(runStatus, label);
 	}
 	while(i<dataCounter)
 	{
@@ -274,6 +288,7 @@ void parseStringDirective(RunStatus *runStatus, char *label)
 	}
 	
 	addDirData(runStatus, '\0');
+	runStatus -> dataCount ++;
 
 }
 
@@ -426,7 +441,7 @@ void parseCmdOperands(RunStatus *runStatus, char *label, int cmdId)
 		{
 			if (*label && label)
 			{
-				addLabel(runStatus, label, runStatus -> ic);
+				addLabelFinal(runStatus, label, runStatus -> ic);
 			}
 			runStatus -> ic ++;
 			return ;
@@ -459,7 +474,7 @@ void parseCmdOperands(RunStatus *runStatus, char *label, int cmdId)
 		
 		if (*label && label)
 		{
-			addLabel(runStatus, label, runStatus -> ic);
+			addLabelFinal(runStatus, label, runStatus -> ic);
 		}
 
 	}
@@ -506,7 +521,7 @@ void parseCmdOperands(RunStatus *runStatus, char *label, int cmdId)
 
 		if (*label && label)
 		{
-			addLabel(runStatus, label, runStatus -> ic);
+			addLabelFinal(runStatus, label, runStatus -> ic);
 		}
 	}
 	else

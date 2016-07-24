@@ -105,6 +105,9 @@ typedef struct{
 	
 	Lines *lineArray;
 	int lineCount;
+	
+	Label *finalLabelArray;
+	int finalLabelCount;
 
 	Label *labelArray;
 	int labelCount;
