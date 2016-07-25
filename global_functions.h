@@ -40,8 +40,8 @@ int getOpAddressMethod(RunStatus *runStatus, char *op);
 void parseOp(RunStatus *runStatus, char *opStr, Operand *op);
 int isDynamicParam(Operand *op);
 int checkDynamicRange(int up, int down);
-int isValidLabel(char *label);
-
+int isValidLabel(RunStatus *runStatus, char *label);
+int isLegalNumber(RunStatus *runStatus, char *str, int max_size, Operand *op);
 
 
 

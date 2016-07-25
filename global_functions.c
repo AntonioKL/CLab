@@ -347,7 +347,7 @@ void parseOp(RunStatus *runStatus, char *opStr, Operand *op)
 	else if (isRegister(opStr))
 	{
 		op -> type = REGISTER;
-		op -> value = str[1] - '0';
+		op -> value = opStr[1] - '0';
 	}
 	else if (*opStr == '#')
 	{
@@ -355,19 +355,22 @@ void parseOp(RunStatus *runStatus, char *opStr, Operand *op)
 		if (isspace(*opStr))
 		{
 			printf("ERROR: Line #%d, Illegal Operand \"%s\" it has blank space after # .\n", runStatus -> lineCount, op -> str);
-			op -> type = INVAL
+			op -> type = INVAL;
 			runStatus -> errNum ++;
 			return ;
 		}
 		else
 		{
-			if (isLegalNumber())
+			if (isLegalNumber(runStatus, opStr, MEM_WORD_SIZE - 2, op))
 			{
 				op -> type = NUMBER;
 			}
 			else
 			{
+				printf("ERROR: Line #%d, Invalid Number \"%s\".\n", runStatus -> lineCount, op -> str);
 				op -> type = INVAL;
+				runStatus -> errNum ++;
+				return ;
 			}
 		}
 	}
@@ -378,7 +381,7 @@ void parseOp(RunStatus *runStatus, char *opStr, Operand *op)
 	else
 	{
 		printf("ERROR: Line #%d, Invalid Operand \"%s\".\n", runStatus -> lineCount, op -> str);
-		op.type = INVAL
+		op -> type = INVAL;
 		runStatus -> errNum ++;
 		return ;
 	}
@@ -390,7 +393,6 @@ int isDynamicParam(Operand *op)
 	char *start;
 	char *end;
 	char *dash;
-
 
 	strcpy(temp_str, op->str);
 	
@@ -413,6 +415,13 @@ int isDynamicParam(Operand *op)
 	*end = '\0';
 	*dash = '\0';
 	dash++;
+	end++;
+
+	if (*end !='\0')
+	{
+		op -> type = INVAL;
+		return TRUE;
+	}
 
 	op -> down = atoi(start);
 	op -> up = atoi(dash);
@@ -434,23 +443,22 @@ int checkDynamicRange(int up, int down)
 
 int isValidLabel(RunStatus *runStatus, char *label)
 {
-	char temp_label[MAX_LINE_LENGTH]="\0";
+	char *temp_label = label;
 	int i = 0;	
 	
-	strcpy(temp_label, label);
 	if (!isalpha(*(temp_label)))
 	{
 		printf("ERROR: Line #%d, Invalid Operand Label - Label \"%s\" should start with Letter.\n", runStatus -> lineCount, label);
 		return FALSE;
 	}
 	temp_label++;
-	while (! (isspace(*(label)) || *(label) == EOF || *(label) == '\n' ))
+	while (! (isspace(*(temp_label)) || *(temp_label) == EOF || *(temp_label) == '\n' || *(temp_label) == '\0'))
 	{
 		if (! isalnum(*(temp_label)))
 		{	
 			printf("ERROR: Line #%d, Invalid Operand Label - Label \"%s\" should contain only Letters and Numbers.\n", runStatus -> lineCount, label);
 			runStatus -> errNum ++;
-			return FALSE
+			return FALSE;
 		}
 		i++;
 		temp_label++;
@@ -461,15 +469,33 @@ int isValidLabel(RunStatus *runStatus, char *label)
 	{
 		printf("ERROR: Line #%d, Invalid Operand Label - Label \"%s\" contain no more than %d chars.\n", runStatus -> lineCount, label, MAX_LABEL_LEN);
 		runStatus -> errNum ++;
-		return FALSE
+		return FALSE;
 	}
 
 	return TRUE;
 }
 
-int isLegalNumber()
+int isLegalNumber(RunStatus *runStatus, char *str, int max_size, Operand *op)
 {
+	char *end;
+	int value;
+	int maxNumber = (1 << max_size) -1; 
 
+	value = strtol (str,&end, 10);
+	if ( *end )
+	{
+		return FALSE;
+	}
+
+	if ( value > maxNumber || value < -maxNumber)
+	{
+		return FALSE;
+	}
+
+	op -> value = value;
+	return TRUE;
+	 
+	
 }
 
 
