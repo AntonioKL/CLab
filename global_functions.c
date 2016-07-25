@@ -157,8 +157,9 @@ void addLabelData(RunStatus *runStatus, char *label)
 	runStatus -> labelArray = realloc(runStatus -> labelArray, (runStatus -> labelCount + 1) * sizeof(Label));
 	if (! (runStatus -> labelArray) )
 	{
-		printf("Fatal ERROR: Fail to reallocate space for Label Array");
-		EXIT_ERROR;
+		printf("Fatal ERROR: Fail to reallocate space for Label Array\n");
+		runStatus -> flagFatalErr = EXIT_ERROR;
+		return ;
 	}
 	strcpy (runStatus -> labelArray[runStatus -> labelCount].name , label);
 	runStatus -> labelArray[runStatus -> labelCount].mem_address = runStatus -> dataCount;
@@ -170,8 +171,9 @@ void addLabelFinal(RunStatus *runStatus, char *label, int mem)
 	runStatus -> finalLabelArray = realloc(runStatus -> finalLabelArray, (runStatus -> finalLabelCount + 1) * sizeof(Label));
 	if (! (runStatus -> finalLabelArray) )
 	{
-		printf("Fatal ERROR: Fail to reallocate space for Final Label Array");
-		EXIT_ERROR;
+		printf("Fatal ERROR: Fail to reallocate space for Final Label Array\n");
+		runStatus -> flagFatalErr = EXIT_ERROR;
+		return ;
 	}
 	strcpy (runStatus -> finalLabelArray[runStatus -> finalLabelCount].name , label);
 	runStatus -> finalLabelArray[runStatus -> finalLabelCount].mem_address = mem;
@@ -183,8 +185,8 @@ void addDirData(RunStatus *runStatus, int num)
 	runStatus -> dataArray = realloc(runStatus -> dataArray, (runStatus -> dataCount + 1) * sizeof(int));
 	if (! (runStatus -> dataArray) )
 	{
-		printf("Fatal ERROR:Fail to reallocate space for Data Array");
-		EXIT_ERROR;
+		printf("Fatal ERROR:Fail to reallocate space for Data Array\n");
+		runStatus -> flagFatalErr = EXIT_ERROR;
 	}
 	runStatus -> dataArray[runStatus -> dataCount] = num;
 	runStatus -> dataCount ++;
@@ -250,8 +252,8 @@ void addEntryDir(RunStatus *runStatus, char *label)
 	runStatus -> entryArray = realloc(runStatus -> entryArray, (runStatus -> entryCount + 1) * sizeof(Entry));
 	if (! (runStatus -> entryArray) )
 	{
-		printf("Fatal ERROR:Fail to reallocate space for Entry Array");
-		EXIT_ERROR;
+		printf("Fatal ERROR:Fail to reallocate space for Entry Array\n");
+		runStatus -> flagFatalErr = EXIT_ERROR;
 	}
 	strcpy(runStatus -> entryArray[runStatus -> entryCount].name, label);
 	runStatus -> entryCount ++;
@@ -262,8 +264,8 @@ void addExternDir(RunStatus *runStatus, char *label)
 	runStatus -> externArray = realloc(runStatus -> externArray, (runStatus -> externCount + 1) * sizeof(Extern));
 	if (! (runStatus -> externArray) )
 	{
-		printf("Fatal ERROR:Fail to reallocate space for Extern array");
-		EXIT_ERROR;
+		printf("Fatal ERROR:Fail to reallocate space for Extern array\n");
+		runStatus -> flagFatalErr = EXIT_ERROR;
 	}
 	strcpy(runStatus -> externArray[runStatus -> externCount].name, label);
 	runStatus -> externCount ++;
@@ -498,6 +500,17 @@ int isLegalNumber(RunStatus *runStatus, char *str, int max_size, Operand *op)
 	
 }
 
-
+void increaseIC(RunStatus *runStatus)
+{
+		if (runStatus-> ic + runStatus-> dataCount < MAX_DATA_SIZE)
+		{
+			runStatus-> ic ++;
+		}
+		else if (!runStatus -> flagFatalErr)
+		{
+			printf("ERROR: Not enough Memory to run\n");
+			runStatus -> flagFatalErr = EXIT_ERROR;
+		}
+}
 
 

@@ -105,6 +105,7 @@ typedef struct{
 	char *line;
 	char *originalLine;
 
+	int flagFatalErr;
 	int errNum;
 	int ic;
 	

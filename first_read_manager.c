@@ -35,14 +35,36 @@ int firstReadManager(RunStatus *runStatus, FILE *file)
 		if (! (runStatus -> lineArray) )
 		{
 			printf("Fatal ERROR: Fail to reallocate space for Line Array");
-			EXIT_ERROR;
+			runStatus -> flagFatalErr = EXIT_ERROR;
+			return 1;
 		}
 		
-		runStatus -> lineArray[runStatus -> lineCount -1 ].op1 = realloc(runStatus -> lineArray[runStatus -> lineCount -1 ].op1, sizeof(Operand));
+		runStatus -> lineArray[runStatus -> lineCount -1 ].op1 = realloc(NULL, sizeof(Operand));
+		if (! (runStatus -> lineArray[runStatus -> lineCount -1 ].op1) )
+		{
+			printf("Fatal ERROR: Fail to allocate space for Operand");
+			runStatus -> flagFatalErr = EXIT_ERROR;
+			return 1;
+		}
 		runStatus -> lineArray[runStatus -> lineCount -1 ].op1 -> type = INVAL;
-		runStatus -> lineArray[runStatus -> lineCount -1 ].op2 = realloc(runStatus -> lineArray[runStatus -> lineCount -1 ].op2, sizeof(Operand));
-		runStatus -> lineArray[runStatus -> lineCount -1 ].op2 -> type = INVAL;
 
+		runStatus -> lineArray[runStatus -> lineCount -1 ].op2 = realloc(NULL, sizeof(Operand));
+		if (! (runStatus -> lineArray[runStatus -> lineCount -1 ].op2) )
+		{
+			printf("Fatal ERROR: Fail to allocate space for Operand");
+			runStatus -> flagFatalErr = EXIT_ERROR;
+			return 1;
+		}
+
+		runStatus -> lineArray[runStatus -> lineCount -1 ].op2 -> type = INVAL;
+		
+		
+		
+		
+		if (runStatus -> flagFatalErr)
+		{
+			return 1;
+		}
 
 		lineProccessor(runStatus);
 	}
@@ -535,11 +557,13 @@ void parseCmdOperands(RunStatus *runStatus, char *label, int cmdId)
 		return ;
 	}
 
-	opProccessing(runStatus, label, cmdId , op1, op2, numOp);
+	opProccessing(runStatus, label, cmdId , op1, op2);
 }
 
-void opProccessing(RunStatus *runStatus, char *label, int cmdId ,char *op1, char *op2, int numOp)
+void opProccessing(RunStatus *runStatus, char *label, int cmdId ,char *op1, char *op2)
 {
+	int i = 0;
+
 	if(*op1)
 	{
 		parseOp(runStatus, op1, runStatus->lineArray[runStatus -> lineCount -1 ].op1);
@@ -552,31 +576,73 @@ void opProccessing(RunStatus *runStatus, char *label, int cmdId ,char *op1, char
 
 	if (!isLegalOperands(runStatus, cmdId))
 	{
-		printf("ERROR: Line #%d, ###################3 .\n", runStatus -> lineCount);
 		runStatus -> errNum ++;
 		return ;
 	}
+	
 
-	/*if (!(line->op1.type == REGISTER && line->op2.type == REGISTER))
+	if ( runStatus->lineArray[runStatus -> lineCount -1 ].op1 -> type == REGISTER && runStatus->lineArray[runStatus -> lineCount -1 ].op2 -> type == REGISTER)
 	{
-
-		if (*IC + *DC < MAX_DATA_NUM)
+		increaseIC(runStatus);
+	
+	}
+	else
+	{
+		while ( i < globalCommands[cmdId].paramNum)
 		{
-			++*IC;
+			increaseIC(runStatus);
+			i++;
 		}
-		else
-		{
-			line->isError = TRUE;
-			return;
-		}
-	}*/
+	}
+	increaseIC(runStatus);
 
 }
 
 int isLegalOperands(RunStatus *runStatus, int cmdId) 
 {
+	int requirednumOp = globalCommands[cmdId].paramNum;
+	char *cmdName = globalCommands[cmdId].name;
+
+	Operand *op1 = runStatus->lineArray[runStatus -> lineCount -1 ].op1;
+	Operand *op2 = runStatus->lineArray[runStatus -> lineCount -1 ].op2;
+	
+	int validOperators=0;
+
+	if (op1 -> type != INVAL )
+	{
+		validOperators++;
+	}
+	if (op2 -> type != INVAL )
+	{
+		validOperators++;
+	}
+	if ( validOperators != requirednumOp)
+	{
+		return FALSE;
+	}
+	
+	runStatus->lineArray[runStatus -> lineCount -1 ].numOperands = validOperators;
+
+	if( cmdId == 6 && op1 -> type != DIRECT )
+	{
+		printf("ERROR: Line #%d, Invalid Operand - \"%s\" source operand should be a Label .\n", runStatus -> lineCount, cmdName);
+		return FALSE;
+	}
+
+	if (( op2 -> type == NUMBER || op2 -> type == DYNAMIC) && cmdId != 12 && cmdId != 1 )
+	{
+		printf("ERROR: Line #%d, Invalid Operand - \"%s\" destination operand should be a Label or Number Only .\n", runStatus -> lineCount, cmdName);
+		return FALSE;
+	}
+	
+
+	
 	return TRUE;
 }
+
+
+
+
 
 
 

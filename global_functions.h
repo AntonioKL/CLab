@@ -12,7 +12,7 @@ Global Functions - Headers file
 --- Local const ---
 -------------------*/
 
-#define		EXIT_ERROR		exit(1)
+#define		EXIT_ERROR		1
 
 
 /*------------------------------
@@ -42,8 +42,7 @@ int isDynamicParam(Operand *op);
 int checkDynamicRange(int up, int down);
 int isValidLabel(RunStatus *runStatus, char *label);
 int isLegalNumber(RunStatus *runStatus, char *str, int max_size, Operand *op);
-
-
+void increaseIC(RunStatus *runStatus);
 
 
 

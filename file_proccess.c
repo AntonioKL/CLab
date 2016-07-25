@@ -46,7 +46,11 @@ void fileReadProccessManager(FILE *file, char *fileName)
 	
 	
 	errNum = firstReadManager(&runStatus, file);
-
+	if (runStatus.flagFatalErr)
+	{
+		releaseRunStatusStruct(&runStatus);
+		return ;
+	}
 	if (errNum > 0)
 	{
 		releaseRunStatusStruct(&runStatus);
@@ -76,6 +80,7 @@ void initializeRunStatus(RunStatus *runStatus)
 	runStatus -> line = NULL;
 	runStatus -> originalLine = NULL;
 	runStatus -> errNum = 0;
+	runStatus -> flagFatalErr = 0;
 
 	runStatus -> ic = 0;
 	
@@ -105,18 +110,43 @@ void resetRunParams(RunStatus *runStatus) /**/
 void releaseRunStatusStruct(RunStatus *runStatus)
 {
 	/* free the data in struct that was allocated by malloc*/
-	int i=0;
+	int i;
+
 	for (i=0; i < runStatus -> lineCount; i++)
 	{
-		free(runStatus -> lineArray[i].op1);
-		free(runStatus -> lineArray[i].op2);
+		if (runStatus -> lineArray[i].op1)
+		{
+			free(runStatus -> lineArray[i].op1);
+		}
+		if (runStatus -> lineArray[i].op2)
+		{
+			free(runStatus -> lineArray[i].op2);
+		}
 	}
-	free (runStatus -> lineArray);
-	free (runStatus -> finalLabelArray);
-	free (runStatus -> labelArray);
-	free (runStatus -> dataArray);
-	free (runStatus -> entryArray);
-	free (runStatus -> externArray);
+	if (runStatus -> lineArray)
+	{
+		free (runStatus -> lineArray);
+	}
+	if (runStatus -> finalLabelArray)
+	{
+		free (runStatus -> finalLabelArray);
+	}
+	if (runStatus -> labelArray)
+	{
+		free (runStatus -> labelArray);
+	}
+	if (runStatus -> dataArray)
+	{
+		free (runStatus -> dataArray);
+	}
+	if (runStatus -> entryArray)
+	{
+		free (runStatus -> entryArray);
+	}
+	if (runStatus -> externArray)
+	{
+		free (runStatus -> externArray);
+	}
 	
 }
 
