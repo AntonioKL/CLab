@@ -149,6 +149,7 @@ typedef struct{
 
 #include "file_proccess.h"
 #include "first_read_manager.h"
+#include "second_read_manager.h"
 #include "global_functions.h"
 
 
