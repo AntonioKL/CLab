@@ -44,7 +44,7 @@ int firstReadManager(RunStatus *runStatus, FILE *file)
 		{
 			printf("Fatal ERROR: Fail to allocate space for Operand");
 			runStatus -> flagFatalErr = EXIT_ERROR;
-			return 1;
+			return FALSE;
 		}
 		runStatus -> lineArray[runStatus -> lineCount -1 ].op1 -> type = INVAL;
 
@@ -53,20 +53,22 @@ int firstReadManager(RunStatus *runStatus, FILE *file)
 		{
 			printf("Fatal ERROR: Fail to allocate space for Operand");
 			runStatus -> flagFatalErr = EXIT_ERROR;
-			return 1;
+			return FALSE;
 		}
 
 		runStatus -> lineArray[runStatus -> lineCount -1 ].op2 -> type = INVAL;
 		
-		
-		
-		
 		if (runStatus -> flagFatalErr)
 		{
-			return 1;
+			return FALSE;
 		}
 
 		lineProccessor(runStatus);
+
+		if (runStatus -> flagFatalErr)
+		{
+			return FALSE;
+		}
 	}
 	
 	return runStatus -> errNum;
@@ -77,6 +79,8 @@ void lineProccessor(RunStatus *runStatus)
 	char labelContent[MAX_LABEL_LEN] = "\0";
 	int i = 0;
 	char *arr_labelName;
+	
+	runStatus -> isLineErr = FALSE;
 
 	if (!( isLineEmpty(runStatus) || isLineComment(runStatus) ))
 	{
@@ -94,6 +98,7 @@ void lineProccessor(RunStatus *runStatus)
 				{
 					printf("ERROR: Line #%d, Invalid Label Name - Label Name \"%s\" is in use already\n", runStatus -> lineCount, labelContent);
 					runStatus -> errNum ++;
+					runStatus -> isLineErr = TRUE;
 					return ;
 				}
 			}
@@ -107,12 +112,13 @@ void lineProccessor(RunStatus *runStatus)
 				{
 					printf("ERROR: Line #%d, Invalid Label Name - Label Name \"%s\" is in use already\n", runStatus -> lineCount, labelContent);
 					runStatus -> errNum ++;
+					runStatus -> isLineErr = TRUE;
 					return ;
 				}
 			}
 		}
 		
-		if (!(runStatus -> errNum > 0))
+		if (!(runStatus -> isLineErr))
 		{
 			skipSpaces(runStatus);
 
@@ -237,6 +243,12 @@ void parseDataDirective(RunStatus *runStatus, char *label)
 	}
 	while(i<dataCounter)
 	{
+		if (runStatus-> ic + runStatus-> dataCount -1 >= MAX_DATA_SIZE)
+		{
+			printf("ERROR: Not enough Memory to run\n");
+			runStatus -> flagFatalErr = EXIT_ERROR;
+			return ;
+		}
 		addDirData(runStatus, arrNum[i]);
 		i++;
 	}
@@ -309,12 +321,17 @@ void parseStringDirective(RunStatus *runStatus, char *label)
 	}
 	while(i<dataCounter)
 	{
+		if (runStatus-> ic + runStatus-> dataCount -1 >= MAX_DATA_SIZE)
+		{
+			printf("ERROR: Not enough Memory to run\n");
+			runStatus -> flagFatalErr = EXIT_ERROR;
+			return ;
+		}
 		addDirData(runStatus, arrChar[i]);
 		i++;
 	}
 	
 	addDirData(runStatus, '\0');
-	runStatus -> dataCount ++;
 
 }
 
@@ -572,14 +589,13 @@ void opProccessing(RunStatus *runStatus, char *label, int cmdId ,char *op1, char
 	{
 		parseOp(runStatus, op2, runStatus -> lineArray[runStatus -> lineCount -1 ].op2);
 	}
-
+	
 
 	if (!isLegalOperands(runStatus, cmdId))
 	{
 		runStatus -> errNum ++;
 		return ;
 	}
-	
 
 	if ( runStatus->lineArray[runStatus -> lineCount -1 ].op1 -> type == REGISTER && runStatus->lineArray[runStatus -> lineCount -1 ].op2 -> type == REGISTER)
 	{
@@ -595,7 +611,7 @@ void opProccessing(RunStatus *runStatus, char *label, int cmdId ,char *op1, char
 		}
 	}
 	increaseIC(runStatus);
-
+	
 }
 
 int isLegalOperands(RunStatus *runStatus, int cmdId) 

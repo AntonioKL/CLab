@@ -99,6 +99,7 @@ void getLabel(RunStatus *runStatus, char *label)
 	{
 		printf("ERROR: Line #%d, Invalid Label Name - Label should start with Letter at the first collumn.\n", runStatus -> lineCount);
 		runStatus -> errNum ++;
+		runStatus -> isLineErr = TRUE;
 		return ;
 	}
 	
@@ -108,6 +109,7 @@ void getLabel(RunStatus *runStatus, char *label)
 		{
 			printf("ERROR: Line #%d, Invalid Label Name - Label should contain only Letters and Numbers.\n", runStatus -> lineCount);
 			runStatus -> errNum ++;
+			runStatus -> isLineErr = TRUE;
 			return ;
 		}
 		i++;
@@ -118,6 +120,7 @@ void getLabel(RunStatus *runStatus, char *label)
 	{
 		printf("ERROR: Line #%d, Invalid Label Name - Label should contain only one word, without spaces.\n", runStatus -> lineCount);
 		runStatus -> errNum ++;
+		runStatus -> isLineErr = TRUE;
 		return ;
 	}
 	if (*c == ':')
@@ -126,6 +129,7 @@ void getLabel(RunStatus *runStatus, char *label)
 		{
 			printf("ERROR: Line #%d, Invalid Label Name - Label should contain no more than %d chars.\n", runStatus -> lineCount, MAX_LABEL_LEN);
 			runStatus -> errNum ++;
+			runStatus -> isLineErr = TRUE;
 			return ;
 		}
 		strncpy(temp_label, runStatus -> originalLine,i); /*We don't want to copy the ":" itself*/
@@ -133,6 +137,7 @@ void getLabel(RunStatus *runStatus, char *label)
 		{
 			printf("ERROR: Line #%d, Invalid Label Name - Illegal Name , You cannot use Register Name.\n", runStatus -> lineCount);
 			runStatus -> errNum ++;
+			runStatus -> isLineErr = TRUE;
 			return ;
 		}
 		i++;

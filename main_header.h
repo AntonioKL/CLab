@@ -107,6 +107,7 @@ typedef struct{
 
 	int flagFatalErr;
 	int errNum;
+	int isLineErr;
 	int ic;
 	
 	Lines *lineArray;

@@ -80,8 +80,9 @@ void initializeRunStatus(RunStatus *runStatus)
 	runStatus -> line = NULL;
 	runStatus -> originalLine = NULL;
 	runStatus -> errNum = 0;
-	runStatus -> flagFatalErr = 0;
-
+	runStatus -> flagFatalErr = FALSE;
+	
+	runStatus -> isLineErr = FALSE;
 	runStatus -> ic = 0;
 	
 	runStatus -> lineArray = NULL;
@@ -160,7 +161,14 @@ void buildFinalLabes(RunStatus *runStatus)
 		addLabelFinal(runStatus, runStatus -> labelArray[i].name, runStatus -> labelArray[i].mem_address + runStatus -> ic);
 		
 	}
-
+	/* Debug Print
+	for (i = 0; (runStatus -> finalLabelCount) > i; i++)
+	{
+		
+		printf("-%s----%d-\n", runStatus -> finalLabelArray[i].name, runStatus -> finalLabelArray[i].mem_address);
+		
+	}
+	*/
 }
 
 int SecondReadManager(RunStatus *runStatus, FILE *file)
