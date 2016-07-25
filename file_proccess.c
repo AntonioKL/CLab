@@ -59,11 +59,11 @@ void fileReadProccessManager(FILE *file, char *fileName)
 	
 	buildFinalLabes(&runStatus);
 
-	/*Setting pointer to the start*/
+	/*Setting pointer to the start
 	fseek(file, 0, SEEK_SET);
 	
-	resetRunParams(&runStatus);
-	errNum = SecondReadManager(&runStatus, file);
+	resetRunParams(&runStatus);*/
+	errNum = SecondReadManager(&runStatus);
 
 	if (errNum > 0)
 	{
@@ -169,12 +169,15 @@ void buildFinalLabes(RunStatus *runStatus)
 		
 	}
 	*/
+	/*for (i = 0; (runStatus -> entryCount) > i; i++)
+	{
+		
+		printf("-%s---\n", runStatus -> entryArray[i].name);
+		
+	}*/
 }
 
-int SecondReadManager(RunStatus *runStatus, FILE *file)
-{
-	return FALSE;
-}
+/***/
 void fileOutputmanager(RunStatus *runStatus, char *fileName)
 {
 	return ;

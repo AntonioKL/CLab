@@ -181,7 +181,7 @@ void addLabelFinal(RunStatus *runStatus, char *label, int mem)
 		return ;
 	}
 	strcpy (runStatus -> finalLabelArray[runStatus -> finalLabelCount].name , label);
-	runStatus -> finalLabelArray[runStatus -> finalLabelCount].mem_address = mem;
+	runStatus -> finalLabelArray[runStatus -> finalLabelCount].mem_address = mem + FIRST_MEM_ADDR;
 	runStatus -> finalLabelCount ++;
 }
 
@@ -510,6 +510,7 @@ void increaseIC(RunStatus *runStatus)
 		if (runStatus-> ic + runStatus-> dataCount < MAX_DATA_SIZE)
 		{
 			runStatus-> ic ++;
+			runStatus -> lineArray[runStatus -> lineCount -1 ].addressSize ++;
 		}
 		else if (!runStatus -> flagFatalErr)
 		{

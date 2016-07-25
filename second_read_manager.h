@@ -22,8 +22,7 @@ SecondReadManager - Headers file
 --- Declaration of Functions ---
 --------------------------------*/
 
-
-
-
+int SecondReadManager(RunStatus *runStatus);
+void checkEntryLabels(RunStatus *runStatus);
 
 

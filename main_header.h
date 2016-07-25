@@ -69,11 +69,13 @@ typedef struct{
 } Label;
 
 typedef struct{
-    char name[MAX_LABEL_LEN];
+	char name[MAX_LABEL_LEN];
+	int mem_address;
 } Entry;
 
 typedef struct{
-    char name[MAX_LABEL_LEN];
+	char name[MAX_LABEL_LEN];
+	int mem_address;
 } Extern;
 
 typedef enum { INVAL = -1, NUMBER = 0, DIRECT = 1,  DYNAMIC = 2,  REGISTER = 3 } operandType;
