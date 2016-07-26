@@ -20,7 +20,6 @@ global_functions.o: global_functions.c
 clean:
 	rm *~
 	rm *.o
-	rm assembler
 
 git:
 	git status

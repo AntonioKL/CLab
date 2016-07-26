@@ -40,30 +40,27 @@ FILE* openInputFile(const char *fileName, const char *extension, const char *ope
 void fileReadProccessManager(FILE *file, char *fileName)
 {
 	RunStatus runStatus;
+	MemoryDump memStatus;
 	int errNum = 0;
 	
 	initializeRunStatus(&runStatus);
 	
 	
-	errNum = firstReadManager(&runStatus, file);
+	errNum += firstReadManager(&runStatus, file);
 	if (runStatus.flagFatalErr)
-	{
-		releaseRunStatusStruct(&runStatus);
-		return ;
-	}
-	if (errNum > 0)
 	{
 		releaseRunStatusStruct(&runStatus);
 		return ;
 	}
 	
 	buildFinalLabes(&runStatus);
+	initializeMemoryStatus(&memStatus);
 
 	/*Setting pointer to the start
 	fseek(file, 0, SEEK_SET);
 	
 	resetRunParams(&runStatus);*/
-	errNum = SecondReadManager(&runStatus);
+	errNum += SecondReadManager(&runStatus, &memStatus);
 
 	if (errNum > 0)
 	{
@@ -102,6 +99,10 @@ void initializeRunStatus(RunStatus *runStatus)
 
 	runStatus -> externArray = NULL;
 	runStatus -> externCount = 0;
+	
+	runStatus -> externFileArray = NULL;
+	runStatus -> externFileCount = 0;
+	
 }
 
 void resetRunParams(RunStatus *runStatus) /**/
@@ -148,6 +149,10 @@ void releaseRunStatusStruct(RunStatus *runStatus)
 	{
 		free (runStatus -> externArray);
 	}
+	if (runStatus -> externFileArray)
+	{
+		free (runStatus -> externFileArray);
+	}
 	
 }
 
@@ -158,14 +163,14 @@ void buildFinalLabes(RunStatus *runStatus)
 	for (i = 0; (runStatus -> labelCount) > i; i++)
 	{
 		
-		addLabelFinal(runStatus, runStatus -> labelArray[i].name, runStatus -> labelArray[i].mem_address + runStatus -> ic);
+		addLabelFinal(runStatus, runStatus -> labelArray[i].name, runStatus -> labelArray[i].memAddress + runStatus -> ic);
 		
 	}
 	/* Debug Print
 	for (i = 0; (runStatus -> finalLabelCount) > i; i++)
 	{
 		
-		printf("-%s----%d-\n", runStatus -> finalLabelArray[i].name, runStatus -> finalLabelArray[i].mem_address);
+		printf("-%s----%d-\n", runStatus -> finalLabelArray[i].name, runStatus -> finalLabelArray[i].memAddress);
 		
 	}
 	*/
@@ -175,6 +180,12 @@ void buildFinalLabes(RunStatus *runStatus)
 		printf("-%s---\n", runStatus -> entryArray[i].name);
 		
 	}*/
+}
+
+
+void initializeMemoryStatus(MemoryDump *memStatus)
+{
+	memStatus -> wordCount = 0;
 }
 
 /***/

@@ -64,7 +64,8 @@ int firstReadManager(RunStatus *runStatus, FILE *file)
 		{
 			return FALSE;
 		}
-
+		
+		runStatus -> lineArray[runStatus -> lineCount -1 ].cmdId = -1;
 		lineProccessor(runStatus);
 
 		if (runStatus -> flagFatalErr)
@@ -602,7 +603,7 @@ void opProccessing(RunStatus *runStatus, char *label, int cmdId ,char *op1, char
 		return ;
 	}
 
-	if ( runStatus->lineArray[runStatus -> lineCount -1 ].op1 -> type == REGISTER && runStatus->lineArray[runStatus -> lineCount -1 ].op2 -> type == REGISTER)
+	if ( runStatus -> lineArray[runStatus -> lineCount -1 ].op1 -> type == REGISTER && runStatus->lineArray[runStatus -> lineCount -1 ].op2 -> type == REGISTER)
 	{
 		increaseIC(runStatus);
 	
@@ -616,6 +617,7 @@ void opProccessing(RunStatus *runStatus, char *label, int cmdId ,char *op1, char
 		}
 	}
 	increaseIC(runStatus);
+	runStatus -> lineArray[runStatus -> lineCount -1 ].cmdId = cmdId;
 	
 }
 

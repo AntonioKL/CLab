@@ -65,17 +65,17 @@ Main headers file
 
 typedef struct{
 	char name[MAX_LABEL_LEN];
-	int mem_address;
+	int memAddress;
 } Label;
 
 typedef struct{
 	char name[MAX_LABEL_LEN];
-	int mem_address;
+	int memAddress;
 } Entry;
 
 typedef struct{
 	char name[MAX_LABEL_LEN];
-	int mem_address;
+	int memAddress;
 } Extern;
 
 typedef enum { INVAL = -1, NUMBER = 0, DIRECT = 1,  DYNAMIC = 2,  REGISTER = 3 } operandType;
@@ -83,7 +83,7 @@ typedef enum { INVAL = -1, NUMBER = 0, DIRECT = 1,  DYNAMIC = 2,  REGISTER = 3 }
 typedef struct
 {
 	operandType type;		/* Type */
-	int mem_address;		/* The adress of the operand inside memory */
+	int memAddress;		/* The adress of the operand inside memory */
 	int value;			/* Value */
 	char str[MAX_LABEL_LEN];			/* operandString */
 
@@ -96,7 +96,7 @@ typedef struct
 typedef struct{
 	int address;
 	int addressSize;
-	int cmd;
+	int cmdId;
 	int numOperands;
 	Operand *op1;
 	Operand *op2;
@@ -127,7 +127,10 @@ typedef struct{
 	Extern *externArray;
 	int externCount;
 
-	int * dataArray; /*We can store chars as integer array*/
+	Extern *externFileArray;
+	int externFileCount;
+
+	int *dataArray; /*We can store chars as integer array*/
 	int dataCount;
 	
 
@@ -143,6 +146,11 @@ typedef struct{
 	unsigned int paramNum;
 	unsigned int opCode;
 } Command;
+
+typedef struct{
+	unsigned int memArray[MAX_DATA_SIZE][MEM_WORD_SIZE];
+	int wordCount;
+} MemoryDump;
 
 /*-------------------------------
 --- Include module declaration ---

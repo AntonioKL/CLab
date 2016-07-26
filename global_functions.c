@@ -167,7 +167,7 @@ void addLabelData(RunStatus *runStatus, char *label)
 		return ;
 	}
 	strcpy (runStatus -> labelArray[runStatus -> labelCount].name , label);
-	runStatus -> labelArray[runStatus -> labelCount].mem_address = runStatus -> dataCount;
+	runStatus -> labelArray[runStatus -> labelCount].memAddress = runStatus -> dataCount;
 	runStatus -> labelCount ++;
 }
 
@@ -181,7 +181,7 @@ void addLabelFinal(RunStatus *runStatus, char *label, int mem)
 		return ;
 	}
 	strcpy (runStatus -> finalLabelArray[runStatus -> finalLabelCount].name , label);
-	runStatus -> finalLabelArray[runStatus -> finalLabelCount].mem_address = mem + FIRST_MEM_ADDR;
+	runStatus -> finalLabelArray[runStatus -> finalLabelCount].memAddress = mem + FIRST_MEM_ADDR;
 	runStatus -> finalLabelCount ++;
 }
 
@@ -274,6 +274,19 @@ void addExternDir(RunStatus *runStatus, char *label)
 	}
 	strcpy(runStatus -> externArray[runStatus -> externCount].name, label);
 	runStatus -> externCount ++;
+}
+
+void addExternFile(RunStatus *runStatus, char *label, int memaddr)
+{
+	runStatus -> externFileArray = realloc(runStatus -> externFileArray, (runStatus -> externFileCount + 1) * sizeof(Extern));
+	if (! (runStatus -> externFileArray) )
+	{
+		printf("Fatal ERROR:Fail to reallocate space for Extern File array\n");
+		runStatus -> flagFatalErr = EXIT_ERROR;
+	}
+	strcpy(runStatus -> externFileArray[runStatus -> externFileCount].name, label);
+	runStatus -> externFileArray[runStatus -> externFileCount].memAddress = memaddr; 
+	runStatus -> externFileCount ++;
 }
 
 int getCommandId(RunStatus *runStatus)
@@ -384,6 +397,7 @@ void parseOp(RunStatus *runStatus, char *opStr, Operand *op)
 	else if (isValidLabel (runStatus, opStr))
 	{
 		op -> type = DIRECT;
+		strcpy(op -> label, opStr);
 	}
 	else
 	{

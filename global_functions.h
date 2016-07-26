@@ -43,6 +43,6 @@ int checkDynamicRange(int up, int down);
 int isValidLabel(RunStatus *runStatus, char *label);
 int isLegalNumber(RunStatus *runStatus, char *str, int max_size, Operand *op);
 void increaseIC(RunStatus *runStatus);
-
+void addExternFile(RunStatus *runStatus, char *label, int memaddr);
 
 
