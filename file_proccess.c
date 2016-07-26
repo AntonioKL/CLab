@@ -163,7 +163,7 @@ void buildFinalLabes(RunStatus *runStatus)
 	for (i = 0; (runStatus -> labelCount) > i; i++)
 	{
 		
-		addLabelFinal(runStatus, runStatus -> labelArray[i].name, runStatus -> labelArray[i].memAddress + runStatus -> ic);
+		addLabelFinal(runStatus, runStatus -> labelArray[i].name, runStatus -> labelArray[i].memAddress + runStatus -> ic, TRUE);
 		
 	}
 	/* Debug Print

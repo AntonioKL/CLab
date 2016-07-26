@@ -171,7 +171,7 @@ void addLabelData(RunStatus *runStatus, char *label)
 	runStatus -> labelCount ++;
 }
 
-void addLabelFinal(RunStatus *runStatus, char *label, int mem)
+void addLabelFinal(RunStatus *runStatus, char *label, int mem, int isData)
 {
 	runStatus -> finalLabelArray = realloc(runStatus -> finalLabelArray, (runStatus -> finalLabelCount + 1) * sizeof(Label));
 	if (! (runStatus -> finalLabelArray) )
@@ -285,7 +285,7 @@ void addExternFile(RunStatus *runStatus, char *label, int memaddr)
 		runStatus -> flagFatalErr = EXIT_ERROR;
 	}
 	strcpy(runStatus -> externFileArray[runStatus -> externFileCount].name, label);
-	runStatus -> externFileArray[runStatus -> externFileCount].memAddress = memaddr; 
+	runStatus -> externFileArray[runStatus -> externFileCount].memAddress = memaddr + FIRST_MEM_ADDR; 
 	runStatus -> externFileCount ++;
 }
 
@@ -367,7 +367,7 @@ void parseOp(RunStatus *runStatus, char *opStr, Operand *op)
 	else if (isRegister(opStr))
 	{
 		op -> type = REGISTER;
-		op -> value = opStr[1] - '0';
+		op -> val = opStr[1] - '0';
 	}
 	else if (*opStr == '#')
 	{
@@ -513,7 +513,7 @@ int isLegalNumber(RunStatus *runStatus, char *str, int max_size, Operand *op)
 		return FALSE;
 	}
 
-	op -> value = value;
+	op -> val = value;
 	return TRUE;
 	 
 	

@@ -49,6 +49,7 @@ int firstReadManager(RunStatus *runStatus, FILE *file)
 			return FALSE;
 		}
 		runStatus -> lineArray[runStatus -> lineCount -1 ].op1 -> type = INVAL;
+		runStatus -> lineArray[runStatus -> lineCount -1 ].op1 -> memAddress = 0;
 
 		runStatus -> lineArray[runStatus -> lineCount -1 ].op2 = realloc(NULL, sizeof(Operand));
 		if (! (runStatus -> lineArray[runStatus -> lineCount -1 ].op2) )
@@ -59,7 +60,8 @@ int firstReadManager(RunStatus *runStatus, FILE *file)
 		}
 
 		runStatus -> lineArray[runStatus -> lineCount -1 ].op2 -> type = INVAL;
-		
+		runStatus -> lineArray[runStatus -> lineCount -1 ].op2 -> memAddress = 0;
+
 		if (runStatus -> flagFatalErr)
 		{
 			return FALSE;
@@ -490,7 +492,7 @@ void parseCmdOperands(RunStatus *runStatus, char *label, int cmdId)
 		{
 			if (*label && label)
 			{
-				addLabelFinal(runStatus, label, runStatus -> ic);
+				addLabelFinal(runStatus, label, runStatus -> ic, FALSE);
 			}
 			runStatus -> ic ++;
 			return ;
@@ -523,7 +525,7 @@ void parseCmdOperands(RunStatus *runStatus, char *label, int cmdId)
 		
 		if (*label && label)
 		{
-			addLabelFinal(runStatus, label, runStatus -> ic);
+			addLabelFinal(runStatus, label, runStatus -> ic, FALSE);
 		}
 
 	}
@@ -570,7 +572,7 @@ void parseCmdOperands(RunStatus *runStatus, char *label, int cmdId)
 
 		if (*label && label)
 		{
-			addLabelFinal(runStatus, label, runStatus -> ic);
+			addLabelFinal(runStatus, label, runStatus -> ic, FALSE);
 		}
 	}
 	else
@@ -606,16 +608,28 @@ void opProccessing(RunStatus *runStatus, char *label, int cmdId ,char *op1, char
 	if ( runStatus -> lineArray[runStatus -> lineCount -1 ].op1 -> type == REGISTER && runStatus->lineArray[runStatus -> lineCount -1 ].op2 -> type == REGISTER)
 	{
 		increaseIC(runStatus);
+		runStatus->lineArray[runStatus -> lineCount -1 ].op1 -> memAddress = runStatus->ic;
+		runStatus->lineArray[runStatus -> lineCount -1 ].op2 -> memAddress = runStatus->ic;
 	
 	}
 	else
 	{
+		if (globalCommands[cmdId].paramNum != 0)
+		{
+			runStatus->lineArray[runStatus -> lineCount -1 ].op1 -> memAddress = runStatus->ic + 1;
+		}
+		
 		while ( i < globalCommands[cmdId].paramNum)
 		{
 			increaseIC(runStatus);
 			i++;
 		}
+		if (globalCommands[cmdId].paramNum == 2)
+		{
+			runStatus->lineArray[runStatus -> lineCount -1 ].op2 -> memAddress = runStatus->ic;
+		}
 	}
+	
 	increaseIC(runStatus);
 	runStatus -> lineArray[runStatus -> lineCount -1 ].cmdId = cmdId;
 	

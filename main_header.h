@@ -66,6 +66,7 @@ Main headers file
 typedef struct{
 	char name[MAX_LABEL_LEN];
 	int memAddress;
+	int isData;
 } Label;
 
 typedef struct{
@@ -84,7 +85,7 @@ typedef struct
 {
 	operandType type;		/* Type */
 	int memAddress;		/* The adress of the operand inside memory */
-	int value;			/* Value */
+	unsigned int val;			/* Value */
 	char str[MAX_LABEL_LEN];			/* operandString */
 
 	char label[MAX_LABEL_LEN];			/* The label in case of dynamic addresing */

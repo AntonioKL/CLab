@@ -29,7 +29,7 @@ void getLabel(RunStatus *runStatus, char *label);
 int isRegister(char *str);
 void addLabelData(RunStatus *runStatus, char *label);
 void addDirData(RunStatus *runStatus, int num);
-void addLabelFinal(RunStatus *runStatus, char *label, int mem);
+void addLabelFinal(RunStatus *runStatus, char *label, int mem, int isData);
 void getLabelReference(RunStatus *runStatus, char *label);
 void addEntryDir(RunStatus *runStatus, char *label);
 void addExternDir(RunStatus *runStatus, char *label);

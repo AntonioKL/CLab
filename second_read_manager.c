@@ -16,9 +16,9 @@ int SecondReadManager(RunStatus *runStatus, MemoryDump *memStatus)
 	checkEntryLabels(runStatus);
 	for (i = 0; i < runStatus -> lineCount; i++)
 	{
-		runStatus -> errNum += dumpLine(i, memStatus, runStatus);
+		dumpLine(i, memStatus, runStatus);
 	}
-
+	
 	for (i = 0; i < runStatus -> dataCount; i++)
 	{
 		runStatus -> errNum += dumpData(runStatus -> dataArray[i], memStatus);
@@ -51,9 +51,8 @@ void checkEntryLabels(RunStatus *runStatus)
 
 }
 
-int dumpLine(int lineNum, MemoryDump *memStatus, RunStatus *runStatus)
+void dumpLine(int lineNum, MemoryDump *memStatus, RunStatus *runStatus)
 {
-	int errNum = 0;
 	Lines line = runStatus -> lineArray[lineNum];
 	Operand *op1 = line.op1;
 	Operand *op2 = line.op2;
@@ -63,17 +62,13 @@ int dumpLine(int lineNum, MemoryDump *memStatus, RunStatus *runStatus)
 
 	if ( line.cmdId >= 0 )
 	{
-		if ( updateOperandLabelAddress(op1, runStatus, lineNum)  && updateOperandLabelAddress(op2, runStatus, lineNum))
+		if ( updateOperandLabelAddress(op1, runStatus, lineNum)
+  && updateOperandLabelAddress(op2, runStatus, lineNum))
 		{
 			printf ("sss%d\n", line.cmdId);
 		}
-		else
-		{
-			errNum +=1;
-		}
-		
+			
 	}
-	return 0;
 
 }
 
@@ -84,49 +79,70 @@ int dumpData(int dataArray,  MemoryDump *memStatus)
 
 int updateOperandLabelAddress(Operand *op, RunStatus *runStatus, int lineNum)
 {
-	printf ("www---%s---wwww\n", op->str);
+	int labelAddress;
+	int dataAddress;
+	unsigned int startValueData;
+
 	if (op -> type == DIRECT)
 	{
-		if (getLabelAddress(runStatus , op) > -1)
+		labelAddress = getLabelAddress(runStatus , op, 1);
+		if (labelAddress == -1)
 		{
-			printf ("ssss---%s---ssss\n", op->str);
-		}
-		else
-		{
-			printf ("zzzzzzz\n");
+			printf("ERROR: Line #%d, Label \"%s\" doesn't exist.\n", lineNum, op->str);
+			runStatus -> errNum ++;
+			return FALSE;
 		}
 	}
 	else if ( op -> type == DYNAMIC)
 	{
-		printf ("aa--%s--aa\n", op->str);
+		labelAddress = getLabelAddress(runStatus , op, 0);
+		if (labelAddress != -1)
+		{
+			if (runStatus -> finalLabelArray[labelAddress].isData)
+			{
+				dataAddress = runStatus -> finalLabelArray[labelAddress].memAddress - runStatus -> ic - FIRST_MEM_ADDR;
+				startValueData = runStatus -> dataArray[dataAddress];
+			}
+			else
+			{
+				startValueData = 0 /**FIX**/
+			}
+		}
+		else 
+		{
+			printf("ERROR: Line #%d, Label \"%s\" doesn't exist.\n", lineNum, op->str);
+			runStatus -> errNum ++;
+			return FALSE;
+		}
 	}
 	
 	return TRUE;
 }
 
 
-int getLabelAddress(RunStatus *runStatus, Operand *op)
+int getLabelAddress(RunStatus *runStatus, Operand *op, int checkExtern)
 {
-	char * str = op -> label;
+	char *str = op -> label;
 	int i;
 
 	for ( i = 0; i < runStatus -> finalLabelCount; i++)
 	{
 		if (!strcmp(str, runStatus -> finalLabelArray[i].name ))
 		{
-			return runStatus -> finalLabelArray[i].memAddress;
+			op -> val = runStatus -> finalLabelArray[i].memAddress;
+			return i;
 		}
 	}
 
-	for ( i=0; i < runStatus -> externCount; i++)
+	for ( i = 0; i < runStatus -> externCount && checkExtern; i++)
 		{
 			if (!strcmp(str, runStatus -> externArray[i].name))
 			{
-				addExternFile(runStatus, str, op -> memAddress );
-				
+				op -> val = 1;
+				addExternFile(runStatus, str, op -> memAddress);
+				return i;
 			}
 		}
-	
 
 	return -1;
 	
