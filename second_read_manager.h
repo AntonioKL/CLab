@@ -29,6 +29,6 @@ int dumpData(int dataArray,  MemoryDump *memStatus);
 int updateOperandLabelAddress(Operand *op, RunStatus *runStatus, int lineNum);
 int isLabelExists(RunStatus *runStatus, char *str);
 int getLabelAddress(RunStatus *runStatus, Operand *op, int checkExtern);
-
+int getRequiredBitsFromLabel(int val, int up , int down);
 
 

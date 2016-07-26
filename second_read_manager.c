@@ -105,8 +105,10 @@ int updateOperandLabelAddress(Operand *op, RunStatus *runStatus, int lineNum)
 			}
 			else
 			{
-				startValueData = 0 /**FIX**/
+				startValueData = getIntFromWord(runStatus -> finalLabelArray[labelAddress].word);
 			}
+			
+			op -> val = getRequiredBitsFromLabel(startValueData, op -> up, op-> down);
 		}
 		else 
 		{
@@ -147,5 +149,54 @@ int getLabelAddress(RunStatus *runStatus, Operand *op, int checkExtern)
 	return -1;
 	
 }
+
+int getRequiredBitsFromLabel(int val, int up , int down)
+{
+	int diff = (up - down) + 1;
+	int lsb = 1;
+	int i = 0;
+	int tmp = 1;
+	int tmp2 = -1;
+	
+
+	if (val == 0) 
+	{
+		return 0;
+	}
+
+	lsb <<= up;
+	
+	if ( val != (val | lsb))
+	{
+		val >>= down;
+		while (i < diff-1)
+		{
+			tmp = (tmp << 1) + 1;
+			i++;
+		}
+		return (tmp & val);
+	}
+	else
+	{
+		val >>= down;
+		i = 0;
+		while (i < diff)
+		{
+			tmp = (tmp << 1) + 1;
+			i++;
+		}
+		tmp2 <<= diff;
+		return (tmp2 | (tmp & val ));
+	}
+
+}
+
+
+
+
+
+
+
+
 
 

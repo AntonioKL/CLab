@@ -13,6 +13,7 @@ Global Functions - Headers file
 -------------------*/
 
 #define		EXIT_ERROR		1
+#define		BITS_IN_BYTE		8
 
 
 /*------------------------------
@@ -44,5 +45,7 @@ int isValidLabel(RunStatus *runStatus, char *label);
 int isLegalNumber(RunStatus *runStatus, char *str, int max_size, Operand *op);
 void increaseIC(RunStatus *runStatus);
 void addExternFile(RunStatus *runStatus, char *label, int memaddr);
+WordMemory getCommandWord(RunStatus *runStatus);
+int getIntFromWord(WordMemory word);
 
 

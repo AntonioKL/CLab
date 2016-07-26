@@ -490,12 +490,7 @@ void parseCmdOperands(RunStatus *runStatus, char *label, int cmdId)
 	{
 		if (*(runStatus -> line) == EOF || *(runStatus -> line) == '\n' )
 		{
-			if (*label && label)
-			{
-				addLabelFinal(runStatus, label, runStatus -> ic, FALSE);
-			}
 			runStatus -> ic ++;
-			return ;
 		}
 		else
 		{
@@ -523,11 +518,6 @@ void parseCmdOperands(RunStatus *runStatus, char *label, int cmdId)
 			return ;
 		}
 		
-		if (*label && label)
-		{
-			addLabelFinal(runStatus, label, runStatus -> ic, FALSE);
-		}
-
 	}
 	else if (numOp == 2)
 	{
@@ -570,10 +560,6 @@ void parseCmdOperands(RunStatus *runStatus, char *label, int cmdId)
 			return ;
 		}
 
-		if (*label && label)
-		{
-			addLabelFinal(runStatus, label, runStatus -> ic, FALSE);
-		}
 	}
 	else
 	{
@@ -582,7 +568,14 @@ void parseCmdOperands(RunStatus *runStatus, char *label, int cmdId)
 		return ;
 	}
 
-	opProccessing(runStatus, label, cmdId , op1, op2);
+	if (numOp == 1)
+	{
+		opProccessing(runStatus, label, cmdId , op1, op2);
+	}
+	if (*label && label)
+	{
+		addLabelFinal(runStatus, label, runStatus -> ic, FALSE);
+	}
 }
 
 void opProccessing(RunStatus *runStatus, char *label, int cmdId ,char *op1, char *op2)

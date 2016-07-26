@@ -62,11 +62,37 @@ Main headers file
 /*------------------------
 --- Struct declaration ---
 --------------------------*/
+typedef struct{ /*We need a 15 integers for the word, we can use it since minimum size for int is 16 */
+	
+	unsigned int eraBits : 2;
+	
+	union
+	{
+		struct{
+			unsigned int dstMethod	: 2;		/* Destination op addressing method ID */
+			unsigned int srcMethod	: 2;			/* Source op addressing method ID */
+			unsigned int opcode	: 4;		/* Command ID */
+			unsigned int group	: 2;			/* Number of params */
+			unsigned int unused	: 3;		/* Unused Bit, always 101 */
+		} commandBits;
+		
+		struct{
+			unsigned int dstReg	: 6; 
+			unsigned int srcReg	: 6; 
+			unsigned int unused 	: 1;
+		} registerBits;
+
+		int dataBits			: 13;
+
+	}wordBits;
+	
+} WordMemory;
 
 typedef struct{
 	char name[MAX_LABEL_LEN];
 	int memAddress;
 	int isData;
+	WordMemory word;
 } Label;
 
 typedef struct{
@@ -148,8 +174,11 @@ typedef struct{
 	unsigned int opCode;
 } Command;
 
+
+typedef enum {ABSOLUTE = 0 , EXTERNAL = 1 , REALOCATBLE = 2} eraBit;
+
 typedef struct{
-	unsigned int memArray[MAX_DATA_SIZE][MEM_WORD_SIZE];
+	int memArray[MAX_DATA_SIZE];
 	int wordCount;
 } MemoryDump;
 

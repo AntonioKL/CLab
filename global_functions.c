@@ -182,7 +182,12 @@ void addLabelFinal(RunStatus *runStatus, char *label, int mem, int isData)
 	}
 	strcpy (runStatus -> finalLabelArray[runStatus -> finalLabelCount].name , label);
 	runStatus -> finalLabelArray[runStatus -> finalLabelCount].memAddress = mem + FIRST_MEM_ADDR;
+	runStatus -> finalLabelArray[runStatus -> finalLabelCount].isData = isData;
 	runStatus -> finalLabelCount ++;
+	if (!isData)
+	{
+		runStatus -> finalLabelArray[runStatus -> finalLabelCount].word = getCommandWord(runStatus);
+	}
 }
 
 void addDirData(RunStatus *runStatus, int num)
@@ -532,5 +537,48 @@ void increaseIC(RunStatus *runStatus)
 			runStatus -> flagFatalErr = EXIT_ERROR;
 		}
 }
+
+
+WordMemory getCommandWord(RunStatus *runStatus)
+{
+	WordMemory word = {0};
+	int op1type = 0;
+	int op2type = 0;
+	Operand *op1 = runStatus->lineArray[runStatus -> lineCount -1 ].op1;
+	Operand *op2 = runStatus->lineArray[runStatus -> lineCount -1 ].op2;
+	int opcode = runStatus -> lineArray[runStatus -> lineCount -1 ].cmdId;
+	int group = globalCommands[opcode].paramNum;
+
+	if (op1 -> type != INVAL)
+	{
+		op1type = (int)op1 -> type;
+	}
+	if (op2 -> type != INVAL)
+	{
+		op1type = (int)op2 -> type;
+	}
+
+	word.eraBits = (eraBit)ABSOLUTE;
+	word.wordBits.commandBits.dstMethod = op2type;
+	word.wordBits.commandBits.srcMethod = op1type;
+	word.wordBits.commandBits.opcode = opcode;
+	word.wordBits.commandBits.group = group;
+	word.wordBits.commandBits.unused = 5;
+	
+	return word;
+}
+
+int getIntFromWord(WordMemory word)
+{
+	unsigned int mask = ~0;
+	int res;
+
+	mask >>= (BITS_IN_BYTE * sizeof(int) - MEM_WORD_SIZE);
+	res = mask & ((word.wordBits.dataBits << 2) + word.eraBits);
+	return res;
+}
+
+
+
 
 
