@@ -22,7 +22,7 @@ File proccessing - Headers file
 --------------------------------*/
 
 void parseFile(char* fileName);
-FILE* openInputFile(const char *fileName, const char *extension, const char *openMode);
+FILE* openFile(const char *fileName, const char *extension, const char *openMode);
 void fileReadProccessManager(FILE *file, char *fileName);
 void initializeRunStatus(RunStatus *runStatus);
 void resetRunParams(RunStatus *runStatus);

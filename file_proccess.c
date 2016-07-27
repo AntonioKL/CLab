@@ -11,7 +11,7 @@ File processing file
 
 void parseFile(char *fileName)
 {	
-	FILE *file = openInputFile(fileName, INPUT_FILE_EXTENSION, MODE_READ_ONLY);
+	FILE *file = openFile(fileName, INPUT_FILE_EXTENSION, MODE_READ_ONLY);
 
 	if (file == NULL)
 	{
@@ -23,7 +23,7 @@ void parseFile(char *fileName)
 }
 
 
-FILE* openInputFile(const char *fileName, const char *extension, const char *openMode)
+FILE* openFile(const char *fileName, const char *extension, const char *openMode)
 {
 	
 	char fullFileName[MAX_FILENAME_LEN + MAX_FILE_EXTENSION_LEN];
@@ -63,11 +63,11 @@ void fileReadProccessManager(FILE *file, char *fileName)
 	if (!errNum)
 	{
 		fileOutputmanager(&runStatus, &memStatus, fileName);
-		printf("Finished creating all files\n");
+		printf("Success: The file has been parsed\n\n");
 	}
 	else
 	{
-		printf("\nTotal Number of Errors are %d, please fix them", errNum);
+		printf("\nFail: Please fix the errors \n");
 	}
 	releaseRunStatusStruct(&runStatus);
 }

@@ -37,6 +37,8 @@ Main headers file
 
 #define		MEM_WORD_SIZE			15
 
+#define		NUM_BITS_BASE8			3
+
 /*Maximum file name length, without extension, allowed*/
 #define		MAX_FILENAME_LEN		100
 
