@@ -193,7 +193,7 @@ typedef struct{
 #include "first_read_manager.h"
 #include "second_read_manager.h"
 #include "global_functions.h"
-
+#include "file_output_manager.h"
 
 
 

@@ -29,8 +29,7 @@ void resetRunParams(RunStatus *runStatus);
 void releaseRunStatusStruct(RunStatus *runStatus);
 void buildFinalLabes(RunStatus *runStatus);
 void initializeMemoryStatus(MemoryDump *memStatus);
-/*Not here*/
-void fileOutputmanager(RunStatus *runStatus, char *fileName);
+
 
 
 

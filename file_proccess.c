@@ -50,25 +50,25 @@ void fileReadProccessManager(FILE *file, char *fileName)
 	if (runStatus.flagFatalErr)
 	{
 		releaseRunStatusStruct(&runStatus);
+		printf("ERROR: Fatal Error, cannot continue.\n");
 		return ;
 	}
 	
 	buildFinalLabes(&runStatus);
 	initializeMemoryStatus(&memStatus);
 
-	/*Setting pointer to the start
-	fseek(file, 0, SEEK_SET);
-	
-	resetRunParams(&runStatus);*/
 	errNum += SecondReadManager(&runStatus, &memStatus);
 
-	if (errNum > 0)
-	{
-		releaseRunStatusStruct(&runStatus);
-		return ;
-	}
 
-	fileOutputmanager(&runStatus, fileName);
+	if (!errNum)
+	{
+		fileOutputmanager(&runStatus, &memStatus, fileName);
+		printf("Finished creating all files\n");
+	}
+	else
+	{
+		printf("\nTotal Number of Errors are %d, please fix them", errNum);
+	}
 	releaseRunStatusStruct(&runStatus);
 }
 
@@ -188,9 +188,4 @@ void initializeMemoryStatus(MemoryDump *memStatus)
 	memStatus -> wordCount = 0;
 }
 
-/***/
-void fileOutputmanager(RunStatus *runStatus, char *fileName)
-{
-	return ;
-}
 
