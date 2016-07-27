@@ -21,7 +21,7 @@ int SecondReadManager(RunStatus *runStatus, MemoryDump *memStatus)
 	
 	for (i = 0; i < runStatus -> dataCount; i++)
 	{
-		runStatus -> errNum += dumpData(runStatus -> dataArray[i], memStatus);
+		dumpData(runStatus -> dataArray[i], memStatus);
 	}
 	return runStatus -> errNum;
 }
@@ -56,25 +56,62 @@ void dumpLine(int lineNum, MemoryDump *memStatus, RunStatus *runStatus)
 	Lines line = runStatus -> lineArray[lineNum];
 	Operand *op1 = line.op1;
 	Operand *op2 = line.op2;
-	Label *labels = runStatus -> finalLabelArray;
+	WordMemory wordCmd = {0};
+	WordMemory wordOp = {0};
+	
+	if ( line.cmdId < 0 )
+	{
+		return ;
+	}
+
+	updateOperandLabelAddress(op1, runStatus, lineNum);
+	updateOperandLabelAddress(op2, runStatus, lineNum);
+	wordCmd = getCommandWord(runStatus, lineNum);
+
+	addToMem(memStatus, wordCmd);
 	
 	
 
-	if ( line.cmdId >= 0 )
+	if (op1 -> type == REGISTER && op2 -> type == REGISTER)	
 	{
-		if ( updateOperandLabelAddress(op1, runStatus, lineNum)
-  && updateOperandLabelAddress(op2, runStatus, lineNum))
-		{
-			printf ("sss%d\n", line.cmdId);
-		}
-			
+		wordOp.eraBits = (eraBit)ABSOLUTE;
+		wordOp.wordBits.registerBits.srcReg = op1 -> val;
+		wordOp.wordBits.registerBits.dstReg = op2 -> val;
+		addToMem(memStatus, wordOp);
 	}
+	else
+	{
+		if (op1 -> type != INVAL )
+		{
+			op1 -> memAddress = memStatus -> wordCount + FIRST_MEM_ADDR;
+			wordOp = getOperandWord(runStatus, TRUE, op1);
+			addToMem(memStatus, wordOp);
+		}
+		if (op2 -> type != INVAL )
+		{
+			op2 -> memAddress = memStatus -> wordCount + FIRST_MEM_ADDR;
+			wordOp = getOperandWord(runStatus, FALSE, op2);
+			addToMem(memStatus, wordOp);
+		}
+	}		
+
 
 }
 
-int dumpData(int dataArray,  MemoryDump *memStatus)
+void dumpData(int data,  MemoryDump *memStatus)
 {
-	return 0;
+	unsigned int mask = ~0;
+
+	mask >>= (BITS_IN_BYTE * sizeof(int) - MEM_WORD_SIZE);
+
+	if( memStatus -> wordCount >= MAX_DATA_SIZE )
+	{
+		return ; /*We exceeded the allowed memory*/
+	}
+
+	memStatus -> memArray[memStatus -> wordCount] = mask & data;
+	memStatus -> wordCount ++;
+
 }
 
 int updateOperandLabelAddress(Operand *op, RunStatus *runStatus, int lineNum)
@@ -88,7 +125,7 @@ int updateOperandLabelAddress(Operand *op, RunStatus *runStatus, int lineNum)
 		labelAddress = getLabelAddress(runStatus , op, 1);
 		if (labelAddress == -1)
 		{
-			printf("ERROR: Line #%d, Label \"%s\" doesn't exist.\n", lineNum, op->str);
+			printf("ERROR: Line #%d, Label \"%s\" doesn't exist.\n", lineNum+1, op->str);
 			runStatus -> errNum ++;
 			return FALSE;
 		}
@@ -112,7 +149,7 @@ int updateOperandLabelAddress(Operand *op, RunStatus *runStatus, int lineNum)
 		}
 		else 
 		{
-			printf("ERROR: Line #%d, Label \"%s\" doesn't exist.\n", lineNum, op->str);
+			printf("ERROR: Line #%d, Label \"%s\" doesn't exist.\n", lineNum+1, op->str);
 			runStatus -> errNum ++;
 			return FALSE;
 		}
@@ -191,7 +228,16 @@ int getRequiredBitsFromLabel(int val, int up , int down)
 
 }
 
+void addToMem(MemoryDump *memStatus, WordMemory word)
+{	
+	if( memStatus -> wordCount >= MAX_DATA_SIZE )
+	{
+		return ; /*We exceeded the allowed memory*/
+	}
 
+	memStatus -> memArray[memStatus -> wordCount] = getIntFromWord(word);
+	memStatus -> wordCount ++;
+}
 
 
 

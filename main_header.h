@@ -68,6 +68,8 @@ typedef struct{ /*We need a 15 integers for the word, we can use it since minimu
 	
 	union
 	{
+		int dataBits			: 13;
+
 		struct{
 			unsigned int dstMethod	: 2;		/* Destination op addressing method ID */
 			unsigned int srcMethod	: 2;			/* Source op addressing method ID */
@@ -82,7 +84,7 @@ typedef struct{ /*We need a 15 integers for the word, we can use it since minimu
 			unsigned int unused 	: 1;
 		} registerBits;
 
-		int dataBits			: 13;
+
 
 	}wordBits;
 	

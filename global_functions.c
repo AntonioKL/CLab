@@ -186,7 +186,7 @@ void addLabelFinal(RunStatus *runStatus, char *label, int mem, int isData)
 	runStatus -> finalLabelCount ++;
 	if (!isData)
 	{
-		runStatus -> finalLabelArray[runStatus -> finalLabelCount].word = getCommandWord(runStatus);
+		runStatus -> finalLabelArray[runStatus -> finalLabelCount].word = getCommandWord(runStatus, runStatus -> lineCount -1);
 	}
 }
 
@@ -539,14 +539,14 @@ void increaseIC(RunStatus *runStatus)
 }
 
 
-WordMemory getCommandWord(RunStatus *runStatus)
+WordMemory getCommandWord(RunStatus *runStatus, int lineNum)
 {
 	WordMemory word = {0};
 	int op1type = 0;
 	int op2type = 0;
-	Operand *op1 = runStatus->lineArray[runStatus -> lineCount -1 ].op1;
-	Operand *op2 = runStatus->lineArray[runStatus -> lineCount -1 ].op2;
-	int opcode = runStatus -> lineArray[runStatus -> lineCount -1 ].cmdId;
+	Operand *op1 = runStatus->lineArray[lineNum].op1;
+	Operand *op2 = runStatus->lineArray[lineNum].op2;
+	int opcode = runStatus -> lineArray[lineNum].cmdId;
 	int group = globalCommands[opcode].paramNum;
 
 	if (op1 -> type != INVAL)
@@ -576,7 +576,65 @@ int getIntFromWord(WordMemory word)
 	mask >>= (BITS_IN_BYTE * sizeof(int) - MEM_WORD_SIZE);
 	res = mask & ((word.wordBits.dataBits << 2) + word.eraBits);
 	return res;
+
 }
+
+
+WordMemory getOperandWord(RunStatus *runStatus, int isSrcOperand, Operand *op)
+{
+	char *str = op -> label;
+	int i;
+	int isLabelExtern;
+
+	WordMemory word = {0};
+
+	if (op -> type == REGISTER)
+	{
+		word.eraBits = (eraBit)ABSOLUTE;
+
+		if (isSrcOperand)
+		{
+			word.wordBits.registerBits.srcReg = op -> val;
+		}
+		else
+		{
+			word.wordBits.registerBits.dstReg = op -> val;
+		}
+	}
+	else
+	{
+		for ( i = 0; i < runStatus -> externCount; i++)
+		{
+			if (!strcmp(str, runStatus -> externArray[i].name))
+			{
+				isLabelExtern = TRUE;
+			}
+		}
+
+		if (op -> type == DIRECT && isLabelExtern)
+		{
+			word.eraBits = (eraBit)EXTERNAL;
+		}
+		else
+		{
+			if (op -> type == DYNAMIC || op -> type == NUMBER)
+			{
+				word.eraBits = (eraBit)EXTERNAL;
+			}
+			else
+			{
+				word.eraBits = (eraBit)REALOCATBLE;
+			}
+		}
+
+		word.wordBits.dataBits = op -> val;
+	}
+	return word;
+}
+
+
+
+
 
 
 

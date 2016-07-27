@@ -45,7 +45,13 @@ int isValidLabel(RunStatus *runStatus, char *label);
 int isLegalNumber(RunStatus *runStatus, char *str, int max_size, Operand *op);
 void increaseIC(RunStatus *runStatus);
 void addExternFile(RunStatus *runStatus, char *label, int memaddr);
-WordMemory getCommandWord(RunStatus *runStatus);
+WordMemory getCommandWord(RunStatus *runStatus, int lineNum);
+WordMemory getOperandWord(RunStatus *runStatus, int isSrcOperand, Operand *op);
 int getIntFromWord(WordMemory word);
+
+
+
+
+
 
 
