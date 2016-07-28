@@ -54,10 +54,17 @@ void fileReadProccessManager(FILE *file, char *fileName)
 		return ;
 	}
 	
+	if (errNum)
+	{
+		releaseRunStatusStruct(&runStatus);
+		printf("\nFail: You have %d errors, please fix them\n", errNum);
+		return ;
+	}
+
 	buildFinalLabes(&runStatus);
 	initializeMemoryStatus(&memStatus);
 
-	errNum += SecondReadManager(&runStatus, &memStatus);
+	errNum = SecondReadManager(&runStatus, &memStatus);
 
 
 	if (!errNum)
@@ -67,7 +74,7 @@ void fileReadProccessManager(FILE *file, char *fileName)
 	}
 	else
 	{
-		printf("\nFail: Please fix the errors \n");
+		printf("\nFail: You have %d errors, please fix them\n", errNum);
 	}
 	releaseRunStatusStruct(&runStatus);
 }

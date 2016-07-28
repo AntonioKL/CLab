@@ -460,7 +460,7 @@ int isDynamicParam(Operand *op)
 
 int checkDynamicRange(int up, int down)
 {
-	if (down < 1 || up > 15 || up - down > 13 || up - down < 1 )
+	if (down < 1 || up > 15 || up - down > 13 || up - down < 0 )
 	{
 		return FALSE;
 	}

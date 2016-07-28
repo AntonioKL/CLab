@@ -29,5 +29,6 @@ FileOutputManager - Headers file
 void fileOutputmanager(RunStatus *runStatus, MemoryDump *memStatus, char *fileName);
 void exportExtern(RunStatus *runStatus, char *fileName);
 void specialBase8Print(FILE *extFile, int memAddress);
+void specialBase8ConvertInt(int num, char *buf, int index);
 
 
