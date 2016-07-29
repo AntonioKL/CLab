@@ -113,14 +113,13 @@ typedef enum { INVAL = -1, NUMBER = 0, DIRECT = 1,  DYNAMIC = 2,  REGISTER = 3 }
 
 typedef struct
 {
-	operandType type;		/* Type */
-	int memAddress;		/* The adress of the operand inside memory */
-	unsigned int val;			/* Value */
+	operandType type;				/* Type */
+	int memAddress;					/* The adress of the operand inside memory */
+	unsigned int val;				/* Value */
 	char str[MAX_LABEL_LEN];			/* operandString */
-
 	char label[MAX_LABEL_LEN];			/* The label in case of dynamic addresing */
-	int up;				/* The low end of the range for dynamic addressing */
-	int down;			/* The high end of the range for dynamic addressing */
+	int up;						/* The low end of the range for dynamic addressing */
+	int down;					/* The high end of the range for dynamic addressing */
 
 } Operand;
 
@@ -134,7 +133,6 @@ typedef struct{
 } Lines;
 
 typedef struct{
-
 	char *line;
 	char *originalLine;
 
@@ -163,8 +161,6 @@ typedef struct{
 
 	int *dataArray; /*We can store chars as integer array*/
 	int dataCount;
-	
-
 } RunStatus;
 
 typedef struct{
@@ -179,9 +175,10 @@ typedef struct{
 } Command;
 
 
-typedef enum {ABSOLUTE = 0 , EXTERNAL = 1 , REALOCATBLE = 2} eraBit;
+typedef enum { ABSOLUTE = 0 , EXTERNAL = 1 , REALOCATBLE = 2 } eraBit;
 
 typedef struct{
+
 	int memArray[MAX_DATA_SIZE];
 	int wordCount;
 } MemoryDump;

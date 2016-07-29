@@ -555,7 +555,7 @@ WordMemory getCommandWord(RunStatus *runStatus, int lineNum)
 	}
 	if (op2 -> type != INVAL)
 	{
-		op1type = (int)op2 -> type;
+		op2type = (int)op2 -> type;
 	}
 
 	word.eraBits = (eraBit)ABSOLUTE;
@@ -603,7 +603,7 @@ WordMemory getOperandWord(RunStatus *runStatus, int isSrcOperand, Operand *op)
 	}
 	else
 	{
-		for ( i = 0; i < runStatus -> externCount; i++)
+		for ( i = 0; i < runStatus -> externCount && ! isLabelExtern ; i++)
 		{
 			if (!strcmp(str, runStatus -> externArray[i].name))
 			{
@@ -619,15 +619,14 @@ WordMemory getOperandWord(RunStatus *runStatus, int isSrcOperand, Operand *op)
 		{
 			if (op -> type == DYNAMIC || op -> type == NUMBER)
 			{
-				word.eraBits = (eraBit)EXTERNAL;
+				word.eraBits = (eraBit)ABSOLUTE;
 			}
 			else
 			{
 				word.eraBits = (eraBit)REALOCATBLE;
 			}
+			word.wordBits.dataBits = op -> val;
 		}
-
-		word.wordBits.dataBits = op -> val;
 	}
 	return word;
 }

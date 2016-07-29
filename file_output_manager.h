@@ -12,7 +12,7 @@ FileOutputManager - Headers file
 --- Local const ---
 -------------------*/
 
-#define		OBJECT_FILE_EXT		".obj"
+#define		OBJECT_FILE_EXT		".ob"
 #define		ENTRY_FILE_EXT		".ent"
 #define		EXTERN_FILE_EXT		".ext"
 
@@ -29,7 +29,8 @@ FileOutputManager - Headers file
 void fileOutputmanager(RunStatus *runStatus, MemoryDump *memStatus, char *fileName);
 void exportExtern(RunStatus *runStatus, char *fileName);
 void exportEntry(RunStatus *runStatus, char *fileName);
+void exportObject(RunStatus *runStatus, MemoryDump *memStatus, char *fileName);
 void specialBase8Print(FILE *extFile, int memAddress);
-void specialBase8ConvertInt(int num, char *buf, int index);
+void specialBase8ConvertInt(int num, char *buffer);
 
 

@@ -10,12 +10,36 @@ FileOutputManager
 
 void fileOutputmanager(RunStatus *runStatus, MemoryDump *memStatus, char *fileName)
 {
-	/*exportObject();
-	printf("Success: Created %s%s\n", fileName, OBJECT_FILE_EXT);*/
+	exportObject(runStatus, memStatus, fileName);
 	exportExtern(runStatus, fileName);
 	exportEntry(runStatus, fileName);
 
 }
+
+void exportObject(RunStatus *runStatus, MemoryDump *memStatus, char *fileName)
+{
+	int i;
+	FILE *objFile;
+
+	objFile = openFile(fileName, OBJECT_FILE_EXT, MODE_WRITE_ONLY);
+	specialBase8Print(objFile,runStatus -> ic);
+	fprintf(objFile, " ");
+	specialBase8Print(objFile,runStatus -> dataCount);
+	fprintf(objFile, "\n");
+	
+	for (i=0; i < memStatus -> wordCount; i++)
+	{
+		specialBase8Print(objFile, i + FIRST_MEM_ADDR);
+		fprintf(objFile, "\t\t\t");
+		specialBase8Print(objFile, memStatus -> memArray[i]);
+		fprintf(objFile, "\n");
+	}
+
+	printf("Success: Created %s%s\n", fileName, OBJECT_FILE_EXT);
+	fclose(objFile);
+
+}
+
 
 void exportExtern(RunStatus *runStatus, char *fileName)
 {
@@ -40,16 +64,6 @@ void exportExtern(RunStatus *runStatus, char *fileName)
 		printf("Success: Created %s%s\n", fileName, EXTERN_FILE_EXT);
 		fclose(extFile);
 	}
-	
-	extFile = openFile("test", ".test", MODE_WRITE_ONLY);
-	for (i=0; i < runStatus -> finalLabelCount; i++)
-	{
-		fprintf(extFile, "%s\t\t\t", runStatus -> finalLabelArray[i].name);
-		specialBase8Print(extFile,runStatus -> finalLabelArray[i].memAddress);
-		fprintf(extFile, "\n");
-
-	}
-	fclose(extFile);
 }
 
 
@@ -81,19 +95,24 @@ void exportEntry(RunStatus *runStatus, char *fileName)
 void specialBase8Print(FILE *extFile, int memAddress)
 {
 	char buffer[(MEM_WORD_SIZE)/(NUM_BITS_BASE8) + 1] = "\0";
-	specialBase8ConvertInt(memAddress, buffer, 0);
+	specialBase8ConvertInt(memAddress, buffer);
 	fprintf(extFile, "%s", buffer);
 
 }
 
 
-void specialBase8ConvertInt(int num, char *buffer, int index)
+void specialBase8ConvertInt(int num, char *buffer)
 {
 
 	char *digits = SPECIAL_BASE8_DIGITS;
 	int i = -1 ;
 	int tmp_num = num;
 	
+	if(!num)
+	{
+		buffer[0] = digits[0];
+	}
+
 	while (tmp_num)
 	{
 		i++;

@@ -577,6 +577,7 @@ void parseCmdOperands(RunStatus *runStatus, char *label, int cmdId)
 void opProccessing(RunStatus *runStatus, char *label, int cmdId ,char *op1, char *op2)
 {
 	int i = 0;
+	Operand *tmpOp;
 
 	if(*op1)
 	{
@@ -607,10 +608,18 @@ void opProccessing(RunStatus *runStatus, char *label, int cmdId ,char *op1, char
 		{
 			runStatus->lineArray[runStatus -> lineCount -1 ].op1 -> memAddress = runStatus->ic + 1;
 		}
+
 		while ( i < globalCommands[cmdId].paramNum)
 		{
 			increaseIC(runStatus);
 			i++;
+		}
+
+		if (globalCommands[cmdId].paramNum == 1)
+		{
+			tmpOp = runStatus->lineArray[runStatus -> lineCount -1 ].op1;
+			runStatus->lineArray[runStatus -> lineCount -1 ].op1 = runStatus->lineArray[runStatus -> lineCount -1 ].op2;
+			runStatus->lineArray[runStatus -> lineCount -1 ].op2 = tmpOp;
 		}
 		if (globalCommands[cmdId].paramNum == 2)
 		{
