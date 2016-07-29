@@ -584,7 +584,7 @@ WordMemory getOperandWord(RunStatus *runStatus, int isSrcOperand, Operand *op)
 {
 	char *str = op -> label;
 	int i;
-	int isLabelExtern;
+	int isLabelExtern = FALSE;
 
 	WordMemory word = {0};
 

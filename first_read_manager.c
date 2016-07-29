@@ -589,6 +589,13 @@ void opProccessing(RunStatus *runStatus, char *label, int cmdId ,char *op1, char
 	}
 	
 
+	if (globalCommands[cmdId].paramNum == 1)
+	{
+		tmpOp = runStatus->lineArray[runStatus -> lineCount -1 ].op1;
+		runStatus->lineArray[runStatus -> lineCount -1 ].op1 = runStatus->lineArray[runStatus -> lineCount -1 ].op2;
+		runStatus->lineArray[runStatus -> lineCount -1 ].op2 = tmpOp;
+	}
+
 	if (!isLegalOperands(runStatus, cmdId))
 	{
 		runStatus -> errNum ++;
@@ -615,12 +622,6 @@ void opProccessing(RunStatus *runStatus, char *label, int cmdId ,char *op1, char
 			i++;
 		}
 
-		if (globalCommands[cmdId].paramNum == 1)
-		{
-			tmpOp = runStatus->lineArray[runStatus -> lineCount -1 ].op1;
-			runStatus->lineArray[runStatus -> lineCount -1 ].op1 = runStatus->lineArray[runStatus -> lineCount -1 ].op2;
-			runStatus->lineArray[runStatus -> lineCount -1 ].op2 = tmpOp;
-		}
 		if (globalCommands[cmdId].paramNum == 2)
 		{
 			runStatus->lineArray[runStatus -> lineCount -1 ].op2 -> memAddress = runStatus->ic;
@@ -652,6 +653,7 @@ int isLegalOperands(RunStatus *runStatus, int cmdId)
 	}
 	if ( validOperators != requirednumOp)
 	{
+		printf("ERROR: Line #%d, Not enough valid Operands - \"%s\" should have %d operands.\n", runStatus -> lineCount, cmdName, validOperators);
 		return FALSE;
 	}
 	
