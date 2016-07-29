@@ -166,7 +166,7 @@ void releaseRunStatusStruct(RunStatus *runStatus)
 void buildFinalLabes(RunStatus *runStatus)
 {
 	int i=0;
-			
+	
 	for (i = 0; (runStatus -> labelCount) > i; i++)
 	{
 		

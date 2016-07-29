@@ -13,9 +13,8 @@ void fileOutputmanager(RunStatus *runStatus, MemoryDump *memStatus, char *fileNa
 	/*exportObject();
 	printf("Success: Created %s%s\n", fileName, OBJECT_FILE_EXT);*/
 	exportExtern(runStatus, fileName);
-	printf("Success: Created %s%s\n", fileName, ENTRY_FILE_EXT);
 	exportEntry(runStatus, fileName);
-	printf("Success: Created %s%s\n", fileName, EXTERN_FILE_EXT);
+
 }
 
 void exportExtern(RunStatus *runStatus, char *fileName)
@@ -38,8 +37,19 @@ void exportExtern(RunStatus *runStatus, char *fileName)
 	
 	if(runStatus -> externFileCount)
 	{
+		printf("Success: Created %s%s\n", fileName, EXTERN_FILE_EXT);
 		fclose(extFile);
 	}
+	
+	extFile = openFile("test", ".test", MODE_WRITE_ONLY);
+	for (i=0; i < runStatus -> finalLabelCount; i++)
+	{
+		fprintf(extFile, "%s\t\t\t", runStatus -> finalLabelArray[i].name);
+		specialBase8Print(extFile,runStatus -> finalLabelArray[i].memAddress);
+		fprintf(extFile, "\n");
+
+	}
+	fclose(extFile);
 }
 
 
@@ -56,7 +66,6 @@ void exportEntry(RunStatus *runStatus, char *fileName)
 	for (i=0; i < runStatus -> entryCount; i++)
 	{
 		fprintf(entFile, "%s\t\t\t", runStatus -> entryArray[i].name);
-		printf("%d\n", runStatus -> entryArray[i].memAddress);
 		specialBase8Print(entFile,runStatus -> entryArray[i].memAddress);
 		fprintf(entFile, "\n");
 		
@@ -64,6 +73,7 @@ void exportEntry(RunStatus *runStatus, char *fileName)
 	
 	if(runStatus -> entryCount)
 	{
+		printf("Success: Created %s%s\n", fileName, ENTRY_FILE_EXT);
 		fclose(entFile);
 	}
 }

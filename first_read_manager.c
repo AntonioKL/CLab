@@ -488,11 +488,7 @@ void parseCmdOperands(RunStatus *runStatus, char *label, int cmdId)
 
 	if (numOp == 0)
 	{
-		if (*(runStatus -> line) == EOF || *(runStatus -> line) == '\n' )
-		{
-			runStatus -> ic ++;
-		}
-		else
+		if (!(*(runStatus -> line) == EOF || *(runStatus -> line) == '\n' ))
 		{
 			printf("ERROR: Line #%d, Invalid Arguments - Command \"%s\" should have %d arguments.\n", runStatus -> lineCount, cmdName, numOp);
 			runStatus -> errNum ++;
@@ -568,13 +564,14 @@ void parseCmdOperands(RunStatus *runStatus, char *label, int cmdId)
 		return ;
 	}
 
-
-	opProccessing(runStatus, label, cmdId , op1, op2);
-
 	if (*label && label)
 	{
 		addLabelFinal(runStatus, label, runStatus -> ic, FALSE);
 	}
+
+	opProccessing(runStatus, label, cmdId , op1, op2);
+
+
 }
 
 void opProccessing(RunStatus *runStatus, char *label, int cmdId ,char *op1, char *op2)
@@ -610,7 +607,6 @@ void opProccessing(RunStatus *runStatus, char *label, int cmdId ,char *op1, char
 		{
 			runStatus->lineArray[runStatus -> lineCount -1 ].op1 -> memAddress = runStatus->ic + 1;
 		}
-		
 		while ( i < globalCommands[cmdId].paramNum)
 		{
 			increaseIC(runStatus);

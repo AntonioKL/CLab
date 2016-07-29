@@ -23,6 +23,8 @@ file_output_manager.o: file_output_manager.c
 clean:
 	rm *~
 	rm *.o
+	rm *.ext
+	rm *.ent
 
 git:
 	git status
