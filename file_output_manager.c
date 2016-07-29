@@ -31,7 +31,7 @@ void exportObject(RunStatus *runStatus, MemoryDump *memStatus, char *fileName)
 	{
 		specialBase8Print(objFile, i + FIRST_MEM_ADDR);
 		fprintf(objFile, "\t\t\t");
-		specialBase8Print(objFile, memStatus -> memArray[i]);
+		specialBase8DefinedSizePrint(objFile, memStatus -> memArray[i]);
 		fprintf(objFile, "\n");
 	}
 
@@ -82,7 +82,6 @@ void exportEntry(RunStatus *runStatus, char *fileName)
 		fprintf(entFile, "%s\t\t\t", runStatus -> entryArray[i].name);
 		specialBase8Print(entFile,runStatus -> entryArray[i].memAddress);
 		fprintf(entFile, "\n");
-		
 	}
 	
 	if(runStatus -> entryCount)
@@ -98,6 +97,28 @@ void specialBase8Print(FILE *extFile, int memAddress)
 	specialBase8ConvertInt(memAddress, buffer);
 	fprintf(extFile, "%s", buffer);
 
+}
+
+void specialBase8DefinedSizePrint(FILE *extFile, int memAddress)
+{
+	int i, j;
+	int codeSize = (MEM_WORD_SIZE)/(NUM_BITS_BASE8) + 1;
+	char buffer[(MEM_WORD_SIZE)/(NUM_BITS_BASE8) + 1] = "\0";
+	char codeStr[(MEM_WORD_SIZE)/(NUM_BITS_BASE8) + 1];
+	char *baseDigits = SPECIAL_BASE8_DIGITS;
+	
+	specialBase8ConvertInt(memAddress, buffer);
+
+	for ( i = 0 ; i < codeSize - strlen(buffer) -1 ; i++)
+	{
+		codeStr[i] = baseDigits[0];
+	}
+	for (j = 0 ; j < strlen(buffer) ; j++)
+	{
+		codeStr[i+j] = buffer[j];
+	}
+	codeStr[i+j] = '\0';
+	fprintf(extFile, "%s", codeStr);
 }
 
 

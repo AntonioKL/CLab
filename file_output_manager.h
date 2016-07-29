@@ -31,6 +31,7 @@ void exportExtern(RunStatus *runStatus, char *fileName);
 void exportEntry(RunStatus *runStatus, char *fileName);
 void exportObject(RunStatus *runStatus, MemoryDump *memStatus, char *fileName);
 void specialBase8Print(FILE *extFile, int memAddress);
+void specialBase8DefinedSizePrint(FILE *extFile, int memAddress);
 void specialBase8ConvertInt(int num, char *buffer);
 
 
