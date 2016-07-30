@@ -202,7 +202,7 @@ int getRequiredBitsFromLabel(int val, int up , int down)
 	}
 
 	lsb <<= up;
-	
+
 	if ( val != (val | lsb))
 	{
 		val >>= down;
@@ -212,6 +212,7 @@ int getRequiredBitsFromLabel(int val, int up , int down)
 			i++;
 		}
 		return (tmp & val);
+		
 	}
 	else
 	{
@@ -223,6 +224,7 @@ int getRequiredBitsFromLabel(int val, int up , int down)
 			i++;
 		}
 		tmp2 <<= diff;
+
 		return (tmp2 | (tmp & val ));
 	}
 

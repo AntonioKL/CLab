@@ -119,7 +119,7 @@ typedef struct
 	char str[MAX_LABEL_LEN];			/* operandString */
 	char label[MAX_LABEL_LEN];			/* The label in case of dynamic addresing */
 	int up;						/* The low end of the range for dynamic addressing */
-	int down;					/* The high end of the range for dynamic addressing */
+	int down;			 		/* The high end of the range for dynamic addressing */
 
 } Operand;
 

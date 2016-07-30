@@ -183,11 +183,12 @@ void addLabelFinal(RunStatus *runStatus, char *label, int mem, int isData)
 	strcpy (runStatus -> finalLabelArray[runStatus -> finalLabelCount].name , label);
 	runStatus -> finalLabelArray[runStatus -> finalLabelCount].memAddress = mem + FIRST_MEM_ADDR;
 	runStatus -> finalLabelArray[runStatus -> finalLabelCount].isData = isData;
-	runStatus -> finalLabelCount ++;
+	
 	if (!isData)
 	{
 		runStatus -> finalLabelArray[runStatus -> finalLabelCount].word = getCommandWord(runStatus, runStatus -> lineCount -1);
 	}
+	runStatus -> finalLabelCount ++;
 }
 
 void addDirData(RunStatus *runStatus, int num)
