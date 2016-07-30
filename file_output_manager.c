@@ -8,12 +8,19 @@ FileOutputManager
 */
 #include "main_header.h"
 
+/*
+Function that handles various file dumps
+Input: 
+	RunStatus Struct
+	MemoryDump Struct
+	filename
+Output: -
+*/
 void fileOutputmanager(RunStatus *runStatus, MemoryDump *memStatus, char *fileName)
 {
 	exportObject(runStatus, memStatus, fileName);
 	exportExtern(runStatus, fileName);
 	exportEntry(runStatus, fileName);
-
 }
 
 void exportObject(RunStatus *runStatus, MemoryDump *memStatus, char *fileName)

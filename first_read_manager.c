@@ -14,6 +14,7 @@ extern const Command globalCommands[];
 /*Directive List*/
 extern const Directive globalDirective[];
 
+
 int firstReadManager(RunStatus *runStatus, FILE *file)
 {
 	/*We are taking more than nessacry - 100 instead, since we were told we can assume the input is valid with length of each line*/

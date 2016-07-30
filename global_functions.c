@@ -634,8 +634,3 @@ WordMemory getOperandWord(RunStatus *runStatus, int isSrcOperand, Operand *op)
 
 
 
-
-
-
-
-
