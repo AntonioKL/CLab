@@ -9,6 +9,11 @@ File processing file
 
 #include "main_header.h"
 
+/*
+Function that used to open the disered file and parse it.
+Input: File Name that should be parsed 
+Output: - 
+*/
 void parseFile(char *fileName)
 {	
 	FILE *file = openFile(fileName, INPUT_FILE_EXTENSION, MODE_READ_ONLY);
