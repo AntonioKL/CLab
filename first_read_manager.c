@@ -564,12 +564,13 @@ void parseCmdOperands(RunStatus *runStatus, char *label, int cmdId)
 		return ;
 	}
 
+
+
+	opProccessing(runStatus, label, cmdId , op1, op2);
 	if (*label && label)
 	{
 		addLabelFinal(runStatus, label, runStatus -> ic, FALSE);
 	}
-
-	opProccessing(runStatus, label, cmdId , op1, op2);
 
 
 }

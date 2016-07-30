@@ -15,7 +15,7 @@ void parseFile(char *fileName)
 
 	if (file == NULL)
 	{
-		printf("ERROR: Cannot open the file: %s"INPUT_FILE_EXTENSION"\n", fileName);
+		printf("ERROR: Cannot open file: %s"INPUT_FILE_EXTENSION"\n", fileName);
 		return;
 	}
 	fileReadProccessManager(file, fileName);
