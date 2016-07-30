@@ -112,10 +112,7 @@ void initializeRunStatus(RunStatus *runStatus)
 	
 }
 
-void resetRunParams(RunStatus *runStatus) /**/
-{
-	return ;
-}
+
 void releaseRunStatusStruct(RunStatus *runStatus)
 {
 	/* free the data in struct that was allocated by malloc*/
@@ -173,20 +170,6 @@ void buildFinalLabes(RunStatus *runStatus)
 		addLabelFinal(runStatus, runStatus -> labelArray[i].name, runStatus -> labelArray[i].memAddress + runStatus -> ic, TRUE);
 		
 	}
-	/* Debug Print
-	for (i = 0; (runStatus -> finalLabelCount) > i; i++)
-	{
-		
-		printf("-%s----%d-\n", runStatus -> finalLabelArray[i].name, runStatus -> finalLabelArray[i].memAddress);
-		
-	}
-	*/
-	/*for (i = 0; (runStatus -> entryCount) > i; i++)
-	{
-		
-		printf("-%s---\n", runStatus -> entryArray[i].name);
-		
-	}*/
 }
 
 
