@@ -23,10 +23,20 @@ void parseFile(char *fileName)
 		printf("ERROR: Cannot open file: %s"INPUT_FILE_EXTENSION"\n", fileName);
 		return;
 	}
+
+	/*File is open we can parse it now*/
 	fileReadProccessManager(file, fileName);
 	fclose(file);
 }
 
+/*
+Function that opens the file and returns it.
+Input: 
+	File Name
+	Extension of the File
+	MODE : ( READ, Write , Append)
+Output: Pointer to the start of the file
+*/
 
 FILE* openFile(const char *fileName, const char *extension, const char *openMode)
 {
@@ -36,12 +46,18 @@ FILE* openFile(const char *fileName, const char *extension, const char *openMode
 	strcpy(fullFileName, fileName);
 	strcat(fullFileName, extension);
 	
-	
 	file = fopen(fullFileName, openMode);
-
 	return file;
 }
 
+/*
+Function that manages the reading proceess the file and manages the output.
+Input: 
+	File to work on
+	filename string
+
+Output: -
+*/
 void fileReadProccessManager(FILE *file, char *fileName)
 {
 	RunStatus runStatus;
@@ -49,9 +65,9 @@ void fileReadProccessManager(FILE *file, char *fileName)
 	int errNum = 0;
 	
 	initializeRunStatus(&runStatus);
-	
-	
 	errNum += firstReadManager(&runStatus, file);
+
+	/*We stop in case of failed reallocation of memory in realloc*/
 	if (runStatus.flagFatalErr)
 	{
 		releaseRunStatusStruct(&runStatus);
@@ -59,6 +75,7 @@ void fileReadProccessManager(FILE *file, char *fileName)
 		return ;
 	}
 	
+	/*If we have errors in first run, we will release the allocated data and print an inforamtion about it*/
 	if (errNum)
 	{
 		releaseRunStatusStruct(&runStatus);
@@ -66,14 +83,17 @@ void fileReadProccessManager(FILE *file, char *fileName)
 		return ;
 	}
 
+	/*Creating the full "TAVLAT SMALIM" from Label of Data combined with Label of commands*/
 	buildFinalLabes(&runStatus);
 	initializeMemoryStatus(&memStatus);
 
+	/*Second run now we are dumping to memStatus struct*/
 	errNum = SecondReadManager(&runStatus, &memStatus);
 
-
+	/*If we have errors in second run, we will release the allocated data and print an inforamtion about it*/
 	if (!errNum)
 	{
+		/*Passing the status of the run and the dump from memory to output manager*/
 		fileOutputmanager(&runStatus, &memStatus, fileName);
 		printf("Success: The file has been parsed\n\n");
 	}
@@ -81,9 +101,17 @@ void fileReadProccessManager(FILE *file, char *fileName)
 	{
 		printf("\nFail: You have %d errors, please fix them\n", errNum);
 	}
+
+	/*Releasing all Dynamicaly allocated data*/
 	releaseRunStatusStruct(&runStatus);
 }
 
+/*
+Function that initialize the paramerts in the struct. The initializing is required for the run.
+Input: 
+	RunStaus Struct
+Output: -
+*/
 void initializeRunStatus(RunStatus *runStatus)
 {
 	runStatus -> line = NULL;
@@ -117,10 +145,18 @@ void initializeRunStatus(RunStatus *runStatus)
 	
 }
 
-
+/*
+Function that releases the paramerts in the struct.
+Input: 
+	RunStaus Struct
+Output: -
+*/
 void releaseRunStatusStruct(RunStatus *runStatus)
 {
-	/* free the data in struct that was allocated by malloc*/
+	/*
+	 free the data in struct that was allocated by malloc/realloc
+	 The data in struct is set free only it was reallocated from NULL
+	*/
 	int i;
 
 	for (i=0; i < runStatus -> lineCount; i++)
@@ -165,6 +201,12 @@ void releaseRunStatusStruct(RunStatus *runStatus)
 	
 }
 
+/*
+Function that builds the "Table of Signs", from data labels and command labels by right order
+Input: 
+	RunStaus Struct
+Output: -
+*/
 void buildFinalLabes(RunStatus *runStatus)
 {
 	int i=0;
@@ -177,7 +219,12 @@ void buildFinalLabes(RunStatus *runStatus)
 	}
 }
 
-
+/*
+Function that initializes the parametrs inside MemoryDump Struct
+Input: 
+	MemoryDump Struct
+Output: -
+*/
 void initializeMemoryStatus(MemoryDump *memStatus)
 {
 	memStatus -> wordCount = 0;
