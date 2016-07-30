@@ -39,7 +39,6 @@ int firstReadManager(RunStatus *runStatus, FILE *file)
 			return 1;
 		}
 		runStatus -> lineArray[runStatus -> lineCount -1 ].address = runStatus -> ic;
-		runStatus -> lineArray[runStatus -> lineCount -1 ].addressSize = 0;
 		
 		runStatus -> lineArray[runStatus -> lineCount -1 ].op1 = realloc(NULL, sizeof(Operand));
 		if (! (runStatus -> lineArray[runStatus -> lineCount -1 ].op1) )
@@ -255,7 +254,6 @@ void parseDataDirective(RunStatus *runStatus, char *label)
 			return ;
 		}
 		addDirData(runStatus, arrNum[i]);
-		runStatus -> lineArray[runStatus -> lineCount -1 ].addressSize ++;
 		i++;
 	}
 }
@@ -333,13 +331,11 @@ void parseStringDirective(RunStatus *runStatus, char *label)
 			runStatus -> flagFatalErr = EXIT_ERROR;
 			return ;
 		}
-		runStatus -> lineArray[runStatus -> lineCount -1 ].addressSize ++;
 		addDirData(runStatus, arrChar[i]);
 		i++;
 	}
 	
 	addDirData(runStatus, '\0');
-	runStatus -> lineArray[runStatus -> lineCount -1 ].addressSize ++;
 
 }
 
@@ -616,7 +612,6 @@ void opProccessing(RunStatus *runStatus, char *label, int cmdId ,char *op1, char
 		{
 			runStatus->lineArray[runStatus -> lineCount -1 ].op2 -> memAddress = runStatus->ic + 1;
 		}
-
 		if (globalCommands[cmdId].paramNum == 2)
 		{
 			runStatus->lineArray[runStatus -> lineCount -1 ].op1 -> memAddress = runStatus->ic + 1;

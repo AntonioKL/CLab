@@ -530,7 +530,6 @@ void increaseIC(RunStatus *runStatus)
 		if (runStatus-> ic + runStatus-> dataCount < MAX_DATA_SIZE)
 		{
 			runStatus-> ic ++;
-			runStatus -> lineArray[runStatus -> lineCount -1 ].addressSize ++;
 		}
 		else if (!runStatus -> flagFatalErr)
 		{

@@ -25,7 +25,6 @@ void parseFile(char* fileName);
 FILE* openFile(const char *fileName, const char *extension, const char *openMode);
 void fileReadProccessManager(FILE *file, char *fileName);
 void initializeRunStatus(RunStatus *runStatus);
-void resetRunParams(RunStatus *runStatus);
 void releaseRunStatusStruct(RunStatus *runStatus);
 void buildFinalLabes(RunStatus *runStatus);
 void initializeMemoryStatus(MemoryDump *memStatus);
