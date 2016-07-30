@@ -3,7 +3,7 @@
 File processing file
 	Author: Anton Kuligin 
 	Git Project: https://github.com/AntonioKL/CLab
-	Description: Handles the reading of the input files
+	Description: Handles the reading of the input files and dividing the tasks
 =====================================================================================================================
 */
 
