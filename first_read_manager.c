@@ -563,15 +563,8 @@ void parseCmdOperands(RunStatus *runStatus, char *label, int cmdId)
 		runStatus -> errNum ++;
 		return ;
 	}
-
-
-
+	
 	opProccessing(runStatus, label, cmdId , op1, op2);
-	if (*label && label)
-	{
-		addLabelFinal(runStatus, label, runStatus -> ic, FALSE);
-	}
-
 
 }
 
@@ -603,6 +596,13 @@ void opProccessing(RunStatus *runStatus, char *label, int cmdId ,char *op1, char
 		return ;
 	}
 
+	runStatus -> lineArray[runStatus -> lineCount -1 ].cmdId = cmdId;
+	if (*label && label)
+	{
+		addLabelFinal(runStatus, label, runStatus -> ic, FALSE);
+	}
+
+
 	if ( runStatus -> lineArray[runStatus -> lineCount -1 ].op1 -> type == REGISTER && runStatus->lineArray[runStatus -> lineCount -1 ].op2 -> type == REGISTER)
 	{
 		increaseIC(runStatus);
@@ -612,7 +612,12 @@ void opProccessing(RunStatus *runStatus, char *label, int cmdId ,char *op1, char
 	}
 	else
 	{
-		if (globalCommands[cmdId].paramNum != 0)
+		if (globalCommands[cmdId].paramNum == 1)
+		{
+			runStatus->lineArray[runStatus -> lineCount -1 ].op2 -> memAddress = runStatus->ic + 1;
+		}
+
+		if (globalCommands[cmdId].paramNum == 2)
 		{
 			runStatus->lineArray[runStatus -> lineCount -1 ].op1 -> memAddress = runStatus->ic + 1;
 		}
@@ -630,7 +635,6 @@ void opProccessing(RunStatus *runStatus, char *label, int cmdId ,char *op1, char
 	}
 	
 	increaseIC(runStatus);
-	runStatus -> lineArray[runStatus -> lineCount -1 ].cmdId = cmdId;
 	
 }
 

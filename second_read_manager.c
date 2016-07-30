@@ -83,13 +83,11 @@ void dumpLine(int lineNum, MemoryDump *memStatus, RunStatus *runStatus)
 	{
 		if (op1 -> type != INVAL )
 		{
-			op1 -> memAddress = memStatus -> wordCount + FIRST_MEM_ADDR;
 			wordOp = getOperandWord(runStatus, TRUE, op1);
 			addToMem(memStatus, wordOp);
 		}
 		if (op2 -> type != INVAL )
 		{
-			op2 -> memAddress = memStatus -> wordCount + FIRST_MEM_ADDR;
 			wordOp = getOperandWord(runStatus, FALSE, op2);
 			addToMem(memStatus, wordOp);
 		}
