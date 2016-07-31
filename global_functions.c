@@ -9,7 +9,7 @@ global_functions
 
 #include "main_header.h"
 
-
+/* Const*/
 /*Command list*/
 const Command globalCommands[] = 
 /*	Name | Number of Parametrs Required | Opcode */
@@ -43,9 +43,17 @@ const Directive globalDirective[] =
 	{ NULL } /*Null will be used as an end of the array*/
 };
 
+/* Functions*/
 
+/*
+Function that check if the line is empty or not
+Input: 
+	RunStatus Struct
+Output: True if the line is empty and False otherwise
+*/
 int isLineEmpty(RunStatus *runStatus)
 {
+	/*Skipping all tabs and spaces*/
 	skipSpaces(runStatus);
 	if(*(runStatus->line)==EOF || *(runStatus->line)=='\n')
 	{
@@ -54,8 +62,15 @@ int isLineEmpty(RunStatus *runStatus)
  	return FALSE;
 }
 
+/*
+Function that check if the line is comment or not
+Input: 
+	RunStatus Struct
+Output: True if the line is comment and False otherwise
+*/
 int isLineComment(RunStatus *runStatus)
 {
+	/*Comment is the line that starts with ;*/
 	if (*(runStatus -> originalLine) == ';')
 	{
 		return TRUE;
@@ -64,6 +79,12 @@ int isLineComment(RunStatus *runStatus)
 		
 }
 
+/*
+Function that returns if the next char after the spaces and tabss
+Input: 
+	String
+Output: Place after all Spaces 
+*/
 char *getCharAfterSpace(char *p)
 {
 	while(isspace(*p))
@@ -72,18 +93,30 @@ char *getCharAfterSpace(char *p)
 		{
 			return p;
 		}
-		p++;
+		p++; /* It is a space , move to next char*/
 	}
 
 	return p;
 }
 
+/*
+Function that skip spaces at the start for a specific string 
+Input: 
+	RunStatus Struct
+Output: -
+*/
 void skipSpaces(RunStatus *runStatus)
 {
 	runStatus -> line = getCharAfterSpace(runStatus -> line);
 }
 
-
+/*
+Function that gets the lable for the specific line of assembler code
+Input: 
+	RunStatus Struct
+	label - that assigned it function if there is a label
+Output: -
+*/
 void getLabel(RunStatus *runStatus, char *label)
 {
 	char temp_label[MAX_LABEL_LEN]="\0";
