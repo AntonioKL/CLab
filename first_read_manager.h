@@ -31,9 +31,9 @@ void parseCmdOperands(RunStatus *runStatus, char *label, int cmdId);
 void opProccessing(RunStatus *runStatus, char *label, int cmdId ,char *op1, char *op2);
 int isLegalOperands(RunStatus *runStatus, int cmdId);
 
-/*-----------------------------------------
---- Include parse functions declaration ---
--------------------------------------------*/
+/*-----------------------------------
+--- Parsing functions declaration ---
+-------------------------------------*/
 
 void parseDataDirective(RunStatus *runStatus, char *label);
 void parseStringDirective(RunStatus *runStatus, char *label);

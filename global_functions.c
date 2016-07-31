@@ -168,6 +168,7 @@ void getLabel(RunStatus *runStatus, char *label)
 			return ;
 		}
 		strncpy(temp_label, runStatus -> originalLine,i); /*We don't want to copy the ":" itself*/
+
 		/*Label cannot be a register name*/
 		if(isRegister(temp_label))
 		{
@@ -199,10 +200,11 @@ int isRegister(char *str)
 }
 
 /*
-Function that checks if the passed string is a matching the register name or not
+Function that adds the label to data label struct
 Input: 
+	RunStatus struct
 	label string
-Output: TRUE if it matches the label, FALSE otherwise.
+Output: -
 */
 void addLabelData(RunStatus *runStatus, char *label)
 {
@@ -218,6 +220,16 @@ void addLabelData(RunStatus *runStatus, char *label)
 	runStatus -> labelCount ++;
 }
 
+/*
+Function that adds the label to "table of signs"
+Input: 
+	RunStatus struct
+	label string
+	memory address
+	TRUE/FALSE - If the label refers to data or now
+Output: -
+
+*/
 void addLabelFinal(RunStatus *runStatus, char *label, int mem, int isData)
 {
 	runStatus -> finalLabelArray = realloc(runStatus -> finalLabelArray, (runStatus -> finalLabelCount + 1) * sizeof(Label));
@@ -231,13 +243,20 @@ void addLabelFinal(RunStatus *runStatus, char *label, int mem, int isData)
 	runStatus -> finalLabelArray[runStatus -> finalLabelCount].memAddress = mem + FIRST_MEM_ADDR;
 	runStatus -> finalLabelArray[runStatus -> finalLabelCount].isData = isData;
 	
-	if (!isData)
+	if (!isData)	/*Adding word for data*/
 	{
 		runStatus -> finalLabelArray[runStatus -> finalLabelCount].word = getCommandWord(runStatus, runStatus -> lineCount -1);
 	}
 	runStatus -> finalLabelCount ++;
 }
 
+/*
+Function that adds the data to data array
+Input: 
+	RunStatus struct
+	number/char to add
+Output: -
+*/
 void addDirData(RunStatus *runStatus, int num)
 {
 	runStatus -> dataArray = realloc(runStatus -> dataArray, (runStatus -> dataCount + 1) * sizeof(int));
@@ -250,6 +269,13 @@ void addDirData(RunStatus *runStatus, int num)
 	runStatus -> dataCount ++;
 }
 
+/*
+Function that parses the lable name and checks that name of the label is valid
+Input: 
+	RunStatus struct
+	label string
+Output: -
+*/
 void getLabelReference(RunStatus *runStatus, char *label)
 {
 	int i = 0;
@@ -304,7 +330,13 @@ void getLabelReference(RunStatus *runStatus, char *label)
 	
 }
 
-
+/*
+Function that adds the label to entry labels struct
+Input: 
+	RunStatus struct
+	label string
+Output: -
+*/
 void addEntryDir(RunStatus *runStatus, char *label)
 {
 	runStatus -> entryArray = realloc(runStatus -> entryArray, (runStatus -> entryCount + 1) * sizeof(Entry));
@@ -317,6 +349,13 @@ void addEntryDir(RunStatus *runStatus, char *label)
 	runStatus -> entryCount ++;
 }
 
+/*
+Function that adds the label to extern definition of labels struct
+Input: 
+	RunStatus struct
+	label string
+Output: -
+*/
 void addExternDir(RunStatus *runStatus, char *label)
 {
 	runStatus -> externArray = realloc(runStatus -> externArray, (runStatus -> externCount + 1) * sizeof(Extern));
@@ -329,6 +368,14 @@ void addExternDir(RunStatus *runStatus, char *label)
 	runStatus -> externCount ++;
 }
 
+/*
+Function that adds the label to extern labels references - addresses 
+Input: 
+	RunStatus struct
+	label string
+	integer memory address
+Output: -
+*/
 void addExternFile(RunStatus *runStatus, char *label, int memaddr)
 {
 	runStatus -> externFileArray = realloc(runStatus -> externFileArray, (runStatus -> externFileCount + 1) * sizeof(Extern));
@@ -342,12 +389,19 @@ void addExternFile(RunStatus *runStatus, char *label, int memaddr)
 	runStatus -> externFileCount ++;
 }
 
+/*
+Function that return the id of the command on the line
+Input: 
+	RunStatus struct
+Output: integer command ID
+*/
 int getCommandId(RunStatus *runStatus)
 {
 	int i = 0;
 	int count = 0;
 	char cmd[MAX_LINE_LENGTH]="\0";
-
+	
+	/*getting the command*/
 	while (!isspace(*(runStatus->line)))
 	{
 		cmd[count]=*(runStatus->line);
@@ -355,12 +409,14 @@ int getCommandId(RunStatus *runStatus)
 		count++;
 	}
 	
+	/*Not a command at all, wrong line*/
 	if (!count)
 	{
 		i = -2;
 		return -2;
 	}
 
+	/*searching for opcode int the commands array*/
 	while (globalCommands[i].name)
 	{
 		if (! (strcmp(globalCommands[i].name, cmd)))
@@ -375,11 +431,19 @@ int getCommandId(RunStatus *runStatus)
 	
 }
 
+/*
+Function that places the string of the operand in the provided variable
+Input: 
+	RunStatus struct
+	operand Name
+Output: -
+*/
 void getOperand(RunStatus *runStatus, char *op)
 {
 	int count = 0;
 	char temp_op[MAX_LABEL_LEN]="\0";
 
+	/*Searching for end of line or , next operand*/
 	while (!isspace(*(runStatus->line)) && (*(runStatus->line)!=','))
 	{
 		temp_op[count]=*(runStatus->line);
@@ -390,13 +454,22 @@ void getOperand(RunStatus *runStatus, char *op)
 	strcpy(op, temp_op);
 }
 
-
+/*
+Function that parses the provided operand string and stores it inside provided Operand struct
+Input: 
+	RunStatus struct
+	operand string
+	Operand struct
+Output: -
+*/
 void parseOp(RunStatus *runStatus, char *opStr, Operand *op)
 {
 	strcpy(op -> str, opStr);
 
+	/*Check operand type*/
 	if (isDynamicParam(op))
 	{
+		/*Validations on Dynamic reference*/
 		if (op -> type == INVAL)
 		{
 			printf("ERROR: Line #%d, Illegal Operand \"%s\" invalid syntax for range .\n", runStatus -> lineCount, op -> str);
@@ -434,6 +507,7 @@ void parseOp(RunStatus *runStatus, char *opStr, Operand *op)
 		}
 		else
 		{
+			/* Parsing Number*/
 			if (isLegalNumber(runStatus, opStr, MEM_WORD_SIZE - 2, op))
 			{
 				op -> type = NUMBER;
@@ -447,7 +521,7 @@ void parseOp(RunStatus *runStatus, char *opStr, Operand *op)
 			}
 		}
 	}
-	else if (isValidLabel (runStatus, opStr))
+	else if (isValidLabel (runStatus, opStr)) /*Label refernce */
 	{
 		op -> type = DIRECT;
 		strcpy(op -> label, opStr);
@@ -461,6 +535,12 @@ void parseOp(RunStatus *runStatus, char *opStr, Operand *op)
 	}
 }
 
+/*
+Function that parses the provided Operand struct and gets the up and down ranges( If it is possible)
+Input: 
+	Operand struct
+Output: TRUE if the range exists and is parsable , FALSE otherwise
+*/
 int isDynamicParam(Operand *op)
 {
 	char temp_str[MAX_LABEL_LEN]="\0";
@@ -470,6 +550,7 @@ int isDynamicParam(Operand *op)
 
 	strcpy(temp_str, op->str);
 	
+	/*Checks if there is a range in [*/
 	if (! (start = strchr(temp_str, '[')))
 	{
 		return FALSE;
@@ -483,7 +564,8 @@ int isDynamicParam(Operand *op)
 		op -> type = INVAL;
 		return TRUE;
 	}
-
+	
+	/*Splitting the string to multiple based on their purpose*/
 	*start = '\0';
 	start ++;
 	*end = '\0';
@@ -496,7 +578,8 @@ int isDynamicParam(Operand *op)
 		op -> type = INVAL;
 		return TRUE;
 	}
-
+	
+	/*Setting up/down bits*/
 	op -> down = atoi(start);
 	op -> up = atoi(dash);
 	op -> type = DYNAMIC;
@@ -506,6 +589,13 @@ int isDynamicParam(Operand *op)
 
 }
 
+/*
+Function that checks if the provided range is valid
+Input: 
+	int high place
+	int low place
+Output: TRUE if in range , FALSE otherwise
+*/
 int checkDynamicRange(int up, int down)
 {
 	if (down < 1 || up > 15 || up - down > 13 || up - down < 0 )
@@ -515,6 +605,13 @@ int checkDynamicRange(int up, int down)
 	return TRUE;
 }
 
+/*
+Function that checks if the provided label is valid
+Input: 
+	RunStatus struct
+	label string
+Output: TRUE if it is valid , FALSE otherwise
+*/
 int isValidLabel(RunStatus *runStatus, char *label)
 {
 	char *temp_label = label;
@@ -526,6 +623,8 @@ int isValidLabel(RunStatus *runStatus, char *label)
 		return FALSE;
 	}
 	temp_label++;
+	
+	/*Checking every char*/
 	while (! (isspace(*(temp_label)) || *(temp_label) == EOF || *(temp_label) == '\n' || *(temp_label) == '\0'))
 	{
 		if (! isalnum(*(temp_label)))
@@ -538,7 +637,7 @@ int isValidLabel(RunStatus *runStatus, char *label)
 		temp_label++;
 	}
 
-
+	/*Check that the size of the lable doesn't exceed maximum allowed value*/
 	if (i >= MAX_LABEL_LEN)
 	{
 		printf("ERROR: Line #%d, Invalid Operand Label - Label \"%s\" contain no more than %d chars.\n", runStatus -> lineCount, label, MAX_LABEL_LEN);
@@ -549,18 +648,28 @@ int isValidLabel(RunStatus *runStatus, char *label)
 	return TRUE;
 }
 
-int isLegalNumber(RunStatus *runStatus, char *str, int max_size, Operand *op)
+/*
+Function that checks if the provided number is valid
+Input: 
+	RunStatus struct
+	number string
+	maximum allowed size for number
+	Operand struct
+Output: TRUE if it is valid , FALSE otherwise
+*/
+int isLegalNumber(RunStatus *runStatus, char *str, int maxSize, Operand *op)
 {
 	char *end;
 	int value;
-	int maxNumber = (1 << max_size) -1; 
+	int maxNumber = (1 << maxSize) -1; /*Setting Number range*/
 
-	value = strtol (str,&end, 10);
+	value = strtol (str,&end, 10);/*Convert to Integer*/
 	if ( *end )
 	{
 		return FALSE;
 	}
 
+	/*Check that the number is in allowed range*/
 	if ( value > maxNumber || value < -maxNumber)
 	{
 		return FALSE;
@@ -568,10 +677,14 @@ int isLegalNumber(RunStatus *runStatus, char *str, int max_size, Operand *op)
 
 	op -> val = value;
 	return TRUE;
-	 
-	
 }
 
+/*
+Function that increase IC by 1 in RunStatus struct
+Input: 
+	RunStatus struct
+Output: -
+*/
 void increaseIC(RunStatus *runStatus)
 {
 		if (runStatus-> ic + runStatus-> dataCount < MAX_DATA_SIZE)
@@ -585,7 +698,13 @@ void increaseIC(RunStatus *runStatus)
 		}
 }
 
-
+/*
+Function that creates a language word from the command line
+Input: 
+	RunStatus struct
+	integer line Number
+Output: WordMemory created by passed command
+*/
 WordMemory getCommandWord(RunStatus *runStatus, int lineNum)
 {
 	WordMemory word = {0};
@@ -605,12 +724,13 @@ WordMemory getCommandWord(RunStatus *runStatus, int lineNum)
 		op2type = (int)op2 -> type;
 	}
 
+	/*Setting the bits according to values*/
 	word.eraBits = (eraBit)ABSOLUTE;
 	word.wordBits.commandBits.dstMethod = op2type;
 	word.wordBits.commandBits.srcMethod = op1type;
 	word.wordBits.commandBits.opcode = opcode;
 	word.wordBits.commandBits.group = group;
-	word.wordBits.commandBits.unused = 5;
+	word.wordBits.commandBits.unused = 5; /*Reserved Value and It should be 101 = 5 */
 	
 	return word;
 }
@@ -626,7 +746,14 @@ int getIntFromWord(WordMemory word)
 
 }
 
-
+/*
+Function that creates a language word from the passed operand struct
+Input: 
+	RunStatus struct
+	TRUE/FALSE if the operand is source or not ( destination)
+	Operand struct
+Output: WordMemory created by passed operand struct
+*/
 WordMemory getOperandWord(RunStatus *runStatus, int isSrcOperand, Operand *op)
 {
 	char *str = op -> label;
@@ -635,6 +762,7 @@ WordMemory getOperandWord(RunStatus *runStatus, int isSrcOperand, Operand *op)
 
 	WordMemory word = {0};
 
+	/*Checking operand type*/
 	if (op -> type == REGISTER)
 	{
 		word.eraBits = (eraBit)ABSOLUTE;
@@ -650,6 +778,7 @@ WordMemory getOperandWord(RunStatus *runStatus, int isSrcOperand, Operand *op)
 	}
 	else
 	{
+		/*Checking if the Label is extern*/
 		for ( i = 0; i < runStatus -> externCount && ! isLabelExtern ; i++)
 		{
 			if (!strcmp(str, runStatus -> externArray[i].name))
@@ -658,6 +787,7 @@ WordMemory getOperandWord(RunStatus *runStatus, int isSrcOperand, Operand *op)
 			}
 		}
 
+		/*pasring operands and assigning ERA + value*/
 		if (op -> type == DIRECT && isLabelExtern)
 		{
 			word.eraBits = (eraBit)EXTERNAL;
@@ -677,7 +807,5 @@ WordMemory getOperandWord(RunStatus *runStatus, int isSrcOperand, Operand *op)
 	}
 	return word;
 }
-
-
 
 
