@@ -23,9 +23,10 @@ file_output_manager.o: file_output_manager.c
 clean:
 	rm -f assembler
 	rm -f *~
-	rm -f *.ext
-	rm -f *.ent
-	rm -f *.ob
+	rm -rf Examples/*~
+	rm -rf Examples/*.ext
+	rm -rf Examples/*.ent
+	rm -rf Examples/*.ob
 	rm -f *.o
 
 
