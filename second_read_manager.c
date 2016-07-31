@@ -9,23 +9,41 @@ SecondReadManager
 
 #include "main_header.h"
 
+/*
+Function that manages the second run and dumping the commands , variables and data to memoryDump struct
+Input: 
+	RunStatus struct
+	MemoryDump struct
+Output: Number of errors during the pass
+*/
 int SecondReadManager(RunStatus *runStatus, MemoryDump *memStatus)
 {
 	int i = 0;
 
+	/*Validation that all extnry labels exists in the code*/
 	checkEntryLabels(runStatus);
+
+	/*We are dumping the command lines first*/
 	for (i = 0; i < runStatus -> lineCount; i++)
 	{
 		dumpLine(i, memStatus, runStatus);
 	}
 	
+	/* After finishing with commands we are dumping the data*/
 	for (i = 0; i < runStatus -> dataCount; i++)
 	{
 		dumpData(runStatus -> dataArray[i], memStatus);
 	}
+
 	return runStatus -> errNum;
 }
 
+/*
+Function that checks if all entry references are valid
+Input: 
+	RunStatus struct
+Output: -
+*/
 void checkEntryLabels(RunStatus *runStatus)
 {
 	int i,j;
@@ -51,6 +69,14 @@ void checkEntryLabels(RunStatus *runStatus)
 
 }
 
+/*
+Function that handles the dump of Commands and their operands
+Input: 
+	integer line Number
+	MemoryDump struct
+	RunStatus struct
+Output: -
+*/
 void dumpLine(int lineNum, MemoryDump *memStatus, RunStatus *runStatus)
 {
 	Lines line = runStatus -> lineArray[lineNum];
@@ -59,19 +85,23 @@ void dumpLine(int lineNum, MemoryDump *memStatus, RunStatus *runStatus)
 	WordMemory wordCmd = {0};
 	WordMemory wordOp = {0};
 	
+	/* Check if the line has a command */
 	if ( line.cmdId < 0 )
 	{
 		return ;
 	}
-
+	
+	/*Updating label information about src operand*/
 	updateOperandLabelAddress(op1, runStatus, lineNum);
-	updateOperandLabelAddress(op2, runStatus, lineNum);
-	wordCmd = getCommandWord(runStatus, lineNum);
 
+	/*Updating label information about dst operand*/
+	updateOperandLabelAddress(op2, runStatus, lineNum);
+
+	/*Get the word for the line command and add to memoryDump*/
+	wordCmd = getCommandWord(runStatus, lineNum);
 	addToMem(memStatus, wordCmd);
 	
-	
-
+	/*parsing the operands of the command and adding valid operands to memoryDump*/
 	if (op1 -> type == REGISTER && op2 -> type == REGISTER)	
 	{
 		wordOp.eraBits = (eraBit)ABSOLUTE;
@@ -92,19 +122,25 @@ void dumpLine(int lineNum, MemoryDump *memStatus, RunStatus *runStatus)
 			addToMem(memStatus, wordOp);
 		}
 	}		
-
-
 }
 
+/*
+Function that handles the dump of the data
+Input: 
+	integer data
+	MemoryDump struct
+Output: -
+*/
 void dumpData(int data,  MemoryDump *memStatus)
 {
 	unsigned int mask = ~0;
 
-	mask >>= (BITS_IN_BYTE * sizeof(int) - MEM_WORD_SIZE);
+	/*We need only a certain amount of bits all the rest should be 0*/
+	mask >>= (BITS_IN_BYTE * sizeof(int) - MEM_WORD_SIZE); 
 
 	if( memStatus -> wordCount >= MAX_DATA_SIZE )
 	{
-		return ; /*We exceeded the allowed memory*/
+		return ; /*We exceeded the allowed memory size*/
 	}
 
 	memStatus -> memArray[memStatus -> wordCount] = mask & data;
@@ -112,13 +148,21 @@ void dumpData(int data,  MemoryDump *memStatus)
 
 }
 
+/*
+Function that updates the label of the operand and it's value from table of signs
+Input: 
+	Operand struct
+	RunStatus struct
+	integer line Number
+Output: True if it was able to update the address , FALSE otherwise
+*/
 int updateOperandLabelAddress(Operand *op, RunStatus *runStatus, int lineNum)
 {
 	int labelAddress;
 	int dataAddress;
 	unsigned int startValueData;
 
-	if (op -> type == DIRECT)
+	if (op -> type == DIRECT) /*Label is taken from "tag table"*/
 	{
 		labelAddress = getLabelAddress(runStatus , op, 1);
 		if (labelAddress == -1)
@@ -131,8 +175,10 @@ int updateOperandLabelAddress(Operand *op, RunStatus *runStatus, int lineNum)
 	else if ( op -> type == DYNAMIC)
 	{
 		labelAddress = getLabelAddress(runStatus , op, 0);
-		if (labelAddress != -1)
+
+		if (labelAddress != -1) /*Parsing the dynamic range*/
 		{
+			/* Getting the value depends on cell type (data/command)*/
 			if (runStatus -> finalLabelArray[labelAddress].isData)
 			{
 				dataAddress = runStatus -> finalLabelArray[labelAddress].memAddress - runStatus -> ic - FIRST_MEM_ADDR;
@@ -143,6 +189,7 @@ int updateOperandLabelAddress(Operand *op, RunStatus *runStatus, int lineNum)
 				startValueData = getIntFromWord(runStatus -> finalLabelArray[labelAddress].word);
 			}
 			
+			/* Parsing the specified range*/
 			op -> val = getRequiredBitsFromLabel(startValueData, op -> up, op-> down);
 		}
 		else 
@@ -156,7 +203,14 @@ int updateOperandLabelAddress(Operand *op, RunStatus *runStatus, int lineNum)
 	return TRUE;
 }
 
-
+/*
+Function that get the location of label array inside our "table of tags"
+Input: 
+	RunStatus struct
+	Operand struct
+	integer TRUE/FALSE if we should check extern table or not.
+Output: location of label in the struct, if it is not found we will return -1
+*/
 int getLabelAddress(RunStatus *runStatus, Operand *op, int checkExtern)
 {
 	char *str = op -> label;
@@ -176,6 +230,7 @@ int getLabelAddress(RunStatus *runStatus, Operand *op, int checkExtern)
 			if (!strcmp(str, runStatus -> externArray[i].name))
 			{
 				op -> val = 1;
+				/*Adds reference to extern struct for further dump*/
 				addExternFile(runStatus, str, op -> memAddress);
 				return i;
 			}
@@ -185,6 +240,14 @@ int getLabelAddress(RunStatus *runStatus, Operand *op, int checkExtern)
 	
 }
 
+/*
+Function that gets the specified range of bits from value and return integer
+Input: 
+	value
+	highest bit
+	lowest bit
+Output: integer cut down from value by specified range
+*/
 int getRequiredBitsFromLabel(int val, int up , int down)
 {
 	int diff = (up - down) + 1;
@@ -200,10 +263,12 @@ int getRequiredBitsFromLabel(int val, int up , int down)
 	}
 
 	lsb <<= up;
-
+	
+	/*Checking the value sign +/- */
 	if ( val != (val | lsb))
 	{
 		val >>= down;
+		/*Aggreagate the value for positive*/
 		while (i < diff-1)
 		{
 			tmp = (tmp << 1) + 1;
@@ -216,6 +281,7 @@ int getRequiredBitsFromLabel(int val, int up , int down)
 	{
 		val >>= down;
 		i = 0;
+		/*Aggreagate the value for negative*/
 		while (i < diff)
 		{
 			tmp = (tmp << 1) + 1;
@@ -228,21 +294,23 @@ int getRequiredBitsFromLabel(int val, int up , int down)
 
 }
 
+/*
+Function that adds a specified word to MemoryDump struct
+Input: 
+	MemoryDump struct
+	WordMemory struct - word to be added
+Output: -
+*/
 void addToMem(MemoryDump *memStatus, WordMemory word)
 {	
 	if( memStatus -> wordCount >= MAX_DATA_SIZE )
 	{
-		return ; /*We exceeded the allowed memory*/
+		return ; /*We exceeded the allowed memory size*/
 	}
 
 	memStatus -> memArray[memStatus -> wordCount] = getIntFromWord(word);
 	memStatus -> wordCount ++;
 }
-
-
-
-
-
 
 
 

@@ -176,6 +176,7 @@ void specialBase8DefinedSizePrint(FILE *extFile, int memAddress)
 	{
 		codeStr[i+j] = buffer[j];
 	}
+
 	/*It is a string so we have to close it with Null char*/
 	codeStr[i+j] = '\0';
 	fprintf(extFile, "%s", codeStr);

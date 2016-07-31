@@ -111,7 +111,7 @@ void skipSpaces(RunStatus *runStatus)
 }
 
 /*
-Function that gets the lable for the specific line of assembler code
+Function that gets the label for the specific line of assembler code
 Input: 
 	RunStatus Struct
 	label - that assigned it function if there is a label
@@ -136,6 +136,7 @@ void getLabel(RunStatus *runStatus, char *label)
 		return ;
 	}
 	
+	/*Check every char in the suspected label*/
 	while (!isspace(*c) && *c != '\n' && *c != EOF && *c != ':')
 	{
 		if (! isalnum(*c))
@@ -156,6 +157,7 @@ void getLabel(RunStatus *runStatus, char *label)
 		runStatus -> isLineErr = TRUE;
 		return ;
 	}
+	/*: char is not a part of the label but inticates that we've finished*/
 	if (*c == ':')
 	{
 		if (i >= MAX_LABEL_LEN)
@@ -166,6 +168,7 @@ void getLabel(RunStatus *runStatus, char *label)
 			return ;
 		}
 		strncpy(temp_label, runStatus -> originalLine,i); /*We don't want to copy the ":" itself*/
+		/*Label cannot be a register name*/
 		if(isRegister(temp_label))
 		{
 			printf("ERROR: Line #%d, Invalid Label Name - Illegal Name , You cannot use Register Name.\n", runStatus -> lineCount);
@@ -175,12 +178,17 @@ void getLabel(RunStatus *runStatus, char *label)
 		}
 		i++;
         	runStatus -> line += i;
-		strcpy(label, temp_label);
+		strcpy(label, temp_label); /*copy to passed value*/
 	}
-
 
 }
 
+/*
+Function that checks if the passed string is a matching the register name or not
+Input: 
+	label string
+Output: TRUE if it matches the label, FALSE otherwise.
+*/
 int isRegister(char *str)
 {
 	if (str[0] == 'r'  && str[1] >= '0' && str[1] - '0' <= MAX_REGISTERS && str[2] == '\0') 
@@ -190,6 +198,12 @@ int isRegister(char *str)
 	return FALSE;
 }
 
+/*
+Function that checks if the passed string is a matching the register name or not
+Input: 
+	label string
+Output: TRUE if it matches the label, FALSE otherwise.
+*/
 void addLabelData(RunStatus *runStatus, char *label)
 {
 	runStatus -> labelArray = realloc(runStatus -> labelArray, (runStatus -> labelCount + 1) * sizeof(Label));
