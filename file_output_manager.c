@@ -24,7 +24,7 @@ void fileOutputmanager(RunStatus *runStatus, MemoryDump *memStatus, char *fileNa
 }
 
 /*
-Function that exports the obect file from the dump of the memory
+Function that exports the object file from the dump of the memory
 Input: 
 	RunStatus Struct
 	MemoryDump Struct
@@ -37,7 +37,7 @@ void exportObject(RunStatus *runStatus, MemoryDump *memStatus, char *fileName)
 	FILE *objFile;
 	objFile = openFile(fileName, OBJECT_FILE_EXT, MODE_WRITE_ONLY);
 
-	/*Translating Adress size to special 8 base*/
+	/*Translating Address size to special 8 base*/
 	specialBase8Print(objFile,runStatus -> ic);
 	fprintf(objFile, " ");
 
@@ -49,7 +49,7 @@ void exportObject(RunStatus *runStatus, MemoryDump *memStatus, char *fileName)
 	/*In special Base8*/
 	for (i=0; i < memStatus -> wordCount; i++)
 	{
-		/*Adress Translation*/
+		/*Address Translation*/
 		specialBase8Print(objFile, i + FIRST_MEM_ADDR);
 		fprintf(objFile, "\t\t\t");
 		/*Value Translation , with a word size*/
@@ -148,7 +148,7 @@ void specialBase8Print(FILE *extFile, int memAddress)
 }
 
 /*
-Function that prints to specified file, the provided integer in special base8 but keeps the mimimum word size required for the language
+Function that prints to specified file, the provided integer in special base8 but keeps the minimum word size required for the language
 Input: 
 	File pointer
 	integer value
@@ -171,7 +171,7 @@ void specialBase8DefinedSizePrint(FILE *extFile, int memAddress)
 	{
 		codeStr[i] = baseDigits[0];
 	}
-	/*Placcing the value of buffer in the rest of the cells*/
+	/*Placing the value of buffer in the rest of the cells*/
 	for (j = 0 ; j < strlen(buffer) ; j++)
 	{
 		codeStr[i+j] = buffer[j];
@@ -196,7 +196,7 @@ void specialBase8ConvertInt(int num, char *buffer)
 	int i = -1 ;
 	int tmp_num = num;
 	
-	/*speical case num = 0*/
+	/*special case num = 0*/
 	if(!num)
 	{
 		buffer[0] = digits[0];
@@ -209,7 +209,7 @@ void specialBase8ConvertInt(int num, char *buffer)
 		tmp_num /= BASE_NUM;
 	}
 
-	/*Storing the base8 in stting*/
+	/*Storing the base8 in string*/
 	while (i >= 0)
 	{
 		buffer[i] = digits[num % BASE_NUM];

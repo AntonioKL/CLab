@@ -3,7 +3,7 @@
 FirstReadManager
 	Author: Anton Kuligin 
 	Git Project: https://github.com/AntonioKL/CLab
-	Description: Handles the First Read of Aseembler File
+	Description: Handles the First Read of Assembler File
 =====================================================================================================================
 */
 
@@ -25,7 +25,7 @@ Output: Number of errors found during the run
 */
 int firstReadManager(RunStatus *runStatus, FILE *file)
 {
-	/*We are taking more than nessacry - 100 instead, since we were told we can assume the input is valid with length of each line*/
+	/*We are taking more than necessary - 100 instead, since we were told we can assume the input is valid with length of each line*/
 	char lineString[MAX_LINE_LENGTH];
 
 	while (fgets(lineString, MAX_LINE_LENGTH, file))
@@ -37,7 +37,7 @@ int firstReadManager(RunStatus *runStatus, FILE *file)
 			return runStatus -> errNum;
 		}
 
-		/*Initiazation of runstatus object*/
+		/*Initialization of runstatus object*/
 		runStatus -> line = lineString;
 		runStatus -> originalLine = lineString;
 		runStatus -> lineCount++;
@@ -54,7 +54,7 @@ int firstReadManager(RunStatus *runStatus, FILE *file)
 		runStatus -> lineArray[runStatus -> lineCount -1 ].address = runStatus -> ic;
 		runStatus -> lineArray[runStatus -> lineCount -1 ].cmdId = -1;		
 
-		/*Initiialize the two Operands structs*/
+		/*Initialize the two Operands structs*/
 		runStatus -> lineArray[runStatus -> lineCount -1 ].op1 = realloc(NULL, sizeof(Operand));
 		if (! (runStatus -> lineArray[runStatus -> lineCount -1 ].op1) )
 		{
@@ -82,7 +82,7 @@ int firstReadManager(RunStatus *runStatus, FILE *file)
 			return FALSE;
 		}
 		
-		/*Proccessing the line*/
+		/*Processing the line*/
 		lineProccessor(runStatus);
 
 		/*Check that everything was initialized correct during the run*/
@@ -96,7 +96,7 @@ int firstReadManager(RunStatus *runStatus, FILE *file)
 }
 
 /*
-Function that proccesses the line acoording to the type and pronts errors if any
+Function that processes the line according to the type and prints errors if any
 Input: 
 	RunStatus struct
 Output: -
@@ -117,7 +117,7 @@ void lineProccessor(RunStatus *runStatus)
 
 		if(*labelContent)
 		{
-			for (i = 0; (runStatus -> labelCount) > i; i++) /*Chekcing for duplicating label names in data Labels*/
+			for (i = 0; (runStatus -> labelCount) > i; i++) /*Checking for duplicating label names in data Labels*/
 			{
 				arr_labelName = runStatus -> labelArray[i].name;
 				
@@ -131,7 +131,7 @@ void lineProccessor(RunStatus *runStatus)
 				}
 			}
 
-			for (i = 0; (runStatus -> finalLabelCount) > i; i++) /*Chekcing for duplicating label names in command Labels*/
+			for (i = 0; (runStatus -> finalLabelCount) > i; i++) /*Checking for duplicating label names in command Labels*/
 			{
 				arr_labelName = runStatus -> finalLabelArray[i].name;
 				
@@ -146,7 +146,7 @@ void lineProccessor(RunStatus *runStatus)
 			}
 		}
 		
-		/*Parisng directive or Command*/
+		/*Parsing directive or Command*/
 		if (!(runStatus -> isLineErr))
 		{
 			skipSpaces(runStatus);
@@ -167,7 +167,7 @@ void lineProccessor(RunStatus *runStatus)
 Function that manages the parsing of directives
 Input: 
 	RunStatus struct
-	string containing label name ( If thhe line has it )
+	string containing label name ( If the line has it )
 Output: -
 */
 void scanDirective(RunStatus *runStatus, char *label)
@@ -190,7 +190,7 @@ void scanDirective(RunStatus *runStatus, char *label)
 	skipSpaces(runStatus);
 	
 	
-	/*Running the correct pasring function based on directive*/
+	/*Running the correct parsing function based on directive*/
 	i = 0;
 	while ( globalDirective[i].name )
 	{
@@ -209,7 +209,7 @@ void scanDirective(RunStatus *runStatus, char *label)
 Function that parses the data directive
 Input: 
 	RunStatus struct
-	string containing label name ( If thhe line has it )
+	string containing label name ( If the line has it )
 Output: -
 */
 void parseDataDirective(RunStatus *runStatus, char *label)
@@ -294,7 +294,7 @@ void parseDataDirective(RunStatus *runStatus, char *label)
 	/*Adding the data to data array*/
 	while(i<dataCounter)
 	{
-		if (runStatus-> ic + runStatus-> dataCount -1 >= MAX_DATA_SIZE) /*Checking if we are in memory limit of the proccessor*/ 
+		if (runStatus-> ic + runStatus-> dataCount -1 >= MAX_DATA_SIZE) /*Checking if we are in memory limit of the processor*/ 
 		{
 			printf("ERROR: Not enough Memory to run\n");
 			runStatus -> flagFatalErr = EXIT_ERROR;
@@ -309,7 +309,7 @@ void parseDataDirective(RunStatus *runStatus, char *label)
 Function that parses the string directive
 Input: 
 	RunStatus struct
-	string containing label name ( If thhe line has it )
+	string containing label name ( If the line has it )
 Output: -
 */
 void parseStringDirective(RunStatus *runStatus, char *label)
@@ -337,7 +337,7 @@ void parseStringDirective(RunStatus *runStatus, char *label)
 		{
 			arrChar[dataCounter++] = *(runStatus -> line);
 			runStatus -> line ++;
-			if ( *(runStatus -> line) == '\\' ) /*Pasring the escape sequence of \"*/
+			if ( *(runStatus -> line) == '\\' ) /*Parsing the escape sequence of \"*/
 			{
 				arrChar[dataCounter++] = *(runStatus -> line);
 				runStatus -> line ++;
@@ -560,7 +560,7 @@ void firstParseCmd(RunStatus *runStatus, char *label)
 }
 
 /*
-Function that manages the parsing of the operands inside the commnad line
+Function that manages the parsing of the operands inside the command line
 Input: 
 	RunStatus struct
 	string containing label name ( If the line has it )
@@ -674,19 +674,19 @@ void opProccessing(RunStatus *runStatus, char *label, int cmdId ,char *op1, char
 	int i = 0;
 	Operand *tmpOp;
 
-	/*Pasring the first operand if exists*/
+	/*Parsing the first operand if exists*/
 	if(*op1)
 	{
 		parseOp(runStatus, op1, runStatus->lineArray[runStatus -> lineCount -1 ].op1);
 	}
 
-	/*Pasring the second operand if exists*/
+	/*Parsing the second operand if exists*/
 	if(*op2)
 	{
 		parseOp(runStatus, op2, runStatus -> lineArray[runStatus -> lineCount -1 ].op2);
 	}
 	
-	/*Switching between src and dst operand in case of 1 Ooperand*/
+	/*Switching between src and dst operand in case of 1 operand*/
 	if (globalCommands[cmdId].paramNum == 1)
 	{
 		tmpOp = runStatus->lineArray[runStatus -> lineCount -1 ].op1;
@@ -719,7 +719,7 @@ void opProccessing(RunStatus *runStatus, char *label, int cmdId ,char *op1, char
 	}
 	else 
 	{
-		/*Setting memrory addresses for operands*/
+		/*Setting memory addresses for operands*/
 		if (globalCommands[cmdId].paramNum == 1)
 		{
 			runStatus->lineArray[runStatus -> lineCount -1 ].op2 -> memAddress = runStatus->ic + 1;

@@ -61,7 +61,7 @@ void checkEntryLabels(RunStatus *runStatus)
 		}
 		if (flagRun)
 		{
-			printf("ERROR: Invalid Entry Label - Label \"%s\" does not exists in the program.\n", runStatus -> entryArray[i].name);
+			printf("ERROR: Invalid Entry Label - Label \"%s\" does not exist in the program.\n", runStatus -> entryArray[i].name);
 			runStatus -> errNum ++;
 		}
 		flagRun = TRUE;

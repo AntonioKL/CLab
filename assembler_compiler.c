@@ -43,7 +43,7 @@ int main(int argc, char *argv[])
 		/*Check fileName length*/
 		if (strlen(argv[i]) > MAX_FILENAME_LEN)
 		{
-			printf("ERROR: Maximum allowed filename length is %d.\n", (MAX_FILENAME_LEN));
+			printf("ERROR: Maximum allowed file name length is %d.\n", (MAX_FILENAME_LEN));
 			return 1;
 		}
 		

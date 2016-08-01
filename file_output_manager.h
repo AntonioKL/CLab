@@ -4,13 +4,13 @@
 FileOutputManager - Headers file
 	Author: Anton Kuligin 
 	Git Project: https://github.com/AntonioKL/CLab
-	Description: Headers for Output proccess manager
+	Description: Headers for Output process manager
 =====================================================================================================================
 */
 
-/*-----------------
---- Local const ---
--------------------*/
+/*---------------------
+--- Local constants ---
+-----------------------*/
 
 /*Defining the extension for various output files*/
 #define		OBJECT_FILE_EXT		".ob"
@@ -20,7 +20,7 @@ FileOutputManager - Headers file
 /*Defining the mode to open a file for various output files*/
 #define		MODE_WRITE_ONLY		"w"
 
-/*Special Base8 parametrs*/
+/*Special Base8 parameters*/
 #define		BASE_NUM		8
 #define		SPECIAL_BASE8_DIGITS	"!@#$%^&*"
 

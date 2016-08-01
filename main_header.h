@@ -29,10 +29,10 @@ Main headers file
 /*Given maximum data size*/
 #define		MAX_DATA_SIZE			1000
 
-/*Minimun number of argumnets that should be passed to the ass. compiler*/
+/*Minimum number of arguments that should be passed to the ass. compiler*/
 #define		MIN_ARGS			2
 
-/* Word size in the proccesor */
+/* Word size in the processor */
 
 #define		MEM_WORD_SIZE			15
 
@@ -58,7 +58,7 @@ Main headers file
 #define		TRUE				1
 #define		FALSE				0
 
-/*Maximum number of registrers*/
+/*Maximum number of registers*/
 #define 	MAX_REGISTERS			7
 
 
@@ -68,23 +68,23 @@ Main headers file
 
 typedef struct{ 						/* We need a 15 integers for the word, we can use the struct since minimum size for int is 16 */
 	
-	unsigned int eraBits : 2; 				/* First two are reseved for E.R.A bits*/
+	unsigned int eraBits : 2; 				/* First two are reserved for E.R.A bits*/
 	
 	union							/* Union struct since the word can be a command or data*/
 	{
 		int dataBits			: 13;		
 
 		struct{
-			unsigned int dstMethod	: 2;		/* Destination Operand Addrress Method ID */
-			unsigned int srcMethod	: 2;		/* Source Operand Addrress Method ID */
+			unsigned int dstMethod	: 2;		/* Destination Operand Address Method ID */
+			unsigned int srcMethod	: 2;		/* Source Operand Address Method ID */
 			unsigned int opcode	: 4;		/* Command ID */
-			unsigned int group	: 2;		/* Number of params passed to cmd*/
+			unsigned int group	: 2;		/* Number of params passed to command ID*/
 			unsigned int unused	: 3;		/* Unused Bit, it is always 101 */
 		} commandBits;
 		
-		struct{						/* Operation between two regexes requires only one word*/
-			unsigned int dstReg	: 6; 		/* Destination Regex Number*/
-			unsigned int srcReg	: 6; 		/* Source Regex Number*/
+		struct{						/* Operation between two registers requires only one word*/
+			unsigned int dstReg	: 6; 		/* Destination register Number*/
+			unsigned int srcReg	: 6; 		/* Source register Number*/
 			unsigned int unused 	: 1;		/* Unused Bit, it is always 0 */
 		} registerBits;
 
@@ -109,16 +109,16 @@ typedef struct{
 	int memAddress;			/* Extern Address in memory*/
 } Extern;				/* Holds the Extern representation*/
 
-/* Holds a differnt types of Operand allowed*/
+/* Holds a different types of Operand allowed*/
 typedef enum { INVAL = -1, NUMBER = 0, DIRECT = 1,  DYNAMIC = 2,  REGISTER = 3 } operandType;
 
 typedef struct
 {
 	operandType type;				/* Type of the operand*/
-	int memAddress;					/* The adress of the operand inside memory */
+	int memAddress;					/* The address of the operand inside memory */
 	unsigned int val;				/* Value of the operand */
 	char str[MAX_LABEL_LEN];			/* operandString */
-	char label[MAX_LABEL_LEN];			/* The label for dynamic addresing */
+	char label[MAX_LABEL_LEN];			/* The label for dynamic addressing */
 	int up;						/* The high value for dynamic addressing */
 	int down;			 		/* The low value for dynamic addressing */
 } Operand;
@@ -137,13 +137,13 @@ typedef struct{
 
 	int flagFatalErr;				/* Flag to be raised in case of fail memory allocation*/
 	int errNum;					/* Counter for Errors*/
-	int isLineErr;					/* Flag to set if there is an erroy on the line*/
+	int isLineErr;					/* Flag to set if there is an error on the line*/
 	int ic;						/* Instruction Counter */
 	
 	Lines *lineArray;				/* Holds an array of Information about the whole parsed lines*/
 	int lineCount;					/* Line counter*/
 
-	Label *finalLabelArray;				/* Holds the Final Label - Tavlat Smalim*/
+	Label *finalLabelArray;				/* Holds the Final Label - table of signs*/
 	int finalLabelCount;				/* Counter for Final Labels*/
 
 	Label *labelArray;				/* Holds the Labels only for Data*/
@@ -164,8 +164,8 @@ typedef struct{
 
 typedef struct{
 	char *name;					/* Directive Name*/
-	void (*parsingFunc)();				/* Corresponding pasring function*/
-} Directive;						/* Holds inforamtion about directives*/
+	void (*parsingFunc)();				/* Corresponding parsing function*/
+} Directive;						/* Holds information about directives*/
 
 typedef struct{
 	char *name;					/* Command name*/
@@ -173,7 +173,7 @@ typedef struct{
 	unsigned int opCode;				/* Command ID*/
 } Command;						/* Hold information about the command*/
 
-/* Holds a differnt E.R.A bits allowed*/
+/* Holds a different E.R.A bits allowed*/
 typedef enum { ABSOLUTE = 0 , EXTERNAL = 1 , REALOCATBLE = 2 } eraBit;
 
 typedef struct{

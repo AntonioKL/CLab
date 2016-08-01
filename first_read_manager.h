@@ -8,9 +8,9 @@ FirstReadManager - Headers file
 =====================================================================================================================
 */
 
-/*-----------------
---- Local const ---
--------------------*/
+/*---------------------
+--- Local constants ---
+-----------------------*/
 
 /*It was told we can assume  that the input is no longer than 80 chars, Just in case using 100 chars*/
 #define 	ALLOWED_MAX_LINE_LENGTH		80

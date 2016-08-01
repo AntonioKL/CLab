@@ -9,10 +9,11 @@ global_functions
 
 #include "main_header.h"
 
-/* Const*/
+/* Constants*/
+
 /*Command list*/
 const Command globalCommands[] = 
-/*	Name | Number of Parametrs Required | Opcode */
+/*	Name | Number of Parameters Required | Opcode */
 {
 	{ "mov" , 2, 0  },
 	{ "cmp" , 2, 1  },
@@ -80,7 +81,7 @@ int isLineComment(RunStatus *runStatus)
 }
 
 /*
-Function that returns if the next char after the spaces and tabss
+Function that returns if the next char after the spaces and tabs
 Input: 
 	String
 Output: Place after all Spaces 
@@ -130,7 +131,7 @@ void getLabel(RunStatus *runStatus, char *label)
 
 	if (!isalpha(*c))
 	{
-		printf("ERROR: Line #%d, Invalid Label Name - Label should start with Letter at the first collumn.\n", runStatus -> lineCount);
+		printf("ERROR: Line #%d, Invalid Label Name - Label should start with Letter at the first column.\n", runStatus -> lineCount);
 		runStatus -> errNum ++;
 		runStatus -> isLineErr = TRUE;
 		return ;
@@ -157,7 +158,7 @@ void getLabel(RunStatus *runStatus, char *label)
 		runStatus -> isLineErr = TRUE;
 		return ;
 	}
-	/*: char is not a part of the label but inticates that we've finished*/
+	/*: char is not a part of the label but indicates that we've finished*/
 	if (*c == ':')
 	{
 		if (i >= MAX_LABEL_LEN)
@@ -254,7 +255,7 @@ void addLabelFinal(RunStatus *runStatus, char *label, int mem, int isData)
 Function that adds the data to data array
 Input: 
 	RunStatus struct
-	number/char to add
+	number / char to add
 Output: -
 */
 void addDirData(RunStatus *runStatus, int num)
@@ -270,7 +271,7 @@ void addDirData(RunStatus *runStatus, int num)
 }
 
 /*
-Function that parses the lable name and checks that name of the label is valid
+Function that parses the label name and checks that name of the label is valid
 Input: 
 	RunStatus struct
 	label string
@@ -304,7 +305,7 @@ void getLabelReference(RunStatus *runStatus, char *label)
 
 	if (! (*(runStatus -> line) == EOF || *(runStatus -> line) == '\n' ))
 	{
-		printf("ERROR: Line #%d, Invalid Label Reference - Directive doesn't hold a valid Label refernce, there is a space in the name.\n", runStatus -> lineCount);
+		printf("ERROR: Line #%d, Invalid Label Reference - Directive doesn't hold a valid Label reference, there is a space in the name.\n", runStatus -> lineCount);
 		runStatus -> errNum ++;
 		return ;
 	}
@@ -521,7 +522,7 @@ void parseOp(RunStatus *runStatus, char *opStr, Operand *op)
 			}
 		}
 	}
-	else if (isValidLabel (runStatus, opStr)) /*Label refernce */
+	else if (isValidLabel (runStatus, opStr)) /*Label reference */
 	{
 		op -> type = DIRECT;
 		strcpy(op -> label, opStr);
@@ -539,7 +540,7 @@ void parseOp(RunStatus *runStatus, char *opStr, Operand *op)
 Function that parses the provided Operand struct and gets the up and down ranges( If it is possible)
 Input: 
 	Operand struct
-Output: TRUE if the range exists and is parsable , FALSE otherwise
+Output: TRUE if the range exists and is passable , FALSE otherwise
 */
 int isDynamicParam(Operand *op)
 {
@@ -637,7 +638,7 @@ int isValidLabel(RunStatus *runStatus, char *label)
 		temp_label++;
 	}
 
-	/*Check that the size of the lable doesn't exceed maximum allowed value*/
+	/*Check that the size of the label doesn't exceed maximum allowed value*/
 	if (i >= MAX_LABEL_LEN)
 	{
 		printf("ERROR: Line #%d, Invalid Operand Label - Label \"%s\" contain no more than %d chars.\n", runStatus -> lineCount, label, MAX_LABEL_LEN);
@@ -787,7 +788,7 @@ WordMemory getOperandWord(RunStatus *runStatus, int isSrcOperand, Operand *op)
 			}
 		}
 
-		/*pasring operands and assigning ERA + value*/
+		/*parsing operands and assigning ERA + value*/
 		if (op -> type == DIRECT && isLabelExtern)
 		{
 			word.eraBits = (eraBit)EXTERNAL;

@@ -1,17 +1,17 @@
 
 /*
 =====================================================================================================================
-File proccessing - Headers file
+File processing - Headers file
 	Author: Anton Kuligin 
 	Git Project: https://github.com/AntonioKL/CLab
-	Description: Headers for reading the file and managig the reads and output
+	Description: Headers for reading the file and managing the reads and output
 =====================================================================================================================
 */
 
 
-/*-----------------
---- Local const ---
--------------------*/
+/*---------------------
+--- Local constants ---
+-----------------------*/
 
 #define		MODE_READ_ONLY			"r"
 

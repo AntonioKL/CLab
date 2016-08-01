@@ -10,7 +10,7 @@ File processing file
 #include "main_header.h"
 
 /*
-Function that used to open the disered file and parse it.
+Function that used to open the desired file and parse it.
 Input: File Name that should be parsed 
 Output: - 
 */
@@ -51,7 +51,7 @@ FILE* openFile(const char *fileName, const char *extension, const char *openMode
 }
 
 /*
-Function that manages the reading proceess the file and manages the output.
+Function that manages the reading process of the file and manages the output.
 Input: 
 	File to work on
 	filename string
@@ -75,7 +75,7 @@ void fileReadProccessManager(FILE *file, char *fileName)
 		return ;
 	}
 	
-	/*If we have errors in first run, we will release the allocated data and print an inforamtion about it*/
+	/*If we have errors in first run, we will release the allocated data and print an information about it*/
 	if (errNum)
 	{
 		releaseRunStatusStruct(&runStatus);
@@ -90,7 +90,7 @@ void fileReadProccessManager(FILE *file, char *fileName)
 	/*Second run now we are dumping to memStatus struct*/
 	errNum = SecondReadManager(&runStatus, &memStatus);
 
-	/*If we have errors in second run, we will release the allocated data and print an inforamtion about it*/
+	/*If we have errors in second run, we will release the allocated data and print an information about it*/
 	if (!errNum)
 	{
 		/*Passing the status of the run and the dump from memory to output manager*/
@@ -102,12 +102,12 @@ void fileReadProccessManager(FILE *file, char *fileName)
 		printf("\nFail: You have %d errors, please fix them\n", errNum);
 	}
 
-	/*Releasing all Dynamicaly allocated data*/
+	/*Releasing all Dynamically allocated data*/
 	releaseRunStatusStruct(&runStatus);
 }
 
 /*
-Function that initialize the paramerts in the struct. The initializing is required for the run.
+Function that initialize the parameters in the struct. The initializing is required for the run.
 Input: 
 	RunStaus Struct
 Output: -
@@ -146,7 +146,7 @@ void initializeRunStatus(RunStatus *runStatus)
 }
 
 /*
-Function that releases the paramerts in the struct.
+Function that releases the parameters in the struct.
 Input: 
 	RunStaus Struct
 Output: -
@@ -220,7 +220,7 @@ void buildFinalLabes(RunStatus *runStatus)
 }
 
 /*
-Function that initializes the parametrs inside MemoryDump Struct
+Function that initializes the parameters inside MemoryDump Struct
 Input: 
 	MemoryDump Struct
 Output: -

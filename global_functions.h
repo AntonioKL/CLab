@@ -8,9 +8,9 @@ Global Functions - Headers file
 */
 
 
-/*-----------------
---- Local const ---
--------------------*/
+/*---------------------------
+--- Local constant values ---
+-----------------------------*/
 
 #define		EXIT_ERROR		1
 #define		BITS_IN_BYTE		8
