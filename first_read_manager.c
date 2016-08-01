@@ -9,16 +9,25 @@ FirstReadManager
 
 #include "main_header.h"
 
+/*Exporting value from other params*/
 /*Command List*/
 extern const Command globalCommands[];
 /*Directive List*/
 extern const Directive globalDirective[];
 
 
+/*
+Function that manages the first run
+Input: 
+	RunStatus struct
+	File pointer
+Output: Number of errors found during the run
+*/
 int firstReadManager(RunStatus *runStatus, FILE *file)
 {
 	/*We are taking more than nessacry - 100 instead, since we were told we can assume the input is valid with length of each line*/
 	char lineString[MAX_LINE_LENGTH];
+
 	while (fgets(lineString, MAX_LINE_LENGTH, file))
 	{
 		if (runStatus -> lineCount >= MAX_FILE_LINES)
@@ -28,10 +37,12 @@ int firstReadManager(RunStatus *runStatus, FILE *file)
 			return runStatus -> errNum;
 		}
 
+		/*Initiazation of runstatus object*/
 		runStatus -> line = lineString;
 		runStatus -> originalLine = lineString;
 		runStatus -> lineCount++;
 
+		/*Initializing the Lines struct */
 		runStatus -> lineArray = realloc(runStatus -> lineArray, (runStatus -> lineCount) * sizeof(Lines));
 		if (! (runStatus -> lineArray) )
 		{
@@ -39,8 +50,11 @@ int firstReadManager(RunStatus *runStatus, FILE *file)
 			runStatus -> flagFatalErr = EXIT_ERROR;
 			return 1;
 		}
+
 		runStatus -> lineArray[runStatus -> lineCount -1 ].address = runStatus -> ic;
-		
+		runStatus -> lineArray[runStatus -> lineCount -1 ].cmdId = -1;		
+
+		/*Initiialize the two Operands structs*/
 		runStatus -> lineArray[runStatus -> lineCount -1 ].op1 = realloc(NULL, sizeof(Operand));
 		if (! (runStatus -> lineArray[runStatus -> lineCount -1 ].op1) )
 		{
@@ -62,14 +76,16 @@ int firstReadManager(RunStatus *runStatus, FILE *file)
 		runStatus -> lineArray[runStatus -> lineCount -1 ].op2 -> type = INVAL;
 		runStatus -> lineArray[runStatus -> lineCount -1 ].op2 -> memAddress = 0;
 
+		/*Check that everything was initialized correct*/
 		if (runStatus -> flagFatalErr)
 		{
 			return FALSE;
 		}
 		
-		runStatus -> lineArray[runStatus -> lineCount -1 ].cmdId = -1;
+		/*Proccessing the line*/
 		lineProccessor(runStatus);
 
+		/*Check that everything was initialized correct during the run*/
 		if (runStatus -> flagFatalErr)
 		{
 			return FALSE;
@@ -79,6 +95,12 @@ int firstReadManager(RunStatus *runStatus, FILE *file)
 	return runStatus -> errNum;
 }
 
+/*
+Function that proccesses the line acoording to the type and pronts errors if any
+Input: 
+	RunStatus struct
+Output: -
+*/
 void lineProccessor(RunStatus *runStatus)
 {
 	char labelContent[MAX_LABEL_LEN] = "\0";
@@ -87,6 +109,7 @@ void lineProccessor(RunStatus *runStatus)
 	
 	runStatus -> isLineErr = FALSE;
 
+	/*Nothing to parse if the line is Empty or comment*/
 	if (!( isLineEmpty(runStatus) || isLineComment(runStatus) ))
 	{
 		
@@ -94,7 +117,7 @@ void lineProccessor(RunStatus *runStatus)
 
 		if(*labelContent)
 		{
-			for (i = 0; (runStatus -> labelCount) > i; i++) /*Chekcing for duplicating label names*/
+			for (i = 0; (runStatus -> labelCount) > i; i++) /*Chekcing for duplicating label names in data Labels*/
 			{
 				arr_labelName = runStatus -> labelArray[i].name;
 				
@@ -108,7 +131,7 @@ void lineProccessor(RunStatus *runStatus)
 				}
 			}
 
-			for (i = 0; (runStatus -> finalLabelCount) > i; i++) /*Chekcing for duplicating label names*/
+			for (i = 0; (runStatus -> finalLabelCount) > i; i++) /*Chekcing for duplicating label names in command Labels*/
 			{
 				arr_labelName = runStatus -> finalLabelArray[i].name;
 				
@@ -123,6 +146,7 @@ void lineProccessor(RunStatus *runStatus)
 			}
 		}
 		
+		/*Parisng directive or Command*/
 		if (!(runStatus -> isLineErr))
 		{
 			skipSpaces(runStatus);
@@ -139,13 +163,20 @@ void lineProccessor(RunStatus *runStatus)
 	}
 }
 
-
+/*
+Function that manages the parsing of directives
+Input: 
+	RunStatus struct
+	string containing label name ( If thhe line has it )
+Output: -
+*/
 void scanDirective(RunStatus *runStatus, char *label)
 {
 	char directive[MAX_LINE_LENGTH];
 	char *c = runStatus -> line;
 	int i = 0;
 	
+	/*Getting the possible directive*/
 	while (!isspace(*c) && *c != '\n')
 	{
 		directive[i] = *c;
@@ -153,9 +184,13 @@ void scanDirective(RunStatus *runStatus, char *label)
 		c++;
 	}
 	directive[i] = '\0';
+
+
 	runStatus-> line = runStatus-> line + strlen(directive);
 	skipSpaces(runStatus);
 	
+	
+	/*Running the correct pasring function based on directive*/
 	i = 0;
 	while ( globalDirective[i].name )
 	{
@@ -168,9 +203,15 @@ void scanDirective(RunStatus *runStatus, char *label)
 	}
 	printf("ERROR: Line #%d, Invalid Directive Name - Directive %s is not defined.\n", runStatus -> lineCount, directive);
 	runStatus -> errNum ++;
-	
 }
 
+/*
+Function that parses the data directive
+Input: 
+	RunStatus struct
+	string containing label name ( If thhe line has it )
+Output: -
+*/
 void parseDataDirective(RunStatus *runStatus, char *label)
 {
 	int arrNum[MAX_LINE_LENGTH];
@@ -192,11 +233,13 @@ void parseDataDirective(RunStatus *runStatus, char *label)
 		runStatus -> errNum ++;
 		return ;
 	}
+	
+	/*Parsing the numbers in the directive*/
 	while (runningStateFlag)
 	{
 		skipSpaces(runStatus);
 
-		if (numberStateFlag)
+		if (numberStateFlag) /*The directive is staring with number */
 		{
 			cmdStatus = sscanf(runStatus -> line, "%d", &number);
 
@@ -220,7 +263,7 @@ void parseDataDirective(RunStatus *runStatus, char *label)
 			commaStateFlag = TRUE; 
 
 		}
-		if (commaStateFlag)
+		if (commaStateFlag) /*After the number should be a , char*/
 		{
 			skipSpaces(runStatus);
 			if (! ( *(runStatus -> line) == EOF || *(runStatus -> line) == '\n' || *(runStatus -> line) == ','))
@@ -242,13 +285,16 @@ void parseDataDirective(RunStatus *runStatus, char *label)
 		}
 	
 	}
+	/*Adding the label if we have one to data sign table*/
 	if (*label && label)
 	{
 		addLabelData(runStatus, label);
 	}
+
+	/*Adding the data to data array*/
 	while(i<dataCounter)
 	{
-		if (runStatus-> ic + runStatus-> dataCount -1 >= MAX_DATA_SIZE)
+		if (runStatus-> ic + runStatus-> dataCount -1 >= MAX_DATA_SIZE) /*Checking if we are in memory limit of the proccessor*/ 
 		{
 			printf("ERROR: Not enough Memory to run\n");
 			runStatus -> flagFatalErr = EXIT_ERROR;
@@ -259,7 +305,13 @@ void parseDataDirective(RunStatus *runStatus, char *label)
 	}
 }
 
-
+/*
+Function that parses the string directive
+Input: 
+	RunStatus struct
+	string containing label name ( If thhe line has it )
+Output: -
+*/
 void parseStringDirective(RunStatus *runStatus, char *label)
 {
 	char arrChar[MAX_LINE_LENGTH];
@@ -276,6 +328,7 @@ void parseStringDirective(RunStatus *runStatus, char *label)
 		runStatus -> errNum ++;
 		return ;
 	}
+	/*Parsing the line for string*/
 	if ( *(runStatus -> line) == '"' )
 	{
 		runStatus -> line ++;
@@ -284,7 +337,7 @@ void parseStringDirective(RunStatus *runStatus, char *label)
 		{
 			arrChar[dataCounter++] = *(runStatus -> line);
 			runStatus -> line ++;
-			if ( *(runStatus -> line) == '\\' )
+			if ( *(runStatus -> line) == '\\' ) /*Pasring the escape sequence of \"*/
 			{
 				arrChar[dataCounter++] = *(runStatus -> line);
 				runStatus -> line ++;
@@ -320,10 +373,13 @@ void parseStringDirective(RunStatus *runStatus, char *label)
 			return ;
 	}
 
+	/*Adding the label if we have one to data sign table*/
 	if (*label && label)
 	{
 		addLabelData(runStatus, label);
 	}
+
+	/*Adding the data to data array*/
 	while(i<dataCounter)
 	{
 		if (runStatus-> ic + runStatus-> dataCount -1 >= MAX_DATA_SIZE)
@@ -336,11 +392,18 @@ void parseStringDirective(RunStatus *runStatus, char *label)
 		i++;
 	}
 	
+	/*String ends with NULL char*/
 	addDirData(runStatus, '\0');
 
 }
 
-
+/*
+Function that parses the extern directive
+Input: 
+	RunStatus struct
+	string containing label name ( If the line has it )
+Output: -
+*/
 void parseExternDirective(RunStatus *runStatus, char *label)
 {
 	char labelContent[MAX_LABEL_LEN] = "\0";
@@ -357,6 +420,7 @@ void parseExternDirective(RunStatus *runStatus, char *label)
 		return ;
 	}
 	
+	/*Getting the reference of the directive*/
 	getLabelReference(runStatus, labelContent);
 
 	if(! ( *labelContent ))
@@ -366,6 +430,7 @@ void parseExternDirective(RunStatus *runStatus, char *label)
 		return ;
 	}
 	
+	/*Checking that the entry or extern directive doesn't repeat*/
 	while (i <= runStatus -> entryCount)
 	{
 		if (runStatus -> entryArray && ! strcmp (runStatus -> entryArray[i].name, labelContent))
@@ -388,10 +453,17 @@ void parseExternDirective(RunStatus *runStatus, char *label)
 		i++;
 	}
 	
+	/*Adding to Extern definition struct*/
 	addExternDir(runStatus, labelContent);
 }
 
-
+/*
+Function that parses the entry directive
+Input: 
+	RunStatus struct
+	string containing label name ( If the line has it )
+Output: -
+*/
 void parseEntryDirective(RunStatus *runStatus, char *label)
 {
 	char labelContent[MAX_LABEL_LEN] = "\0";
@@ -415,7 +487,9 @@ void parseEntryDirective(RunStatus *runStatus, char *label)
 		return ;
 	}
 
+	/*Getting the reference of the directive*/
 	getLabelReference(runStatus, labelContent);
+
 	if(! ( *labelContent ))
 	{
 		printf("ERROR: Line #%d, Invalid Directive Definition - Directive %s wrong Label Reference.\n", runStatus -> lineCount, directive);
@@ -423,6 +497,7 @@ void parseEntryDirective(RunStatus *runStatus, char *label)
 		return ;
 	}
 	
+	/*Checking that the entry or extern directive doesn't repeat*/
 	while (i <= runStatus -> entryCount)
 	{
 		if (runStatus -> entryArray && ! strcmp (runStatus -> entryArray[i].name, labelContent))
@@ -445,9 +520,17 @@ void parseEntryDirective(RunStatus *runStatus, char *label)
 		i++;
 	}
 
+	/*Adding to Entry definition struct*/
 	addEntryDir(runStatus, labelContent);
 }
 
+/*
+Function that manages the parsing of the command in line
+Input: 
+	RunStatus struct
+	string containing label name ( If the line has it )
+Output: -
+*/
 void firstParseCmd(RunStatus *runStatus, char *label)
 {
 	int cmdId;
@@ -471,10 +554,19 @@ void firstParseCmd(RunStatus *runStatus, char *label)
 
 	skipSpaces(runStatus);
 	
+	/*We have the command , now we are going to parse the Operands*/
 	parseCmdOperands(runStatus, label, cmdId);
 
 }
 
+/*
+Function that manages the parsing of the operands inside the commnad line
+Input: 
+	RunStatus struct
+	string containing label name ( If the line has it )
+	opcode - number of the command 
+Output: -
+*/
 void parseCmdOperands(RunStatus *runStatus, char *label, int cmdId)
 {
 	int numOp = globalCommands[cmdId].paramNum;
@@ -483,6 +575,7 @@ void parseCmdOperands(RunStatus *runStatus, char *label, int cmdId)
 	char op1[MAX_LABEL_LEN]="\0";
 	char op2[MAX_LABEL_LEN]="\0";
 
+	/*Checking for num of operands shown in line*/
 	if (numOp == 0)
 	{
 		if (!(*(runStatus -> line) == EOF || *(runStatus -> line) == '\n' ))
@@ -561,25 +654,39 @@ void parseCmdOperands(RunStatus *runStatus, char *label, int cmdId)
 		return ;
 	}
 	
+	/*Processing the operand types and value*/
 	opProccessing(runStatus, label, cmdId , op1, op2);
 
 }
 
+/*
+Function that parses the operands
+Input: 
+	RunStatus struct
+	string containing label name ( If the line has it )
+	opcode - command number
+	first operand string
+	second operand string
+Output: -
+*/
 void opProccessing(RunStatus *runStatus, char *label, int cmdId ,char *op1, char *op2)
 {
 	int i = 0;
 	Operand *tmpOp;
 
+	/*Pasring the first operand if exists*/
 	if(*op1)
 	{
 		parseOp(runStatus, op1, runStatus->lineArray[runStatus -> lineCount -1 ].op1);
 	}
+
+	/*Pasring the second operand if exists*/
 	if(*op2)
 	{
 		parseOp(runStatus, op2, runStatus -> lineArray[runStatus -> lineCount -1 ].op2);
 	}
 	
-
+	/*Switching between src and dst operand in case of 1 Ooperand*/
 	if (globalCommands[cmdId].paramNum == 1)
 	{
 		tmpOp = runStatus->lineArray[runStatus -> lineCount -1 ].op1;
@@ -587,6 +694,7 @@ void opProccessing(RunStatus *runStatus, char *label, int cmdId ,char *op1, char
 		runStatus->lineArray[runStatus -> lineCount -1 ].op2 = tmpOp;
 	}
 
+	/*Checking operand syntax and validity*/
 	if (!isLegalOperands(runStatus, cmdId))
 	{
 		runStatus -> errNum ++;
@@ -594,6 +702,8 @@ void opProccessing(RunStatus *runStatus, char *label, int cmdId ,char *op1, char
 	}
 
 	runStatus -> lineArray[runStatus -> lineCount -1 ].cmdId = cmdId;
+
+	/*Adding the label if we have one to sign table*/
 	if (*label && label)
 	{
 		addLabelFinal(runStatus, label, runStatus -> ic, FALSE);
@@ -607,8 +717,9 @@ void opProccessing(RunStatus *runStatus, char *label, int cmdId ,char *op1, char
 		runStatus->lineArray[runStatus -> lineCount -1 ].op2 -> memAddress = runStatus->ic;
 	
 	}
-	else
+	else 
 	{
+		/*Setting memrory addresses for operands*/
 		if (globalCommands[cmdId].paramNum == 1)
 		{
 			runStatus->lineArray[runStatus -> lineCount -1 ].op2 -> memAddress = runStatus->ic + 1;
@@ -618,6 +729,7 @@ void opProccessing(RunStatus *runStatus, char *label, int cmdId ,char *op1, char
 			runStatus->lineArray[runStatus -> lineCount -1 ].op1 -> memAddress = runStatus->ic + 1;
 		}
 
+		/*Increasing IC based on operand types and their number*/
 		while ( i < globalCommands[cmdId].paramNum)
 		{
 			increaseIC(runStatus);
@@ -634,6 +746,13 @@ void opProccessing(RunStatus *runStatus, char *label, int cmdId ,char *op1, char
 	
 }
 
+/*
+Function that checks the operand types for  validity according to command ID
+Input: 
+	RunStatus struct
+	opcode - command number
+Output: TRUE/FALSE if  the operands are valid
+*/
 int isLegalOperands(RunStatus *runStatus, int cmdId) 
 {
 	int requirednumOp = globalCommands[cmdId].paramNum;
@@ -644,6 +763,7 @@ int isLegalOperands(RunStatus *runStatus, int cmdId)
 	
 	int validOperators=0;
 
+	/*Check the number of operands is a valid number*/
 	if (op1 -> type != INVAL )
 	{
 		validOperators++;
@@ -660,6 +780,7 @@ int isLegalOperands(RunStatus *runStatus, int cmdId)
 	
 	runStatus->lineArray[runStatus -> lineCount -1 ].numOperands = validOperators;
 
+	/*Special cases described in page 30*/
 	if( cmdId == 6 && op1 -> type != DIRECT )
 	{
 		printf("ERROR: Line #%d, Invalid Operand - \"%s\" source operand should be a Label .\n", runStatus -> lineCount, cmdName);
@@ -672,16 +793,7 @@ int isLegalOperands(RunStatus *runStatus, int cmdId)
 		return FALSE;
 	}
 	
-
-	
 	return TRUE;
 }
-
-
-
-
-
-
-
 
 

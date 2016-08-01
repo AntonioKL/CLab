@@ -1,7 +1,6 @@
 assembler: assembler_compiler.o file_proccess.o first_read_manager.o global_functions.o second_read_manager.o file_output_manager.o
 	gcc -Wall -ansi -pedantic assembler_compiler.o file_proccess.o first_read_manager.o global_functions.o second_read_manager.o file_output_manager.o -o assembler
 
-
 assembler_compiler.o: assembler_compiler.c
 	gcc -Wall -ansi -pedantic -c assembler_compiler.c
 
