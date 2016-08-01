@@ -3,7 +3,7 @@
 SecondReadManager
 	Author: Anton Kuligin 
 	Git Project: https://github.com/AntonioKL/CLab
-	Description: Handles the Second Read of Asemmbler File
+	Description: Handles the Second Read of Assembler File
 =====================================================================================================================
 */
 
@@ -20,7 +20,7 @@ int SecondReadManager(RunStatus *runStatus, MemoryDump *memStatus)
 {
 	int i = 0;
 
-	/*Validation that all extnry labels exists in the code*/
+	/*Validation that all extern labels exists in the code*/
 	checkEntryLabels(runStatus);
 
 	/*We are dumping the command lines first*/
@@ -61,7 +61,7 @@ void checkEntryLabels(RunStatus *runStatus)
 		}
 		if (flagRun)
 		{
-			printf("ERROR: Invalid Entry Label - Label \"%s\" does not exists in the programm.\n", runStatus -> entryArray[i].name);
+			printf("ERROR: Invalid Entry Label - Label \"%s\" does not exists in the program.\n", runStatus -> entryArray[i].name);
 			runStatus -> errNum ++;
 		}
 		flagRun = TRUE;
@@ -91,10 +91,10 @@ void dumpLine(int lineNum, MemoryDump *memStatus, RunStatus *runStatus)
 		return ;
 	}
 	
-	/*Updating label information about src operand*/
+	/*Updating label information about source operand*/
 	updateOperandLabelAddress(op1, runStatus, lineNum);
 
-	/*Updating label information about dst operand*/
+	/*Updating label information about destination operand*/
 	updateOperandLabelAddress(op2, runStatus, lineNum);
 
 	/*Get the word for the line command and add to memoryDump*/
@@ -178,7 +178,7 @@ int updateOperandLabelAddress(Operand *op, RunStatus *runStatus, int lineNum)
 
 		if (labelAddress != -1) /*Parsing the dynamic range*/
 		{
-			/* Getting the value depends on cell type (data/command)*/
+			/* Getting the value depends on cell type (data / command)*/
 			if (runStatus -> finalLabelArray[labelAddress].isData)
 			{
 				dataAddress = runStatus -> finalLabelArray[labelAddress].memAddress - runStatus -> ic - FIRST_MEM_ADDR;
@@ -268,7 +268,7 @@ int getRequiredBitsFromLabel(int val, int up , int down)
 	if ( val != (val | lsb))
 	{
 		val >>= down;
-		/*Aggreagate the value for positive*/
+		/*Aggregate the value for positive*/
 		while (i < diff-1)
 		{
 			tmp = (tmp << 1) + 1;
@@ -281,7 +281,7 @@ int getRequiredBitsFromLabel(int val, int up , int down)
 	{
 		val >>= down;
 		i = 0;
-		/*Aggreagate the value for negative*/
+		/*Aggregate the value for negative*/
 		while (i < diff)
 		{
 			tmp = (tmp << 1) + 1;
