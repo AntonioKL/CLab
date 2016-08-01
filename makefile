@@ -21,17 +21,6 @@ file_output_manager.o: file_output_manager.c
 
 clean:
 	rm -f assembler
-	rm -f *~
-	rm -rf Examples/*~
-	rm -rf Examples/*.ext
-	rm -rf Examples/*.ent
-	rm -rf Examples/*.ob
 	rm -f *.o
 
-
-git:
-	git status
-	git add -A
-	git commit
-	git push origin master
 
