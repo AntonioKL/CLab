@@ -413,6 +413,11 @@ void parseExternDirective(RunStatus *runStatus, char *label)
 
 	skipSpaces(runStatus);
 
+	if (*label && label)
+	{
+		printf("WARN: Line #%d, Directive Label Definition - Directive %s ignoring label .\n", runStatus -> lineCount, directive);
+	}
+
 	if (*(runStatus -> line) == EOF || *(runStatus -> line) == '\n' )
 	{
 		printf("ERROR: Line #%d, Invalid Directive Definition - Directive %s is empty.\n", runStatus -> lineCount, directive);
@@ -475,9 +480,7 @@ void parseEntryDirective(RunStatus *runStatus, char *label)
 
 	if (*label && label)
 	{
-		printf("ERROR: Line #%d, Invalid Directive Definition - Directive %s cannot have a label .\n", runStatus -> lineCount, directive);
-			runStatus -> errNum ++;
-			return ;
+		printf("WARN: Line #%d, Directive Label Definition - Directive %s ignoring label .\n", runStatus -> lineCount, directive);
 	}
 
 	if (*(runStatus -> line) == EOF || *(runStatus -> line) == '\n' )
