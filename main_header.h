@@ -17,6 +17,7 @@ Main headers file
 #include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
+#include <math.h>
 
 
 /*--------------------------------------
@@ -35,6 +36,10 @@ Main headers file
 /* Word size in the processor */
 
 #define		MEM_WORD_SIZE			15
+
+/* Boundariy values for DATA*/
+#define		DATA_MAX_INT		pow(2, ((MEM_WORD_SIZE) -1)) -1
+#define		DATA_MIN_INT		(-1) * (pow(2, ((MEM_WORD_SIZE) -1)))
 
 /*Bit that used to represent and 8 base special char*/
 #define		NUM_BITS_BASE8			3

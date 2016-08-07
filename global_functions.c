@@ -56,7 +56,7 @@ int isLineEmpty(RunStatus *runStatus)
 {
 	/*Skipping all tabs and spaces*/
 	skipSpaces(runStatus);
-	if(*(runStatus->line)==EOF || *(runStatus->line)=='\n')
+	if(*(runStatus->line)==EOF || *(runStatus->line)=='\n' || *(runStatus -> line) == '\0')
 	{
         	return TRUE;
    	}
@@ -90,7 +90,7 @@ char *getCharAfterSpace(char *p)
 {
 	while(isspace(*p))
 	{
-		if (*p == EOF || *p== '\n')
+		if (*p == EOF || *p == '\n' || *p == '\0')
 		{
 			return p;
 		}
@@ -138,7 +138,7 @@ void getLabel(RunStatus *runStatus, char *label)
 	}
 	
 	/*Check every char in the suspected label*/
-	while (!isspace(*c) && *c != '\n' && *c != EOF && *c != ':')
+	while (!isspace(*c) && *c != '\n' && *c != EOF && *c != '\0' && *c != ':')
 	{
 		if (! isalnum(*c))
 		{
@@ -151,7 +151,7 @@ void getLabel(RunStatus *runStatus, char *label)
 		c++;
 	}
 
-	if (isspace(*c) || *c == '\n' || *c == EOF )
+	if (isspace(*c) || *c == '\n' || *c == EOF || *c == '\0' )
 	{
 		printf("ERROR: Line #%d, Invalid Label Name - Label should contain only one word, without spaces.\n", runStatus -> lineCount);
 		runStatus -> errNum ++;
@@ -290,7 +290,7 @@ void getLabelReference(RunStatus *runStatus, char *label)
 		return ;
 	}
 	
-	while (! (isspace(*(runStatus -> line)) || *(runStatus -> line) == EOF || *(runStatus -> line) == '\n' ))
+	while (! (isspace(*(runStatus -> line)) || *(runStatus -> line) == EOF || *(runStatus -> line) == '\n' || *(runStatus -> line) == '\0' ))
 	{
 		if (! isalnum(*(runStatus -> line)))
 		{	
@@ -303,7 +303,7 @@ void getLabelReference(RunStatus *runStatus, char *label)
 	}
 	skipSpaces(runStatus);
 
-	if (! (*(runStatus -> line) == EOF || *(runStatus -> line) == '\n' ))
+	if (! (*(runStatus -> line) == EOF || *(runStatus -> line) == '\n' || *(runStatus -> line) == '\0' ))
 	{
 		printf("ERROR: Line #%d, Invalid Label Reference - Directive doesn't hold a valid Label reference, there is a space in the name.\n", runStatus -> lineCount);
 		runStatus -> errNum ++;
@@ -403,7 +403,7 @@ int getCommandId(RunStatus *runStatus)
 	char cmd[MAX_LINE_LENGTH]="\0";
 	
 	/*getting the command*/
-	while (!isspace(*(runStatus->line)))
+	while (! (isspace(*(runStatus->line)) || *(runStatus -> line) == EOF || *(runStatus -> line) == '\n' || *(runStatus -> line) == '\0' ))
 	{
 		cmd[count]=*(runStatus->line);
 		runStatus->line++;
@@ -445,7 +445,7 @@ void getOperand(RunStatus *runStatus, char *op)
 	char temp_op[MAX_LABEL_LEN]="\0";
 
 	/*Searching for end of line or , next operand*/
-	while (!isspace(*(runStatus->line)) && (*(runStatus->line)!=','))
+	while (! (isspace(*(runStatus->line)) || *(runStatus -> line) == EOF || *(runStatus -> line) == '\n' || *(runStatus -> line) == '\0' ) && (*(runStatus->line)!=','))
 	{
 		temp_op[count]=*(runStatus->line);
 		runStatus->line++;
@@ -509,7 +509,7 @@ void parseOp(RunStatus *runStatus, char *opStr, Operand *op)
 		else
 		{
 			/* Parsing Number*/
-			if (isLegalNumber(runStatus, opStr, MEM_WORD_SIZE - 2, op))
+			if (isLegalNumber(runStatus, opStr, MEM_WORD_SIZE - 2, op) && ! (*opStr == EOF || *opStr == '\n' || *opStr== '\0') ) 
 			{
 				op -> type = NUMBER;
 			}
@@ -671,7 +671,7 @@ int isLegalNumber(RunStatus *runStatus, char *str, int maxSize, Operand *op)
 	}
 
 	/*Check that the number is in allowed range*/
-	if ( value > maxNumber || value < -maxNumber)
+	if ( value > maxNumber || value < (-1) * maxNumber)
 	{
 		return FALSE;
 	}

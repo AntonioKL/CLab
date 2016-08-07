@@ -177,7 +177,7 @@ void scanDirective(RunStatus *runStatus, char *label)
 	int i = 0;
 	
 	/*Getting the possible directive*/
-	while (!isspace(*c) && *c != '\n')
+	while (!isspace(*c) && *c != '\n' && *c != '\0')
 	{
 		directive[i] = *c;
 		i++;
@@ -227,7 +227,7 @@ void parseDataDirective(RunStatus *runStatus, char *label)
 	char *directive = ".data";
 
 
-	if (*(runStatus -> line) == EOF || *(runStatus -> line) == '\n')
+	if (*(runStatus -> line) == EOF || *(runStatus -> line) == '\n' || *(runStatus -> line) == '\0' )
 	{
 		printf("ERROR: Line #%d, Invalid Directive Definition - Directive %s is empty.\n", runStatus -> lineCount, directive);
 		runStatus -> errNum ++;
@@ -249,7 +249,15 @@ void parseDataDirective(RunStatus *runStatus, char *label)
 				runStatus -> errNum ++;
 				return ;
 			}
-			arrNum[dataCounter++] = number;
+			if ( number >= (DATA_MIN_INT) && number <= (DATA_MAX_INT) )
+			{
+				arrNum[dataCounter++] = number;
+			}
+			else
+			{
+				printf ("ERROR: Line #%d, Invalid Directive Data - Not valid number, %d outside of boundaries for %d bits of word size.\n", runStatus -> lineCount, number, MEM_WORD_SIZE);
+				runStatus -> errNum ++;
+			}
 
 			if (*(runStatus -> line) == '+' || *(runStatus -> line) == '-')
 			{
@@ -266,13 +274,14 @@ void parseDataDirective(RunStatus *runStatus, char *label)
 		if (commaStateFlag) /*After the number should be a , char*/
 		{
 			skipSpaces(runStatus);
-			if (! ( *(runStatus -> line) == EOF || *(runStatus -> line) == '\n' || *(runStatus -> line) == ','))
+
+			if (! ( *(runStatus -> line) == EOF || *(runStatus -> line) == '\n' || *(runStatus -> line) == ',' || *(runStatus -> line) == '\0' ))
 			{
 				printf("ERROR: Line #%d, Invalid Directive Data - Not valid data, should be a set of numbers (positive/negative) separated by commas.\n", runStatus -> lineCount);
 				runStatus -> errNum ++;
 				return ;
 			}
-			if (*(runStatus -> line) == EOF || *(runStatus -> line) == '\n')
+			if (*(runStatus -> line) == EOF || *(runStatus -> line) == '\n' || *(runStatus -> line) == '\0')
 			{
 				runningStateFlag = FALSE;
 			}
@@ -322,7 +331,7 @@ void parseStringDirective(RunStatus *runStatus, char *label)
 
 	skipSpaces(runStatus);
 
-	if (*(runStatus -> line) == EOF || *(runStatus -> line) == '\n' )
+	if (*(runStatus -> line) == EOF || *(runStatus -> line) == '\n' || *(runStatus -> line) == '\0' )
 	{
 		printf("ERROR: Line #%d, Invalid Directive Definition - Directive %s is empty.\n", runStatus -> lineCount, directive);
 		runStatus -> errNum ++;
@@ -333,7 +342,7 @@ void parseStringDirective(RunStatus *runStatus, char *label)
 	{
 		runStatus -> line ++;
 
-		while (! (*(runStatus -> line) == '"' || *(runStatus -> line) == EOF || *(runStatus -> line) == '\n' ))
+		while (! (*(runStatus -> line) == '"' || *(runStatus -> line) == EOF || *(runStatus -> line) == '\n' || *(runStatus -> line) == '\0' ))
 		{
 			arrChar[dataCounter++] = *(runStatus -> line);
 			runStatus -> line ++;
@@ -358,7 +367,7 @@ void parseStringDirective(RunStatus *runStatus, char *label)
 		runStatus -> line ++;
 		skipSpaces(runStatus);
 
-		if (! (*(runStatus -> line) == EOF || *(runStatus -> line) == '\n' ))
+		if (! (*(runStatus -> line) == EOF || *(runStatus -> line) == '\n' || *(runStatus -> line) == '\0' ))
 		{
 			printf("ERROR: Line #%d, Invalid Directive Definition - Directive %s doesn't hold a valid string.\n", runStatus -> lineCount, directive);
 			runStatus -> errNum ++;
@@ -418,7 +427,7 @@ void parseExternDirective(RunStatus *runStatus, char *label)
 		printf("WARN: Line #%d, Directive Label Definition - Directive %s ignoring label .\n", runStatus -> lineCount, directive);
 	}
 
-	if (*(runStatus -> line) == EOF || *(runStatus -> line) == '\n' )
+	if (*(runStatus -> line) == EOF || *(runStatus -> line) == '\n' || *(runStatus -> line) == '\0' )
 	{
 		printf("ERROR: Line #%d, Invalid Directive Definition - Directive %s is empty.\n", runStatus -> lineCount, directive);
 		runStatus -> errNum ++;
@@ -483,7 +492,7 @@ void parseEntryDirective(RunStatus *runStatus, char *label)
 		printf("WARN: Line #%d, Directive Label Definition - Directive %s ignoring label .\n", runStatus -> lineCount, directive);
 	}
 
-	if (*(runStatus -> line) == EOF || *(runStatus -> line) == '\n' )
+	if (*(runStatus -> line) == EOF || *(runStatus -> line) == '\n' || *(runStatus -> line) == '\0' )
 	{
 		printf("ERROR: Line #%d, Invalid Directive Definition - Directive %s is empty.\n", runStatus -> lineCount, directive);
 		runStatus -> errNum ++;
@@ -540,7 +549,7 @@ void firstParseCmd(RunStatus *runStatus, char *label)
 
 	skipSpaces(runStatus);
 	cmdId = getCommandId(runStatus);
-	
+
 	if (cmdId == -2)
 	{
 		printf("ERROR: Line #%d, Invalid Label Definition - Label is empty , cannot assign label to an empty line.\n", runStatus -> lineCount);
@@ -581,7 +590,7 @@ void parseCmdOperands(RunStatus *runStatus, char *label, int cmdId)
 	/*Checking for num of operands shown in line*/
 	if (numOp == 0)
 	{
-		if (!(*(runStatus -> line) == EOF || *(runStatus -> line) == '\n' ))
+		if (!(*(runStatus -> line) == EOF || *(runStatus -> line) == '\n' || *(runStatus -> line) == '\0' ))
 		{
 			printf("ERROR: Line #%d, Invalid Arguments - Command \"%s\" should have %d arguments.\n", runStatus -> lineCount, cmdName, numOp);
 			runStatus -> errNum ++;
@@ -600,7 +609,7 @@ void parseCmdOperands(RunStatus *runStatus, char *label, int cmdId)
 		}
 		skipSpaces(runStatus);
 
-		if (! (*(runStatus -> line) == EOF || *(runStatus -> line) == '\n' ))
+		if (! (*(runStatus -> line) == EOF || *(runStatus -> line) == '\n' || *(runStatus -> line) == '\0' ))
 		{
 			printf("ERROR: Line #%d, Invalid Arguments - Command \"%s\" should have only %d arguments, not more.\n", runStatus -> lineCount, cmdName, numOp);
 			runStatus -> errNum ++;
@@ -642,7 +651,7 @@ void parseCmdOperands(RunStatus *runStatus, char *label, int cmdId)
 		}
 		skipSpaces(runStatus);
 
-		if (! (*(runStatus -> line) == EOF || *(runStatus -> line) == '\n' ))
+		if (! (*(runStatus -> line) == EOF || *(runStatus -> line) == '\n' || *(runStatus -> line) == '\0' ))
 		{
 			printf("ERROR: Line #%d, Invalid Line - There is an extra chars after the second operator.\n", runStatus -> lineCount);
 			runStatus -> errNum ++;
@@ -777,7 +786,7 @@ int isLegalOperands(RunStatus *runStatus, int cmdId)
 	}
 	if ( validOperators != requirednumOp)
 	{
-		printf("ERROR: Line #%d, Not enough valid Operands - \"%s\" should have %d operands.\n", runStatus -> lineCount, cmdName, validOperators);
+		printf("ERROR: Line #%d, Not enough valid Operands - \"%s\" should have %d operands.\n", runStatus -> lineCount, cmdName, requirednumOp);
 		return FALSE;
 	}
 	
