@@ -1,5 +1,4 @@
-../assembler ps ps2 test3 test4 test5 test6 > run_log.log
-
+../assembler ps ps2 test3 test4 test5 test6 nofile > run_log.log
 
 ------------ Parsing File: "ps.as" ------------
 
@@ -16,7 +15,7 @@ Success: The file has been parsed
 ------------ Parsing File: "test3.as" ------------
 
 ERROR: Line #6, Illegal Operand "o[3-5]4" invalid syntax for range .
-ERROR: Line #6, Not enough valid Operands - "cmp" should have 1 operands.
+ERROR: Line #6, Not enough valid Operands - "cmp" should have 2 valid operands.
 ERROR: Line #4, Label "e" doesn't exist.
 ERROR: Line #4, Label "a2" doesn't exist.
 ERROR: Line #7, Label "r" doesn't exist.
@@ -50,3 +49,6 @@ Fail: You have errors, please fix them
 ERROR: Line #2, Label "B" doesn't exist.
 
 Fail: You have errors, please fix them
+------------ Parsing File: "nofile.as" ------------
+
+ERROR: Cannot open file: nofile.as

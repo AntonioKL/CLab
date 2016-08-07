@@ -288,6 +288,13 @@ void parseDataDirective(RunStatus *runStatus, char *label)
 			else
 			{
 				runStatus -> line ++;
+				skipSpaces(runStatus);
+				if (*(runStatus -> line) == EOF || *(runStatus -> line) == '\n' || *(runStatus -> line) == '\0')
+				{
+					printf("ERROR: Line #%d, Invalid Directive Data - Not valid data, no data after \",\" char.\n", runStatus -> lineCount);
+					runStatus -> errNum ++;
+					return ;
+				}
 				numberStateFlag = TRUE;
 				commaStateFlag = FALSE; 
 			}
