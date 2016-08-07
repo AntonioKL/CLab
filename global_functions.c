@@ -515,7 +515,7 @@ void parseOp(RunStatus *runStatus, char *opStr, Operand *op)
 			}
 			else
 			{
-				printf("ERROR: Line #%d, Invalid Number \"%s\".\n", runStatus -> lineCount, op -> str);
+				printf("ERROR: Line #%d, Invalid Number  \"%s\" for %d bits.\n", runStatus -> lineCount, op -> str, (MEM_WORD_SIZE - 2));
 				op -> type = INVAL;
 				runStatus -> errNum ++;
 				return ;
@@ -599,7 +599,7 @@ Output: TRUE if in range , FALSE otherwise
 */
 int checkDynamicRange(int up, int down)
 {
-	if (down < 1 || up > 15 || up - down > 13 || up - down < 0 )
+	if (down < 0 || up > 14 || up - down >= 13 || up - down < 0 )
 	{
 		return FALSE;
 	}
@@ -662,7 +662,7 @@ int isLegalNumber(RunStatus *runStatus, char *str, int maxSize, Operand *op)
 {
 	char *end;
 	int value;
-	int maxNumber = (1 << maxSize) -1; /*Setting Number range*/
+	int maxNumber = (1 << (maxSize -1)); /*Setting Number range*/
 
 	value = strtol (str,&end, 10);/*Convert to Integer*/
 	if ( *end )
@@ -671,7 +671,7 @@ int isLegalNumber(RunStatus *runStatus, char *str, int maxSize, Operand *op)
 	}
 
 	/*Check that the number is in allowed range*/
-	if ( value > maxNumber || value < (-1) * maxNumber)
+	if ( value > maxNumber-1 || value < (-1) * maxNumber)
 	{
 		return FALSE;
 	}

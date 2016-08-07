@@ -786,7 +786,7 @@ int isLegalOperands(RunStatus *runStatus, int cmdId)
 	}
 	if ( validOperators != requirednumOp)
 	{
-		printf("ERROR: Line #%d, Not enough valid Operands - \"%s\" should have %d operands.\n", runStatus -> lineCount, cmdName, requirednumOp);
+		printf("ERROR: Line #%d, Not enough valid Operands - \"%s\" should have %d valid operands.\n", runStatus -> lineCount, cmdName, requirednumOp);
 		return FALSE;
 	}
 	
@@ -801,7 +801,7 @@ int isLegalOperands(RunStatus *runStatus, int cmdId)
 
 	if (( op2 -> type == NUMBER || op2 -> type == DYNAMIC) && cmdId != 12 && cmdId != 1 )
 	{
-		printf("ERROR: Line #%d, Invalid Operand - \"%s\" destination operand should be a Label or Number Only .\n", runStatus -> lineCount, cmdName);
+		printf("ERROR: Line #%d, Invalid Operand - \"%s\" destination operand should be a Label or Register Only .\n", runStatus -> lineCount, cmdName);
 		return FALSE;
 	}
 	
