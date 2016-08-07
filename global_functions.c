@@ -173,11 +173,20 @@ void getLabel(RunStatus *runStatus, char *label)
 		/*Label cannot be a register name*/
 		if(isRegister(temp_label))
 		{
-			printf("ERROR: Line #%d, Invalid Label Name - Illegal Name , You cannot use Register Name.\n", runStatus -> lineCount);
+			printf("ERROR: Line #%d, Invalid Label Name - Illegal Name , You cannot use Register Name as Label.\n", runStatus -> lineCount);
 			runStatus -> errNum ++;
 			runStatus -> isLineErr = TRUE;
 			return ;
 		}
+
+		if(isCommand(temp_label))
+		{
+			printf("ERROR: Line #%d, Invalid Label Name - Illegal Name , You cannot use Command Name as Label.\n", runStatus -> lineCount);
+			runStatus -> errNum ++;
+			runStatus -> isLineErr = TRUE;
+			return ;
+		}
+
 		i++;
         	runStatus -> line += i;
 		strcpy(label, temp_label); /*copy to passed value*/
@@ -199,6 +208,28 @@ int isRegister(char *str)
 	}
 	return FALSE;
 }
+
+/*
+Function that checks if the passed string is a matching the command name or not
+Input: 
+	label string
+Output: TRUE if it matches the label, FALSE otherwise.
+*/
+int isCommand(char *str)
+{
+	int i = 0;
+
+	while (globalCommands[i].name)
+	{
+		if (! (strcmp(globalCommands[i].name, str)))
+		{
+			return TRUE;
+		}
+		i++;
+	}
+	return FALSE;
+}
+
 
 /*
 Function that adds the label to data label struct

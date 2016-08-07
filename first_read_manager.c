@@ -444,7 +444,9 @@ void parseExternDirective(RunStatus *runStatus, char *label)
 		return ;
 	}
 	
-	/*Checking that the entry or extern directive doesn't repeat*/
+	/*Checking that the extern directive doesn't exists in entry, it is ok to define same extern more than once*/
+
+	i = 0;
 	while (i <= runStatus -> entryCount)
 	{
 		if (runStatus -> entryArray && ! strcmp (runStatus -> entryArray[i].name, labelContent))
@@ -455,18 +457,6 @@ void parseExternDirective(RunStatus *runStatus, char *label)
 		}
 		i++;
 	}
-	i = 0;
-	while (i <= runStatus -> externCount)
-	{
-		if (runStatus -> externArray && ! strcmp (runStatus -> externArray[i].name, labelContent))
-		{
-			printf("ERROR: Line #%d, Invalid Directive Definition - Directive %s label defined  as .extern already.\n", runStatus -> lineCount, directive);
-			runStatus -> errNum ++;
-			return ;
-		}
-		i++;
-	}
-	
 	/*Adding to Extern definition struct*/
 	addExternDir(runStatus, labelContent);
 }
@@ -509,18 +499,8 @@ void parseEntryDirective(RunStatus *runStatus, char *label)
 		return ;
 	}
 	
-	/*Checking that the entry or extern directive doesn't repeat*/
-	while (i <= runStatus -> entryCount)
-	{
-		if (runStatus -> entryArray && ! strcmp (runStatus -> entryArray[i].name, labelContent))
-		{
-			printf("ERROR: Line #%d, Invalid Directive Definition - Directive %s label defined  as .entry already.\n", runStatus -> lineCount, directive);
-			runStatus -> errNum ++;
-			return ;
-		}
-		i++;
-	}
-	i = 0;
+	/*Checking that the entry directive doesn't exists in entry, it is ok to define same entry more than once*/
+
 	while (i <= runStatus -> externCount)
 	{
 		if (runStatus -> externArray && ! strcmp (runStatus -> externArray[i].name, labelContent))

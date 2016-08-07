@@ -28,6 +28,7 @@ void skipSpaces();
 int isLineWithTag(RunStatus *runStatus);
 void getLabel(RunStatus *runStatus, char *label);
 int isRegister(char *str);
+int isCommand(char *str);
 void addLabelData(RunStatus *runStatus, char *label);
 void addDirData(RunStatus *runStatus, int num);
 void addLabelFinal(RunStatus *runStatus, char *label, int mem, int isData);
