@@ -74,14 +74,6 @@ void fileReadProccessManager(FILE *file, char *fileName)
 		printf("ERROR: Fatal Error, cannot continue.\n");
 		return ;
 	}
-	
-	/*If we have errors in first run, we will release the allocated data and print an information about it*/
-	if (errNum)
-	{
-		releaseRunStatusStruct(&runStatus);
-		printf("\nFail: You have %d errors, please fix them\n", errNum);
-		return ;
-	}
 
 	/*Creating the full "TAVLAT SMALIM" from Label of Data combined with Label of commands*/
 	buildFinalLabes(&runStatus);
@@ -99,7 +91,7 @@ void fileReadProccessManager(FILE *file, char *fileName)
 	}
 	else
 	{
-		printf("\nFail: You have %d errors, please fix them\n", errNum);
+		printf("\nFail: You have errors, please fix them\n");
 	}
 
 	/*Releasing all Dynamically allocated data*/
