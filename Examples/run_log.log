@@ -1,4 +1,5 @@
-../assembler ps ps2 test3 test4 test5 test6
+../assembler ps ps2 test3 test4 test5 test6 > run_log.log
+
 
 ------------ Parsing File: "ps.as" ------------
 
@@ -16,8 +17,12 @@ Success: The file has been parsed
 
 ERROR: Line #6, Illegal Operand "o[3-5]4" invalid syntax for range .
 ERROR: Line #6, Not enough valid Operands - "cmp" should have 1 operands.
+ERROR: Line #4, Label "e" doesn't exist.
+ERROR: Line #4, Label "a2" doesn't exist.
+ERROR: Line #7, Label "r" doesn't exist.
+ERROR: Line #7, Label "t" doesn't exist.
 
-Fail: You have 2 errors, please fix them
+Fail: You have errors, please fix them
 ------------ Parsing File: "test4.as" ------------
 
 ERROR: Line #7, Invalid Directive Name - Directive .odata is not defined.
@@ -26,18 +31,22 @@ ERROR: Line #9, Invalid Directive Definition - Directive .entry wrong Label Refe
 ERROR: Line #10, Invalid Directive Definition - Directive .string is empty.
 ERROR: Line #12, Invalid Label Reference - Label should start with Letter.
 ERROR: Line #12, Invalid Directive Definition - Directive .extern wrong Label Reference.
+ERROR: Invalid Entry Label - Label "Laa" does not exist in the program.
 
-Fail: You have 6 errors, please fix them
+Fail: You have errors, please fix them
 ------------ Parsing File: "test5.as" ------------
 
 ERROR: Line #1, Invalid Label Reference - Label should contain only Letters and Numbers.
 ERROR: Line #1, Invalid Directive Definition - Directive .extern wrong Label Reference.
 ERROR: Line #3, Invalid Directive Data - Not valid data, should be a set of numbers (positive/negative) separated by commas.
 ERROR: Line #4, Invalid Label Definition - Label is empty , cannot assign label to an empty line.
+ERROR: Line #2, Label "er" doesn't exist.
+ERROR: Line #2, Label "ty" doesn't exist.
+ERROR: Line #5, Label "t2" doesn't exist.
 
-Fail: You have 4 errors, please fix them
+Fail: You have errors, please fix them
 ------------ Parsing File: "test6.as" ------------
 
 ERROR: Line #2, Label "B" doesn't exist.
 
-Fail: You have 1 errors, please fix them
+Fail: You have errors, please fix them
