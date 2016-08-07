@@ -446,7 +446,6 @@ void parseExternDirective(RunStatus *runStatus, char *label)
 	
 	/*Checking that the extern directive doesn't exists in entry, it is ok to define same extern more than once*/
 
-	i = 0;
 	while (i <= runStatus -> entryCount)
 	{
 		if (runStatus -> entryArray && ! strcmp (runStatus -> entryArray[i].name, labelContent))
@@ -457,6 +456,19 @@ void parseExternDirective(RunStatus *runStatus, char *label)
 		}
 		i++;
 	}
+	i = 0;
+
+	/* Extern cannot be defined with the same name as local label*/
+	for ( i=0; i < runStatus -> finalLabelCount; i++)
+	{
+		if (!strcmp(labelContent, runStatus -> finalLabelArray[i].name ))
+		{
+			printf("ERROR: Line #%d, Invalid Directive Definition - Directive %s label defined already as local label in the program.\n", runStatus -> lineCount, directive);
+			runStatus -> errNum ++;
+			return ;
+		}
+	}
+
 	/*Adding to Extern definition struct*/
 	addExternDir(runStatus, labelContent);
 }

@@ -264,6 +264,7 @@ Output: -
 */
 void addLabelFinal(RunStatus *runStatus, char *label, int mem, int isData)
 {
+	int i =0 ;
 	runStatus -> finalLabelArray = realloc(runStatus -> finalLabelArray, (runStatus -> finalLabelCount + 1) * sizeof(Label));
 	if (! (runStatus -> finalLabelArray) )
 	{
@@ -271,6 +272,17 @@ void addLabelFinal(RunStatus *runStatus, char *label, int mem, int isData)
 		runStatus -> flagFatalErr = EXIT_ERROR;
 		return ;
 	}
+	
+	for ( i=0; i < runStatus -> externCount; i++)
+	{
+		if (runStatus -> externArray && ! strcmp (runStatus -> externArray[i].name, label))
+		{
+			printf("ERROR: Line #%d, Invalid Label Definition - Label %s defined as extern in the program.\n", runStatus -> lineCount, label);
+			runStatus -> errNum ++;
+			return ;
+		}
+	}
+
 	strcpy (runStatus -> finalLabelArray[runStatus -> finalLabelCount].name , label);
 	runStatus -> finalLabelArray[runStatus -> finalLabelCount].memAddress = mem + FIRST_MEM_ADDR;
 	runStatus -> finalLabelArray[runStatus -> finalLabelCount].isData = isData;
